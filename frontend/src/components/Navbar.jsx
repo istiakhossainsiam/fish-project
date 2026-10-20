@@ -5,9 +5,9 @@ export default function Navbar({ activeTab, setActiveTab, currentUser, setCurren
   const [showUserDropdown, setShowUserDropdown] = useState(false);
 
   const defaultRoles = [
-    { id: 'superadmin', label: 'Super Admin (মালিক)', role: 'superadmin', full_name: 'Farm Owner (Super Admin)', icon: Shield, badgeColor: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' },
-    { id: 'manager', label: 'Farm Manager (ম্যানেজার)', role: 'manager', full_name: 'Farm Manager', icon: User, badgeColor: 'bg-cyan-500/20 text-cyan-400 border-cyan-500/30' },
-    { id: 'worker', label: 'Field Worker (কর্মী)', role: 'worker', full_name: 'Field Worker', icon: HardHat, badgeColor: 'bg-amber-500/20 text-amber-400 border-amber-500/30' },
+    { id: 'superadmin', label: 'Super Admin (মালিক)', role: 'superadmin', full_name: 'Farm Owner (Super Admin)', icon: Shield, badgeColor: 'bg-emerald-100 text-emerald-800 border-emerald-300' },
+    { id: 'manager', label: 'Farm Manager (ম্যানেজার)', role: 'manager', full_name: 'Farm Manager', icon: User, badgeColor: 'bg-cyan-100 text-cyan-800 border-cyan-300' },
+    { id: 'worker', label: 'Field Worker (কর্মী)', role: 'worker', full_name: 'Field Worker', icon: HardHat, badgeColor: 'bg-amber-100 text-amber-800 border-amber-300' },
   ];
 
   const getRoleIcon = (role) => {
@@ -21,40 +21,40 @@ export default function Navbar({ activeTab, setActiveTab, currentUser, setCurren
   const CurrentIcon = getRoleIcon(currentUser.role);
 
   return (
-    <header className="sticky top-0 z-40 bg-slate-900/95 backdrop-blur-md border-b border-slate-800">
+    <header className="sticky top-0 z-40 bg-white border-b border-slate-200 shadow-sm">
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo & Farm Title */}
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-teal-500 to-cyan-400 flex items-center justify-center shadow-lg shadow-teal-500/20 cursor-pointer" onClick={() => setActiveTab('dashboard')}>
-              <Waves className="w-6 h-6 text-slate-950 font-bold" />
+            <div className="w-10 h-10 rounded-xl bg-teal-600 flex items-center justify-center shadow-md shadow-teal-600/20 cursor-pointer" onClick={() => setActiveTab('dashboard')}>
+              <Waves className="w-6 h-6 text-white font-bold" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-bold text-base sm:text-lg text-white tracking-tight cursor-pointer" onClick={() => setActiveTab('dashboard')}>
+                <span className="font-bold text-base sm:text-lg text-slate-900 tracking-tight cursor-pointer hover:text-teal-700 transition" onClick={() => setActiveTab('dashboard')}>
                   Shah Amanat Fishery & Agro
                 </span>
-                <span className="text-[10px] uppercase font-semibold px-2 py-0.5 rounded-full bg-teal-500/20 text-teal-300 border border-teal-500/30 hidden sm:inline-block">
-                  ৪টি পুকুর (4 Ponds)
+                <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded-full bg-teal-50 text-teal-700 border border-teal-200 hidden sm:inline-block">
+                  ৪টি পুকুর
                 </span>
               </div>
-              <p className="text-xs text-slate-400 hidden sm:block">
+              <p className="text-xs text-slate-500 hidden sm:block">
                 শাহ আমানত বিমানবন্দর, চট্টগ্রাম • কমার্শিয়াল মৎস্য ও এগ্রো প্রকল্প
               </p>
             </div>
           </div>
 
           {/* Right Section: Weather badge, User Switcher, Refresh */}
-          <div className="flex items-center gap-2 sm:gap-4">
+          <div className="flex items-center gap-2 sm:gap-3">
             {/* Weather mini pill */}
             {weather?.current && (
               <button 
                 onClick={() => setActiveTab('weather')}
-                className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800/80 border border-slate-700 hover:border-slate-600 text-xs text-slate-300 transition"
+                className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 hover:bg-slate-100 text-xs text-slate-700 transition"
               >
-                <CloudSun className="w-4 h-4 text-amber-400" />
-                <span>{weather.current.temperature}°C</span>
-                <span className="text-slate-400 border-l border-slate-700 pl-2">Shah Amanat Airport, CTG</span>
+                <CloudSun className="w-4 h-4 text-amber-500" />
+                <span className="font-semibold">{weather.current.temperature}°C</span>
+                <span className="text-slate-400 border-l border-slate-200 pl-2">Shah Amanat Airport, CTG</span>
               </button>
             )}
 
@@ -62,19 +62,19 @@ export default function Navbar({ activeTab, setActiveTab, currentUser, setCurren
             <div className="relative">
               <button
                 onClick={() => setShowUserDropdown(!showUserDropdown)}
-                className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-800 border border-slate-700 hover:border-slate-600 transition shadow-sm"
+                className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 hover:bg-slate-100 transition shadow-sm"
               >
-                <div className={`p-1 rounded-lg ${
-                  currentUser.role === 'superadmin' ? 'bg-emerald-500/20 text-emerald-400' :
-                  currentUser.role === 'manager' ? 'bg-cyan-500/20 text-cyan-400' : 'bg-amber-500/20 text-amber-400'
+                <div className={`p-1.5 rounded-lg ${
+                  currentUser.role === 'superadmin' ? 'bg-emerald-100 text-emerald-700' :
+                  currentUser.role === 'manager' ? 'bg-cyan-100 text-cyan-700' : 'bg-amber-100 text-amber-700'
                 }`}>
                   <CurrentIcon className="w-4 h-4" />
                 </div>
                 <div className="text-left hidden sm:block">
-                  <div className="text-xs font-bold text-white leading-tight">
+                  <div className="text-xs font-bold text-slate-800 leading-tight">
                     {currentUser.full_name || currentUser.username}
                   </div>
-                  <div className="text-[10px] text-teal-400 font-medium capitalize">
+                  <div className="text-[10px] text-teal-700 font-semibold capitalize">
                     {currentUser.role === 'superadmin' ? 'মালিক (Super Admin)' :
                      currentUser.role === 'manager' ? 'ম্যানেজার (Manager)' : 'কর্মী (Worker)'}
                   </div>
@@ -85,10 +85,10 @@ export default function Navbar({ activeTab, setActiveTab, currentUser, setCurren
               {/* User Switch Dropdown Menu */}
               {showUserDropdown && (
                 <div 
-                  className="absolute right-0 mt-2 w-72 bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl p-2 z-50 animate-in fade-in slide-in-from-top-2"
+                  className="absolute right-0 mt-2 w-72 bg-white border border-slate-200 rounded-2xl shadow-xl p-2 z-50 animate-in fade-in slide-in-from-top-2"
                   onClick={() => setShowUserDropdown(false)}
                 >
-                  <div className="px-3 py-2 border-b border-slate-800 text-xs text-slate-400 font-medium">
+                  <div className="px-3 py-2 border-b border-slate-100 text-xs text-slate-500 font-medium">
                     সুইচ ইউজার বা ড্যাশবোর্ড মোড:
                   </div>
 
@@ -108,7 +108,7 @@ export default function Navbar({ activeTab, setActiveTab, currentUser, setCurren
                             });
                           }}
                           className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs transition ${
-                            isCurrent ? 'bg-teal-600 text-white font-bold' : 'text-slate-300 hover:bg-slate-800'
+                            isCurrent ? 'bg-teal-600 text-white font-bold shadow-sm' : 'text-slate-700 hover:bg-slate-50'
                           }`}
                         >
                           <div className="flex items-center gap-2">
@@ -123,7 +123,7 @@ export default function Navbar({ activeTab, setActiveTab, currentUser, setCurren
 
                   {/* Registered Database Users */}
                   {usersList && usersList.length > 0 && (
-                    <div className="pt-2 border-t border-slate-800 space-y-1">
+                    <div className="pt-2 border-t border-slate-100 space-y-1">
                       <div className="px-3 py-1 text-[11px] text-slate-400 font-semibold uppercase tracking-wider">
                         নিবন্ধিত ইউজার একাউন্টস ({usersList.length}):
                       </div>
@@ -143,14 +143,14 @@ export default function Navbar({ activeTab, setActiveTab, currentUser, setCurren
                                 });
                               }}
                               className={`w-full flex items-center justify-between px-3 py-1.5 rounded-lg text-xs transition ${
-                                isCurrent ? 'bg-slate-800 text-teal-300 font-bold border border-teal-500/30' : 'text-slate-400 hover:bg-slate-800/60 hover:text-white'
+                                isCurrent ? 'bg-teal-50 text-teal-800 font-bold border border-teal-200' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
                               }`}
                             >
                               <div className="flex items-center gap-2">
                                 <Icon className="w-3.5 h-3.5" />
                                 <span className="truncate">{u.full_name} ({u.username})</span>
                               </div>
-                              <span className="text-[10px] text-slate-400 uppercase">{u.role}</span>
+                              <span className="text-[10px] text-slate-400 uppercase font-semibold">{u.role}</span>
                             </button>
                           );
                         })}
@@ -159,10 +159,10 @@ export default function Navbar({ activeTab, setActiveTab, currentUser, setCurren
                   )}
 
                   {/* Link to User Manager */}
-                  <div className="pt-2 border-t border-slate-800 space-y-1.5">
+                  <div className="pt-2 border-t border-slate-100 space-y-1.5">
                     <button
                       onClick={() => setActiveTab('users')}
-                      className="w-full py-2 px-3 rounded-xl bg-teal-500/10 hover:bg-teal-500/20 text-teal-300 text-xs font-semibold flex items-center justify-center gap-1.5 border border-teal-500/20 transition"
+                      className="w-full py-2 px-3 rounded-xl bg-teal-50 hover:bg-teal-100 text-teal-700 text-xs font-semibold flex items-center justify-center gap-1.5 border border-teal-200 transition"
                     >
                       <Users className="w-3.5 h-3.5" />
                       ইউজার ম্যানেজমেন্ট ও নতুন একাউন্ট
@@ -173,7 +173,7 @@ export default function Navbar({ activeTab, setActiveTab, currentUser, setCurren
                           setShowUserDropdown(false);
                           onLogout();
                         }}
-                        className="w-full py-2 px-3 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 text-xs font-semibold flex items-center justify-center gap-1.5 border border-rose-500/20 transition"
+                        className="w-full py-2 px-3 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-semibold flex items-center justify-center gap-1.5 border border-rose-200 transition"
                       >
                         <LogOut className="w-3.5 h-3.5" />
                         লগআউট (Logout)
@@ -188,7 +188,7 @@ export default function Navbar({ activeTab, setActiveTab, currentUser, setCurren
             <button
               onClick={onRefresh}
               title="তথ্য রিফ্রেশ করুন"
-              className="p-2 rounded-xl bg-slate-800 border border-slate-700 text-slate-300 hover:text-white hover:bg-slate-700 transition"
+              className="p-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition shadow-sm"
             >
               <RefreshCw className="w-4 h-4" />
             </button>
@@ -198,7 +198,7 @@ export default function Navbar({ activeTab, setActiveTab, currentUser, setCurren
               <button
                 onClick={onLogout}
                 title="লগআউট করুন"
-                className="hidden sm:flex p-2 rounded-xl bg-rose-950/40 border border-rose-500/30 text-rose-300 hover:text-white hover:bg-rose-600/80 transition"
+                className="hidden sm:flex p-2 rounded-xl bg-rose-50 border border-rose-200 text-rose-600 hover:text-rose-700 hover:bg-rose-100 transition shadow-sm"
               >
                 <LogOut className="w-4 h-4" />
               </button>
@@ -208,8 +208,8 @@ export default function Navbar({ activeTab, setActiveTab, currentUser, setCurren
       </div>
 
       {/* Navigation Tabs (Desktop & Tablet) */}
-      <div className="hidden md:block bg-slate-900 border-t border-slate-800/80 px-4">
-        <div className="max-w-7xl mx-auto flex space-x-1 overflow-x-auto py-1.5">
+      <div className="hidden md:block bg-slate-50/80 border-t border-slate-200 px-4">
+        <div className="max-w-7xl mx-auto flex space-x-1.5 overflow-x-auto py-2">
           {[
             { id: 'dashboard', label: '📊 ড্যাশবোর্ড (Dashboard)' },
             { id: 'cycles', label: '🔄 ৬ মাসের সাইকেল (6-Month Cycles)' },
@@ -227,12 +227,12 @@ export default function Navbar({ activeTab, setActiveTab, currentUser, setCurren
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition ${
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition ${
                 activeTab === tab.id
-                  ? 'bg-teal-500/20 text-teal-300 border border-teal-500/40'
+                  ? 'bg-teal-600 text-white shadow-sm'
                   : tab.highlight
-                    ? 'text-emerald-400 hover:text-emerald-300 hover:bg-slate-800/60'
-                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+                    ? 'text-teal-700 hover:text-teal-800 hover:bg-teal-50 border border-teal-200/50'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
               }`}
             >
               {tab.label}

@@ -129,7 +129,7 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans">
+    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans">
       {/* Top Navbar */}
       <Navbar
         activeTab={activeTab}
@@ -146,8 +146,8 @@ export default function App() {
       <main className="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 pt-4 sm:pt-6">
         {loading && !stats ? (
           <div className="flex flex-col items-center justify-center min-h-[50vh] space-y-3">
-            <div className="w-10 h-10 border-4 border-teal-500/20 border-t-teal-500 rounded-full animate-spin" />
-            <p className="text-slate-400 text-sm">শাহ আমানত ফিশারি অ্যান্ড এগ্রো প্রজেক্টের তথ্য লোড হচ্ছে...</p>
+            <div className="w-10 h-10 border-4 border-teal-500/20 border-t-teal-600 rounded-full animate-spin" />
+            <p className="text-slate-600 text-sm">শাহ আমানত ফিশারি অ্যান্ড এগ্রো প্রজেক্টের তথ্য লোড হচ্ছে...</p>
           </div>
         ) : (
           <>
