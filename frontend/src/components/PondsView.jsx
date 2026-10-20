@@ -68,20 +68,20 @@ export default function PondsView({ ponds, dailyFeedings = [], currentUser, onOp
       {/* Header & Add buttons */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h2 className="text-xl font-bold text-white flex items-center gap-2">
-            <Waves className="w-5 h-5 text-teal-400" />
+          <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
+            <Waves className="w-5 h-5 text-teal-600" />
             পুকুর ব্যবস্থাপনা (৪টি পুকুর)
           </h2>
-          <p className="text-xs text-slate-400 mt-0.5">
+          <p className="text-xs text-slate-500 mt-0.5">
             মাছের পোনা ছাড়ার তারিখ, জাত, সাইজ ও মজুদের বিস্তারিত হিসাব (সম্পাদনা ও মোছার সুবিধাসহ)
           </p>
         </div>
         <div className="flex items-center gap-2">
           <button
             onClick={() => onOpenModal('stocking')}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-teal-600 hover:bg-teal-500 text-white text-xs font-semibold shadow-md transition"
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold shadow-sm transition cursor-pointer"
           >
-            <Plus className="w-4 h-4" /> নতুন পোনা ফেলুন (Stock Fish)
+            <Plus className="w-4 h-4 text-white" /> নতুন পোনা ফেলুন (Stock Fish)
           </button>
         </div>
       </div>
@@ -95,19 +95,19 @@ export default function PondsView({ ponds, dailyFeedings = [], currentUser, onOp
             <button
               key={p.id}
               onClick={() => setSelectedPondId(p.id)}
-              className={`p-4 rounded-2xl border text-left transition relative overflow-hidden ${
+              className={`p-4 rounded-2xl border text-left transition relative overflow-hidden cursor-pointer ${
                 isSelected
-                  ? 'bg-slate-800 border-teal-500 shadow-lg shadow-teal-500/10 ring-1 ring-teal-500'
-                  : 'bg-slate-800/60 border-slate-700 hover:border-slate-600'
+                  ? 'bg-teal-50/70 border-2 border-teal-600 shadow-md ring-1 ring-teal-500'
+                  : 'bg-white border-slate-200 hover:border-slate-300 shadow-sm'
               }`}
             >
               <div className="flex items-center justify-between">
-                <span className="font-bold text-sm text-white">{p.name}</span>
-                <span className={`w-2.5 h-2.5 rounded-full ${isActive ? 'bg-emerald-400' : 'bg-slate-500'}`} />
+                <span className="font-bold text-sm text-slate-900">{p.name}</span>
+                <span className={`w-2.5 h-2.5 rounded-full ${isActive ? 'bg-emerald-500' : 'bg-slate-400'}`} />
               </div>
               <div className="mt-2 text-xs">
-                <span className="text-slate-400 block">{p.status === 'active' ? 'চলমান' : 'প্রস্তুতি'}</span>
-                <span className="font-bold text-teal-300 block mt-1">
+                <span className="text-slate-500 block">{p.status === 'active' ? 'চলমান' : 'প্রস্তুতি'}</span>
+                <span className="font-bold text-teal-700 block mt-1">
                   {p.total_fish > 0 ? `${p.total_fish.toLocaleString()} pcs মাছ` : 'খালি / প্রস্তুতি'}
                 </span>
               </div>
@@ -118,29 +118,29 @@ export default function PondsView({ ponds, dailyFeedings = [], currentUser, onOp
 
       {/* Selected Pond Deep-Dive Detail View */}
       {activePond && (
-        <div className="p-5 rounded-2xl bg-slate-800/80 border border-slate-700 shadow-xl space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-700 gap-3">
+        <div className="p-5 rounded-2xl bg-white border border-slate-200 shadow-sm space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-200 gap-3">
             <div>
               <div className="flex items-center gap-3">
-                <h3 className="text-lg font-bold text-white">{activePond.name}</h3>
-                <span className="text-xs px-2.5 py-0.5 rounded-full bg-teal-500/20 text-teal-300 border border-teal-500/30">
+                <h3 className="text-lg font-bold text-slate-900">{activePond.name}</h3>
+                <span className="text-xs px-2.5 py-0.5 rounded-full bg-teal-50 text-teal-800 border border-teal-200 font-bold">
                   {activePond.status === 'active' ? 'চলমান' : 'প্রস্তুতি'}
                 </span>
-                <span className="text-xs text-slate-400">গভীরতা: {activePond.depth_feet} ফুট</span>
+                <span className="text-xs text-slate-500 font-medium">গভীরতা: {activePond.depth_feet} ফুট</span>
               </div>
-              <p className="text-xs text-slate-400 mt-1">{activePond.notes}</p>
+              <p className="text-xs text-slate-500 mt-1">{activePond.notes}</p>
             </div>
 
             <div className="flex items-center gap-2">
               <button
                 onClick={() => onOpenModal('feed', { pond_id: activePond.id })}
-                className="px-3 py-1.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white text-xs font-medium transition"
+                className="px-3.5 py-1.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold transition shadow-sm cursor-pointer"
               >
                 + খাবার দিন
               </button>
               <button
                 onClick={() => onOpenModal('stocking', { pond_id: activePond.id })}
-                className="px-3 py-1.5 rounded-xl bg-slate-700 hover:bg-slate-600 text-teal-300 text-xs font-medium border border-slate-600 transition"
+                className="px-3.5 py-1.5 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-bold border border-slate-300 transition shadow-sm cursor-pointer"
               >
                 + পোনা ফেলুন
               </button>
@@ -149,31 +149,31 @@ export default function PondsView({ ponds, dailyFeedings = [], currentUser, onOp
 
           {/* Quick Metrics for this pond */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <div className="bg-slate-900/60 p-3.5 rounded-xl border border-slate-800">
-              <span className="text-xs text-slate-400 block">মোট মজুদ মাছ</span>
-              <span className="text-lg font-bold text-white mt-1 block">
-                {activePond.total_fish?.toLocaleString() || 0} <span className="text-xs font-normal text-teal-400">pcs</span>
+            <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+              <span className="text-xs text-slate-500 font-medium block">মোট মজুদ মাছ</span>
+              <span className="text-lg font-black text-slate-900 mt-1 block">
+                {activePond.total_fish?.toLocaleString() || 0} <span className="text-xs font-bold text-teal-700">pcs</span>
               </span>
             </div>
-            <div className="bg-slate-900/60 p-3.5 rounded-xl border border-slate-800">
-              <span className="text-xs text-slate-400 block">মোট ফিড সরবরাহ</span>
-              <span className="text-lg font-bold text-cyan-300 mt-1 block">
-                {activePond.feed_bags_used || 0} <span className="text-xs font-normal text-slate-400">ব্যাগ ({((activePond.feed_bags_used || 0) * 25).toLocaleString()} kg)</span>
+            <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+              <span className="text-xs text-slate-500 font-medium block">মোট ফিড সরবরাহ</span>
+              <span className="text-lg font-black text-cyan-700 mt-1 block">
+                {activePond.feed_bags_used || 0} <span className="text-xs font-semibold text-slate-500">ব্যাগ ({((activePond.feed_bags_used || 0) * 25).toLocaleString()} kg)</span>
               </span>
             </div>
-            <div className="bg-slate-900/60 p-3.5 rounded-xl border border-slate-800">
-              <span className="text-xs text-slate-400 block">ভাত সরবরাহ (Vaat)</span>
-              <span className="text-lg font-bold text-amber-300 mt-1 block">
-                {activePond.vaat_kg_used || 0} <span className="text-xs font-normal text-slate-400">কেজি</span>
+            <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+              <span className="text-xs text-slate-500 font-medium block">ভাত সরবরাহ (Vaat)</span>
+              <span className="text-lg font-black text-amber-700 mt-1 block">
+                {activePond.vaat_kg_used || 0} <span className="text-xs font-semibold text-slate-500">কেজি</span>
               </span>
             </div>
-            <div className="bg-slate-900/60 p-3.5 rounded-xl border border-slate-800">
-              <span className="text-xs text-slate-400 block">সর্বশেষ নমুনা ওজন</span>
-              <span className="text-lg font-bold text-emerald-400 mt-1 block">
+            <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+              <span className="text-xs text-slate-500 font-medium block">সর্বশেষ নমুনা ওজন</span>
+              <span className="text-lg font-black text-emerald-700 mt-1 block">
                 {activePond.latest_sampling ? `${activePond.latest_sampling.avg_weight_grams}g` : 'চলমান'}
               </span>
               {activePond.latest_sampling && (
-                <span className="text-[11px] text-slate-400 block">
+                <span className="text-[11px] text-slate-500 block">
                   {activePond.latest_sampling.calculated_pcs_per_kg} pcs/kg • FCR: {activePond.latest_sampling.fcr}
                 </span>
               )}

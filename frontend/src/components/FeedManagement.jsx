@@ -152,42 +152,42 @@ export default function FeedManagement({ ponds = [], feedInventory, dailyFeeding
 
         return (
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-            <div className="bg-slate-800/70 p-4 rounded-2xl border border-slate-700">
-              <span className="text-xs text-slate-400 block">মোট ফিড এসেছে (Received)</span>
-              <div className="text-xl font-bold text-white mt-1">
-                {totalReceivedBags} <span className="text-xs text-cyan-400 font-normal">ব্যাগ</span>
+            <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+              <span className="text-xs text-slate-500 font-semibold block">মোট ফিড এসেছে (Received)</span>
+              <div className="text-xl font-black text-slate-900 mt-1">
+                {totalReceivedBags} <span className="text-xs text-cyan-700 font-bold">ব্যাগ</span>
               </div>
-              <span className="text-[11px] text-slate-400 mt-0.5 block">
+              <span className="text-[11px] text-slate-500 mt-1 block">
                 ব্যাচ ২০২ (২১০ ব্যাগ) + ব্যাচ ২০৪ (১০০ ব্যাগ)
               </span>
             </div>
 
-            <div className="bg-slate-800/70 p-4 rounded-2xl border border-slate-700">
-              <span className="text-xs text-slate-400 block">মোট ফিড ক্রয় ব্যয় (Cost)</span>
-              <div className="text-xl font-bold text-slate-200 mt-1">
+            <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+              <span className="text-xs text-slate-500 font-semibold block">মোট ফিড ক্রয় ব্যয় (Cost)</span>
+              <div className="text-xl font-black text-slate-900 mt-1">
                 ৳ {feedInventory?.total_feed_spent_bdt?.toLocaleString() || "5,68,750"}
               </div>
-              <span className="text-[11px] text-slate-400 mt-0.5 block">
+              <span className="text-[11px] text-slate-500 mt-1 block">
                 গড় দর: ৳ {feedInventory?.avg_cost_per_bag || "1,834.68"} /ব্যাগ
               </span>
             </div>
 
-            <div className="bg-slate-800/70 p-4 rounded-2xl border border-slate-700">
-              <span className="text-xs text-slate-400 block">মোট খাওয়ানো ফিড (All Ponds)</span>
-              <div className="text-xl font-bold text-teal-300 mt-1">
-                {totalConsumedBags.toFixed(1)} <span className="text-xs font-normal text-slate-400">ব্যাগ</span>
+            <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+              <span className="text-xs text-slate-500 font-semibold block">মোট খাওয়ানো ফিড (All Ponds)</span>
+              <div className="text-xl font-black text-teal-700 mt-1">
+                {totalConsumedBags.toFixed(1)} <span className="text-xs font-bold text-slate-500">ব্যাগ</span>
               </div>
-              <span className="text-[11px] text-slate-400 mt-0.5 block">
+              <span className="text-[11px] text-slate-500 mt-1 block">
                 ওজন: ~{totalConsumedKg.toFixed(0)} কেজি (২১/০৯/২০২৬ হতে)
               </span>
             </div>
 
-            <div className="bg-slate-800/70 p-4 rounded-2xl border border-slate-700">
-              <span className="text-xs text-slate-400 block">অবশিষ্ট ফিড স্টক (Stock)</span>
-              <div className="text-xl font-bold text-cyan-400 mt-1">
-                {remainingBagsDisplay} <span className="text-xs font-normal text-slate-400">ব্যাগ বাকি</span>
+            <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+              <span className="text-xs text-slate-500 font-semibold block">অবশিষ্ট ফিড স্টক (Stock)</span>
+              <div className="text-xl font-black text-cyan-700 mt-1">
+                {remainingBagsDisplay} <span className="text-xs font-bold text-slate-500">ব্যাগ বাকি</span>
               </div>
-              <span className={`text-[11px] mt-0.5 block font-medium ${remainingFeedBags <= 30 ? 'text-amber-400' : 'text-emerald-400'}`}>
+              <span className={`text-[11px] mt-1 block font-bold ${remainingFeedBags <= 30 ? 'text-amber-700' : 'text-emerald-700'}`}>
                 {remainingFeedBags <= 30 
                   ? '⚠️ রি-অর্ডার এলার্ট (স্টক শেষ পর্যায়ে)' 
                   : 'খামারের গুদামে পর্যাপ্ত মজুত রয়েছে'}
@@ -198,7 +198,7 @@ export default function FeedManagement({ ponds = [], feedInventory, dailyFeeding
       })()}
 
       {/* Sub Tabs */}
-      <div className="flex border-b border-slate-800 space-x-2 sm:space-x-4 overflow-x-auto pb-1">
+      <div className="flex border-b border-slate-200 space-x-2 sm:space-x-4 overflow-x-auto pb-1">
         {[
           { id: 'pond_wise', label: '🌊 পুকুর ভিত্তিক খাবার খাতা (Pond Food Records)', highlight: true },
           { id: 'daily', label: '📋 সার্বিক দৈনিক খাতা (All Daily Logs)', count: feedings.length },
@@ -208,15 +208,17 @@ export default function FeedManagement({ ponds = [], feedInventory, dailyFeeding
           <button
             key={tab.id}
             onClick={() => setActiveSubTab(tab.id)}
-            className={`pb-3 text-xs sm:text-sm font-semibold transition flex items-center gap-2 border-b-2 whitespace-nowrap ${
+            className={`pb-3 text-xs sm:text-sm font-semibold transition flex items-center gap-2 border-b-2 whitespace-nowrap cursor-pointer ${
               activeSubTab === tab.id
-                ? 'border-teal-400 text-teal-300'
-                : 'border-transparent text-slate-400 hover:text-slate-200'
+                ? 'border-teal-600 text-teal-700'
+                : 'border-transparent text-slate-500 hover:text-slate-800'
             }`}
           >
             {tab.label}
             {tab.count !== undefined && (
-              <span className="px-2 py-0.5 rounded-full bg-slate-800 text-[10px] text-slate-400">
+              <span className={`px-2 py-0.5 rounded-full text-[10px] ${
+                activeSubTab === tab.id ? 'bg-teal-100 text-teal-800' : 'bg-slate-100 text-slate-600'
+              }`}>
                 {tab.count}
               </span>
             )}
@@ -231,30 +233,30 @@ export default function FeedManagement({ ponds = [], feedInventory, dailyFeeding
         <div className="space-y-6 animate-in fade-in">
           
           {/* Quick Explanation & Global Month Filter Bar */}
-          <div className="p-4 rounded-2xl bg-slate-900/90 border border-teal-500/30 shadow-md space-y-3">
+          <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm space-y-3">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <div className="flex items-center gap-2.5">
-                <div className="p-2 rounded-xl bg-teal-500/10 text-teal-400 border border-teal-500/20">
-                  <Waves className="w-5 h-5" />
+                <div className="p-2 rounded-xl bg-teal-50 text-teal-700 border border-teal-200">
+                  <Waves className="w-5 h-5 text-teal-700" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold text-white">প্রতিটি পুকুরের পৃথক খাবার খাতা ও মাসিক ফিল্টার</h3>
-                  <p className="text-xs text-slate-400">পুকুর সিলেক্ট করুন এবং মাস নির্বাচন করে ঐ মাসের খাবার হিসাব চেক করুন।</p>
+                  <h3 className="text-sm font-bold text-slate-900">প্রতিটি পুকুরের পৃথক খাবার খাতা ও মাসিক ফিল্টার</h3>
+                  <p className="text-xs text-slate-500">পুকুর সিলেক্ট করুন এবং মাস নির্বাচন করে ঐ মাসের খাবার হিসাব চেক করুন।</p>
                 </div>
               </div>
 
               {/* Monthly Filter Pill Bar */}
               <div className="flex items-center gap-1.5 flex-wrap">
-                <span className="text-xs text-slate-400 font-semibold flex items-center gap-1 mr-1">
-                  <CalendarDays className="w-3.5 h-3.5 text-teal-400" /> মাস ফিল্টার:
+                <span className="text-xs text-slate-500 font-semibold flex items-center gap-1 mr-1">
+                  <CalendarDays className="w-3.5 h-3.5 text-teal-600" /> মাস ফিল্টার:
                 </span>
                 
                 <button
                   onClick={() => setSelectedMonth('all')}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition ${
+                  className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition cursor-pointer ${
                     selectedMonth === 'all'
-                      ? 'bg-teal-600 text-white shadow'
-                      : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+                      ? 'bg-teal-600 text-white shadow-sm'
+                      : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                   }`}
                 >
                   সকল মাস (All)
@@ -264,10 +266,10 @@ export default function FeedManagement({ ponds = [], feedInventory, dailyFeeding
                   <button
                     key={ym}
                     onClick={() => setSelectedMonth(ym)}
-                    className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition ${
+                    className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition cursor-pointer ${
                       selectedMonth === ym
-                        ? 'bg-teal-600 text-white shadow'
-                        : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+                        ? 'bg-teal-600 text-white shadow-sm'
+                        : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                     }`}
                   >
                     {formatMonthLabel(ym)}
@@ -278,7 +280,7 @@ export default function FeedManagement({ ponds = [], feedInventory, dailyFeeding
                 <select
                   value={selectedMonth}
                   onChange={(e) => setSelectedMonth(e.target.value)}
-                  className="bg-slate-800 border border-slate-700 text-xs rounded-xl px-2.5 py-1.5 text-slate-200 focus:outline-none focus:border-teal-500"
+                  className="bg-white border border-slate-300 text-xs rounded-xl px-2.5 py-1.5 text-slate-700 focus:outline-none focus:border-teal-600 cursor-pointer"
                 >
                   <option value="all">অন্যান্য মাস...</option>
                   {availableMonths.map((ym) => (
@@ -290,14 +292,14 @@ export default function FeedManagement({ ponds = [], feedInventory, dailyFeeding
 
             {/* Active Month Status Badge */}
             {selectedMonth !== 'all' && (
-              <div className="flex items-center justify-between px-3 py-1.5 rounded-xl bg-teal-500/10 border border-teal-500/20 text-xs">
-                <span className="text-teal-300 flex items-center gap-1.5 font-medium">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-teal-400" />
+              <div className="flex items-center justify-between px-3 py-1.5 rounded-xl bg-teal-50 border border-teal-200 text-xs">
+                <span className="text-teal-800 flex items-center gap-1.5 font-medium">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-teal-600" />
                   ফিল্টার সক্রিয়: <strong>{formatMonthLabel(selectedMonth)}</strong>-এর খাবার হিসাব প্রদর্শিত হচ্ছে।
                 </span>
                 <button
                   onClick={() => setSelectedMonth('all')}
-                  className="text-slate-400 hover:text-white flex items-center gap-1 text-[11px] underline"
+                  className="text-slate-500 hover:text-slate-800 flex items-center gap-1 text-[11px] underline cursor-pointer"
                 >
                   <X className="w-3 h-3" /> ফিল্টার মুছুন
                 </button>
@@ -329,35 +331,35 @@ export default function FeedManagement({ ponds = [], feedInventory, dailyFeeding
                     setSearchTerm('');
                     setTimeFilter('all');
                   }}
-                  className={`p-4 rounded-2xl border text-left transition relative overflow-hidden flex flex-col justify-between ${
+                  className={`p-4 rounded-2xl border text-left transition relative overflow-hidden flex flex-col justify-between cursor-pointer ${
                     isSelected
-                      ? 'bg-slate-800 border-teal-500 shadow-xl shadow-teal-500/10 ring-2 ring-teal-500/40'
-                      : 'bg-slate-850/70 border-slate-700/80 hover:border-slate-600'
+                      ? 'bg-teal-50/70 border-2 border-teal-600 shadow-md ring-2 ring-teal-500/20'
+                      : 'bg-white border-slate-200 hover:border-slate-300 shadow-sm'
                   }`}
                 >
                   <div>
                     <div className="flex items-center justify-between mb-2">
-                      <span className="font-bold text-sm sm:text-base text-white">{p.name}</span>
-                      <span className={`w-2.5 h-2.5 rounded-full ${isActive ? 'bg-emerald-400 animate-pulse' : 'bg-slate-600'}`} />
+                      <span className="font-bold text-sm sm:text-base text-slate-900">{p.name}</span>
+                      <span className={`w-2.5 h-2.5 rounded-full ${isActive ? 'bg-emerald-500 animate-pulse' : 'bg-slate-400'}`} />
                     </div>
-                    <div className="text-xs text-slate-400 mb-3">
-                      মাছ: <strong className="text-slate-200">{p.total_fish > 0 ? `${p.total_fish.toLocaleString()} pcs` : 'খালি / প্রস্তুতি'}</strong>
+                    <div className="text-xs text-slate-500 mb-3">
+                      মাছ: <strong className="text-slate-800">{p.total_fish > 0 ? `${p.total_fish.toLocaleString()} pcs` : 'খালি / প্রস্তুতি'}</strong>
                     </div>
                   </div>
 
-                  <div className="p-2.5 rounded-xl bg-slate-900/80 border border-slate-800 space-y-1 text-xs">
+                  <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 space-y-1 text-xs">
                     <div className="flex justify-between items-center">
-                      <span className="text-slate-400">{selectedMonth === 'all' ? 'মোট ফিড:' : 'মাসের ফিড:'}</span>
-                      <span className="font-bold text-teal-300 text-sm">{pBags.toFixed(1)} ব্যাগ</span>
+                      <span className="text-slate-500">{selectedMonth === 'all' ? 'মোট ফিড:' : 'মাসের ফিড:'}</span>
+                      <span className="font-bold text-teal-700 text-sm">{pBags.toFixed(1)} ব্যাগ</span>
                     </div>
                     <div className="flex justify-between items-center text-[11px]">
-                      <span className="text-slate-400">ওজন:</span>
-                      <span className="text-slate-200">{pKg.toFixed(0)} কেজি</span>
+                      <span className="text-slate-500">ওজন:</span>
+                      <span className="text-slate-700 font-semibold">{pKg.toFixed(0)} কেজি</span>
                     </div>
                     {pVaat > 0 && (
-                      <div className="flex justify-between items-center text-[11px] text-amber-300">
+                      <div className="flex justify-between items-center text-[11px] text-amber-800 font-bold">
                         <span>ভাত:</span>
-                        <span className="font-bold">{pVaat} কেজি</span>
+                        <span>{pVaat} কেজি</span>
                       </div>
                     )}
                   </div>

@@ -37,6 +37,27 @@ body, #root, .min-h-screen, .bg-slate-950 {
 }
 
 /* 2. All Card Backgrounds (Pure White with Subtle Border & Soft Shadow) */
+[class*="from-slate-9"],
+[class*="to-slate-8"],
+[class*="from-slate-8"],
+[class*="to-slate-9"],
+[class*="from-teal-9"],
+[class*="to-teal-9"],
+[class*="from-amber-9"],
+[class*="to-amber-9"],
+[class*="from-emerald-9"],
+[class*="to-emerald-9"],
+[class*="from-cyan-9"],
+[class*="to-cyan-9"],
+[class*="from-rose-9"],
+[class*="to-rose-9"],
+[class*="via-slate-8"],
+[class*="via-slate-9"] {
+  background-image: none !important;
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
+}
+
 .bg-slate-900,
 .bg-slate-900\/95,
 .bg-slate-900\/90,
