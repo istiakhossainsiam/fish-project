@@ -20,7 +20,125 @@ def seed_database(force=False):
         db.query(models.User).delete()
         db.commit()
     elif db.query(models.Pond).first():
-        print("Database already contains data, skipping seed.")
+        print("Database already contains data, checking and syncing any missing standard records...")
+        p1 = db.query(models.Pond).filter(models.Pond.name.like("%Pond 1%")).first()
+        p2 = db.query(models.Pond).filter(models.Pond.name.like("%Pond 2%")).first()
+
+        # 1. Sync Feed Batches if missing
+        if db.query(models.FeedInventory).count() < 5:
+            existing_invoices = set(b.invoice_no for b in db.query(models.FeedInventory).all())
+            feed_batches = [
+                models.FeedInventory(date="2026-09-21", brand_name="Fish Feed (Batch #202)", feed_type="Pellet Feed - Batch 202", bag_count=50, bag_weight_kg=25.0, rate_per_bag=1825.0, total_cost=91250.0, supplier="Feed Distributor, Chittagong", invoice_no="BATCH-202-A", notes="21/09/2026: Batch 202 (50 bags @ 1825 tk/bag)"),
+                models.FeedInventory(date="2026-09-29", brand_name="Fish Feed (Batch #202)", feed_type="Pellet Feed - Batch 202", bag_count=60, bag_weight_kg=25.0, rate_per_bag=1875.0, total_cost=112500.0, supplier="Feed Distributor, Chittagong", invoice_no="BATCH-202-B", notes="29/09/2026: Batch 202 (60 bags @ 1875 tk/bag)"),
+                models.FeedInventory(date="2026-10-05", brand_name="Fish Feed (Batch #202)", feed_type="Pellet Feed - Batch 202", bag_count=100, bag_weight_kg=25.0, rate_per_bag=1875.0, total_cost=187500.0, supplier="Feed Distributor, Chittagong", invoice_no="BATCH-202-C", notes="05/10/2026: Batch 202 (100 bags @ 1875 tk/bag)"),
+                models.FeedInventory(date="2026-10-13", brand_name="Fish Feed (Batch #204)", feed_type="Pellet Feed - Batch 204", bag_count=100, bag_weight_kg=25.0, rate_per_bag=1775.0, total_cost=177500.0, supplier="Feed Distributor, Chittagong", invoice_no="BATCH-204-A", notes="13/10/2026: Batch 204 (100 bags @ 1775 tk/bag)"),
+                models.FeedInventory(date="2026-10-21", brand_name="Fish Feed (Batch #204)", feed_type="Pellet Feed - Batch 204", bag_count=120, bag_weight_kg=25.0, rate_per_bag=1775.0, total_cost=213000.0, supplier="Feed Distributor, Chittagong", invoice_no="BATCH-204-B", notes="21/10/2026: Batch 204 (120 bags @ 1775 tk/bag)")
+            ]
+            for fb in feed_batches:
+                if fb.invoice_no not in existing_invoices:
+                    db.add(fb)
+            db.commit()
+
+        # 2. Sync Daily Feedings if missing
+        if db.query(models.DailyFeeding).count() < 86 and p1 and p2:
+            existing_feedings = set((f.date, f.pond_id) for f in db.query(models.DailyFeeding).all())
+            all_feedings = [
+        models.DailyFeeding(date="2026-09-21", pond_id=1, commercial_feed_bags=1.0, commercial_feed_kg=25.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-09-22", pond_id=1, commercial_feed_bags=2.0, commercial_feed_kg=50.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-09-23", pond_id=1, commercial_feed_bags=3.0, commercial_feed_kg=75.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-09-23", pond_id=2, commercial_feed_bags=2.0, commercial_feed_kg=50.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-09-23", pond_id=2, commercial_feed_bags=2.0, commercial_feed_kg=50.0, vaat_kg=0.0, feeding_time="Morning", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-09-24", pond_id=1, commercial_feed_bags=2.0, commercial_feed_kg=50.0, vaat_kg=0.0, feeding_time="Morning", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-09-24", pond_id=1, commercial_feed_bags=2.0, commercial_feed_kg=50.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-09-24", pond_id=2, commercial_feed_bags=2.0, commercial_feed_kg=50.0, vaat_kg=0.0, feeding_time="Morning", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-09-24", pond_id=2, commercial_feed_bags=2.0, commercial_feed_kg=50.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-09-25", pond_id=1, commercial_feed_bags=2.0, commercial_feed_kg=50.0, vaat_kg=0.0, feeding_time="Morning", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-09-25", pond_id=1, commercial_feed_bags=2.0, commercial_feed_kg=50.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-09-25", pond_id=2, commercial_feed_bags=3.0, commercial_feed_kg=75.0, vaat_kg=0.0, feeding_time="Morning", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-09-25", pond_id=2, commercial_feed_bags=3.0, commercial_feed_kg=75.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-09-26", pond_id=1, commercial_feed_bags=2.0, commercial_feed_kg=50.0, vaat_kg=0.0, feeding_time="Morning", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-09-26", pond_id=1, commercial_feed_bags=2.0, commercial_feed_kg=50.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-09-26", pond_id=2, commercial_feed_bags=3.0, commercial_feed_kg=75.0, vaat_kg=0.0, feeding_time="Morning", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-09-26", pond_id=2, commercial_feed_bags=3.0, commercial_feed_kg=75.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-09-27", pond_id=1, commercial_feed_bags=1.0, commercial_feed_kg=25.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-09-27", pond_id=2, commercial_feed_bags=2.0, commercial_feed_kg=50.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-09-27", pond_id=2, commercial_feed_bags=3.0, commercial_feed_kg=75.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-09-28", pond_id=1, commercial_feed_bags=2.0, commercial_feed_kg=50.0, vaat_kg=0.0, feeding_time="Morning", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-09-28", pond_id=1, commercial_feed_bags=1.0, commercial_feed_kg=25.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-09-28", pond_id=2, commercial_feed_bags=2.0, commercial_feed_kg=50.0, vaat_kg=0.0, feeding_time="Morning", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-09-29", pond_id=1, commercial_feed_bags=2.0, commercial_feed_kg=50.0, vaat_kg=0.0, feeding_time="Morning", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-09-29", pond_id=1, commercial_feed_bags=1.0, commercial_feed_kg=25.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-09-29", pond_id=2, commercial_feed_bags=3.0, commercial_feed_kg=75.0, vaat_kg=0.0, feeding_time="Morning", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-09-29", pond_id=2, commercial_feed_bags=3.0, commercial_feed_kg=75.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-09-30", pond_id=1, commercial_feed_bags=2.0, commercial_feed_kg=50.0, vaat_kg=0.0, feeding_time="Morning", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-09-30", pond_id=1, commercial_feed_bags=1.0, commercial_feed_kg=25.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-09-30", pond_id=2, commercial_feed_bags=3.0, commercial_feed_kg=75.0, vaat_kg=0.0, feeding_time="Morning", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-09-30", pond_id=2, commercial_feed_bags=4.0, commercial_feed_kg=100.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-01", pond_id=1, commercial_feed_bags=2.0, commercial_feed_kg=50.0, vaat_kg=0.0, feeding_time="Morning", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-01", pond_id=2, commercial_feed_bags=3.0, commercial_feed_kg=75.0, vaat_kg=0.0, feeding_time="Morning", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-02", pond_id=1, commercial_feed_bags=1.0, commercial_feed_kg=25.0, vaat_kg=0.0, feeding_time="Morning", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-02", pond_id=1, commercial_feed_bags=1.0, commercial_feed_kg=25.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-02", pond_id=2, commercial_feed_bags=3.0, commercial_feed_kg=75.0, vaat_kg=0.0, feeding_time="Morning", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-02", pond_id=2, commercial_feed_bags=4.0, commercial_feed_kg=100.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-03", pond_id=1, commercial_feed_bags=1.0, commercial_feed_kg=25.0, vaat_kg=0.0, feeding_time="Morning", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-03", pond_id=1, commercial_feed_bags=2.0, commercial_feed_kg=50.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-03", pond_id=2, commercial_feed_bags=3.0, commercial_feed_kg=75.0, vaat_kg=0.0, feeding_time="Morning", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-03", pond_id=2, commercial_feed_bags=4.0, commercial_feed_kg=100.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-04", pond_id=1, commercial_feed_bags=2.0, commercial_feed_kg=50.0, vaat_kg=0.0, feeding_time="Morning", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-04", pond_id=1, commercial_feed_bags=2.0, commercial_feed_kg=50.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-04", pond_id=2, commercial_feed_bags=3.0, commercial_feed_kg=75.0, vaat_kg=0.0, feeding_time="Morning", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-04", pond_id=2, commercial_feed_bags=4.0, commercial_feed_kg=100.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-05", pond_id=1, commercial_feed_bags=2.0, commercial_feed_kg=50.0, vaat_kg=0.0, feeding_time="Morning", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-05", pond_id=1, commercial_feed_bags=2.0, commercial_feed_kg=50.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-05", pond_id=2, commercial_feed_bags=3.0, commercial_feed_kg=75.0, vaat_kg=0.0, feeding_time="Morning", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-05", pond_id=2, commercial_feed_bags=4.0, commercial_feed_kg=100.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-06", pond_id=1, commercial_feed_bags=2.0, commercial_feed_kg=50.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-06", pond_id=1, commercial_feed_bags=2.0, commercial_feed_kg=50.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-06", pond_id=2, commercial_feed_bags=4.0, commercial_feed_kg=100.0, vaat_kg=0.0, feeding_time="Morning", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-06", pond_id=2, commercial_feed_bags=4.0, commercial_feed_kg=100.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-07", pond_id=1, commercial_feed_bags=2.0, commercial_feed_kg=50.0, vaat_kg=0.0, feeding_time="Morning", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-07", pond_id=1, commercial_feed_bags=2.0, commercial_feed_kg=50.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-07", pond_id=2, commercial_feed_bags=5.0, commercial_feed_kg=125.0, vaat_kg=0.0, feeding_time="Morning", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-07", pond_id=2, commercial_feed_bags=5.0, commercial_feed_kg=125.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-08", pond_id=1, commercial_feed_bags=4.0, commercial_feed_kg=100.0, vaat_kg=0.0, feeding_time="Both", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-08", pond_id=2, commercial_feed_bags=5.0, commercial_feed_kg=125.0, vaat_kg=0.0, feeding_time="Morning", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-08", pond_id=2, commercial_feed_bags=5.0, commercial_feed_kg=125.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-09", pond_id=1, commercial_feed_bags=4.0, commercial_feed_kg=100.0, vaat_kg=0.0, feeding_time="Both", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-09", pond_id=2, commercial_feed_bags=5.0, commercial_feed_kg=125.0, vaat_kg=0.0, feeding_time="Morning", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-09", pond_id=2, commercial_feed_bags=5.0, commercial_feed_kg=125.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-10", pond_id=1, commercial_feed_bags=4.0, commercial_feed_kg=100.0, vaat_kg=0.0, feeding_time="Both", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-10", pond_id=2, commercial_feed_bags=4.0, commercial_feed_kg=100.0, vaat_kg=0.0, feeding_time="Morning", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-10", pond_id=2, commercial_feed_bags=5.0, commercial_feed_kg=125.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-11", pond_id=1, commercial_feed_bags=4.0, commercial_feed_kg=100.0, vaat_kg=0.0, feeding_time="Both", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-11", pond_id=2, commercial_feed_bags=5.0, commercial_feed_kg=125.0, vaat_kg=0.0, feeding_time="Morning", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-11", pond_id=2, commercial_feed_bags=5.0, commercial_feed_kg=125.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-12", pond_id=1, commercial_feed_bags=4.0, commercial_feed_kg=100.0, vaat_kg=0.0, feeding_time="Both", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-12", pond_id=2, commercial_feed_bags=5.0, commercial_feed_kg=125.0, vaat_kg=0.0, feeding_time="Morning", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-12", pond_id=2, commercial_feed_bags=5.0, commercial_feed_kg=125.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-13", pond_id=1, commercial_feed_bags=5.0, commercial_feed_kg=125.0, vaat_kg=0.0, feeding_time="Both", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-14", pond_id=1, commercial_feed_bags=6.0, commercial_feed_kg=150.0, vaat_kg=0.0, feeding_time="Both", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-15", pond_id=1, commercial_feed_bags=6.0, commercial_feed_kg=150.0, vaat_kg=0.0, feeding_time="Both", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-15", pond_id=2, commercial_feed_bags=3.0, commercial_feed_kg=75.0, vaat_kg=0.0, feeding_time="Morning", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-15", pond_id=2, commercial_feed_bags=3.0, commercial_feed_kg=75.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-16", pond_id=1, commercial_feed_bags=6.0, commercial_feed_kg=150.0, vaat_kg=0.0, feeding_time="Both", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-16", pond_id=2, commercial_feed_bags=3.0, commercial_feed_kg=75.0, vaat_kg=0.0, feeding_time="Morning", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-16", pond_id=2, commercial_feed_bags=6.0, commercial_feed_kg=150.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-17", pond_id=1, commercial_feed_bags=6.0, commercial_feed_kg=150.0, vaat_kg=0.0, feeding_time="Both", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-17", pond_id=2, commercial_feed_bags=6.0, commercial_feed_kg=150.0, vaat_kg=0.0, feeding_time="Morning", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-17", pond_id=2, commercial_feed_bags=6.0, commercial_feed_kg=150.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-18", pond_id=1, commercial_feed_bags=6.0, commercial_feed_kg=150.0, vaat_kg=0.0, feeding_time="Both", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-18", pond_id=2, commercial_feed_bags=6.0, commercial_feed_kg=150.0, vaat_kg=0.0, feeding_time="Morning", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-18", pond_id=2, commercial_feed_bags=6.0, commercial_feed_kg=150.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+            ]
+            added = 0
+            for df in all_feedings:
+                if (df.date, df.pond_id) not in existing_feedings:
+                    db.add(df)
+                    added += 1
+            if added > 0:
+                db.commit()
+                print(f"Synced {added} missing daily feedings to database!")
+
         db.close()
         return
 
@@ -233,37 +351,92 @@ def seed_database(force=False):
 
     # 6. Daily Feedings (Commercial Feed only, started officially on 21/09/2026)
     daily_feedings = [
-        # 21/09/2026 - First feeding day
-        models.DailyFeeding(date="2026-09-21", pond_id=p1.id, commercial_feed_bags=1.5, commercial_feed_kg=37.5, vaat_kg=0.0, feeding_time="Morning", weather_condition="Sunny", logged_by="manager", notes="Feeding officially started. Batch 202 nursery feed."),
-        models.DailyFeeding(date="2026-09-21", pond_id=p2.id, commercial_feed_bags=3.0, commercial_feed_kg=75.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="First feeding after stocking Pond 2."),
-        
-        # 24/09/2026
-        models.DailyFeeding(date="2026-09-24", pond_id=p1.id, commercial_feed_bags=1.5, commercial_feed_kg=37.5, vaat_kg=0.0, feeding_time="Morning", weather_condition="Normal", logged_by="worker", notes="Active feeding on surface."),
-        models.DailyFeeding(date="2026-09-24", pond_id=p2.id, commercial_feed_bags=3.5, commercial_feed_kg=87.5, vaat_kg=0.0, feeding_time="Morning & Afternoon", weather_condition="Normal", logged_by="worker", notes="Cleaned feeding trays in 30 mins."),
-        
-        # 28/09/2026
-        models.DailyFeeding(date="2026-09-28", pond_id=p1.id, commercial_feed_bags=2.0, commercial_feed_kg=50.0, vaat_kg=0.0, feeding_time="Morning", weather_condition="Clear", logged_by="worker", notes="Feed increased as fish grew."),
-        models.DailyFeeding(date="2026-09-28", pond_id=p2.id, commercial_feed_bags=4.0, commercial_feed_kg=100.0, vaat_kg=0.0, feeding_time="Morning & Afternoon", weather_condition="Clear", logged_by="worker", notes="Good appetite after carp added."),
-
-        # 02/10/2026
-        models.DailyFeeding(date="2026-10-02", pond_id=p1.id, commercial_feed_bags=2.0, commercial_feed_kg=50.0, vaat_kg=0.0, feeding_time="Morning", weather_condition="Partly Cloudy", logged_by="worker", notes="Feed intake regular."),
-        models.DailyFeeding(date="2026-10-02", pond_id=p2.id, commercial_feed_bags=4.5, commercial_feed_kg=112.5, vaat_kg=0.0, feeding_time="Morning & Afternoon", weather_condition="Partly Cloudy", logged_by="worker", notes="Fish very responsive."),
-
-        # 06/10/2026
-        models.DailyFeeding(date="2026-10-06", pond_id=p1.id, commercial_feed_bags=2.0, commercial_feed_kg=50.0, vaat_kg=0.0, feeding_time="Morning", weather_condition="Sunny", logged_by="worker", notes="Feed checked during sampling week."),
-        models.DailyFeeding(date="2026-10-06", pond_id=p2.id, commercial_feed_bags=5.0, commercial_feed_kg=125.0, vaat_kg=0.0, feeding_time="Morning & Afternoon", weather_condition="Sunny", logged_by="worker", notes="Batch 202 grower feed."),
-
-        # 11/10/2026
-        models.DailyFeeding(date="2026-10-11", pond_id=p1.id, commercial_feed_bags=2.5, commercial_feed_kg=62.5, vaat_kg=0.0, feeding_time="Morning", weather_condition="Sunny", logged_by="worker", notes="Batch 202 feed used."),
-        models.DailyFeeding(date="2026-10-11", pond_id=p2.id, commercial_feed_bags=5.5, commercial_feed_kg=137.5, vaat_kg=0.0, feeding_time="Morning & Afternoon", weather_condition="Sunny", logged_by="worker", notes="Aggressive surface feeding."),
-
-        # 14/10/2026
-        models.DailyFeeding(date="2026-10-14", pond_id=p1.id, commercial_feed_bags=2.5, commercial_feed_kg=62.5, vaat_kg=0.0, feeding_time="Morning", weather_condition="Coastal Breeze", logged_by="manager", notes="All feed consumed in 20 minutes."),
-        models.DailyFeeding(date="2026-10-14", pond_id=p2.id, commercial_feed_bags=6.5, commercial_feed_kg=162.5, vaat_kg=0.0, feeding_time="Morning & Afternoon", weather_condition="Coastal Breeze", logged_by="worker", notes="New Batch 204 feed added for bigger fish."),
-
-        # 15/10/2026 (Today)
-        models.DailyFeeding(date="2026-10-15", pond_id=p1.id, commercial_feed_bags=2.5, commercial_feed_kg=62.5, vaat_kg=0.0, feeding_time="Morning", weather_condition="Clear", logged_by="worker", notes="Healthy activity observed."),
-        models.DailyFeeding(date="2026-10-15", pond_id=p2.id, commercial_feed_bags=6.5, commercial_feed_kg=162.5, vaat_kg=0.0, feeding_time="Morning & Afternoon", weather_condition="Clear", logged_by="worker", notes="Feed bags logged on time.")
+        models.DailyFeeding(date="2026-09-21", pond_id=1, commercial_feed_bags=1.0, commercial_feed_kg=25.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-09-22", pond_id=1, commercial_feed_bags=2.0, commercial_feed_kg=50.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-09-23", pond_id=1, commercial_feed_bags=3.0, commercial_feed_kg=75.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-09-23", pond_id=2, commercial_feed_bags=2.0, commercial_feed_kg=50.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-09-23", pond_id=2, commercial_feed_bags=2.0, commercial_feed_kg=50.0, vaat_kg=0.0, feeding_time="Morning", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-09-24", pond_id=1, commercial_feed_bags=2.0, commercial_feed_kg=50.0, vaat_kg=0.0, feeding_time="Morning", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-09-24", pond_id=1, commercial_feed_bags=2.0, commercial_feed_kg=50.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-09-24", pond_id=2, commercial_feed_bags=2.0, commercial_feed_kg=50.0, vaat_kg=0.0, feeding_time="Morning", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-09-24", pond_id=2, commercial_feed_bags=2.0, commercial_feed_kg=50.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-09-25", pond_id=1, commercial_feed_bags=2.0, commercial_feed_kg=50.0, vaat_kg=0.0, feeding_time="Morning", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-09-25", pond_id=1, commercial_feed_bags=2.0, commercial_feed_kg=50.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-09-25", pond_id=2, commercial_feed_bags=3.0, commercial_feed_kg=75.0, vaat_kg=0.0, feeding_time="Morning", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-09-25", pond_id=2, commercial_feed_bags=3.0, commercial_feed_kg=75.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-09-26", pond_id=1, commercial_feed_bags=2.0, commercial_feed_kg=50.0, vaat_kg=0.0, feeding_time="Morning", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-09-26", pond_id=1, commercial_feed_bags=2.0, commercial_feed_kg=50.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-09-26", pond_id=2, commercial_feed_bags=3.0, commercial_feed_kg=75.0, vaat_kg=0.0, feeding_time="Morning", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-09-26", pond_id=2, commercial_feed_bags=3.0, commercial_feed_kg=75.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-09-27", pond_id=1, commercial_feed_bags=1.0, commercial_feed_kg=25.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-09-27", pond_id=2, commercial_feed_bags=2.0, commercial_feed_kg=50.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-09-27", pond_id=2, commercial_feed_bags=3.0, commercial_feed_kg=75.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-09-28", pond_id=1, commercial_feed_bags=2.0, commercial_feed_kg=50.0, vaat_kg=0.0, feeding_time="Morning", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-09-28", pond_id=1, commercial_feed_bags=1.0, commercial_feed_kg=25.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-09-28", pond_id=2, commercial_feed_bags=2.0, commercial_feed_kg=50.0, vaat_kg=0.0, feeding_time="Morning", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-09-29", pond_id=1, commercial_feed_bags=2.0, commercial_feed_kg=50.0, vaat_kg=0.0, feeding_time="Morning", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-09-29", pond_id=1, commercial_feed_bags=1.0, commercial_feed_kg=25.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-09-29", pond_id=2, commercial_feed_bags=3.0, commercial_feed_kg=75.0, vaat_kg=0.0, feeding_time="Morning", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-09-29", pond_id=2, commercial_feed_bags=3.0, commercial_feed_kg=75.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-09-30", pond_id=1, commercial_feed_bags=2.0, commercial_feed_kg=50.0, vaat_kg=0.0, feeding_time="Morning", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-09-30", pond_id=1, commercial_feed_bags=1.0, commercial_feed_kg=25.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-09-30", pond_id=2, commercial_feed_bags=3.0, commercial_feed_kg=75.0, vaat_kg=0.0, feeding_time="Morning", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-09-30", pond_id=2, commercial_feed_bags=4.0, commercial_feed_kg=100.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-01", pond_id=1, commercial_feed_bags=2.0, commercial_feed_kg=50.0, vaat_kg=0.0, feeding_time="Morning", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-01", pond_id=2, commercial_feed_bags=3.0, commercial_feed_kg=75.0, vaat_kg=0.0, feeding_time="Morning", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-02", pond_id=1, commercial_feed_bags=1.0, commercial_feed_kg=25.0, vaat_kg=0.0, feeding_time="Morning", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-02", pond_id=1, commercial_feed_bags=1.0, commercial_feed_kg=25.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-02", pond_id=2, commercial_feed_bags=3.0, commercial_feed_kg=75.0, vaat_kg=0.0, feeding_time="Morning", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-02", pond_id=2, commercial_feed_bags=4.0, commercial_feed_kg=100.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-03", pond_id=1, commercial_feed_bags=1.0, commercial_feed_kg=25.0, vaat_kg=0.0, feeding_time="Morning", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-03", pond_id=1, commercial_feed_bags=2.0, commercial_feed_kg=50.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-03", pond_id=2, commercial_feed_bags=3.0, commercial_feed_kg=75.0, vaat_kg=0.0, feeding_time="Morning", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-03", pond_id=2, commercial_feed_bags=4.0, commercial_feed_kg=100.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-04", pond_id=1, commercial_feed_bags=2.0, commercial_feed_kg=50.0, vaat_kg=0.0, feeding_time="Morning", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-04", pond_id=1, commercial_feed_bags=2.0, commercial_feed_kg=50.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-04", pond_id=2, commercial_feed_bags=3.0, commercial_feed_kg=75.0, vaat_kg=0.0, feeding_time="Morning", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-04", pond_id=2, commercial_feed_bags=4.0, commercial_feed_kg=100.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-05", pond_id=1, commercial_feed_bags=2.0, commercial_feed_kg=50.0, vaat_kg=0.0, feeding_time="Morning", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-05", pond_id=1, commercial_feed_bags=2.0, commercial_feed_kg=50.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-05", pond_id=2, commercial_feed_bags=3.0, commercial_feed_kg=75.0, vaat_kg=0.0, feeding_time="Morning", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-05", pond_id=2, commercial_feed_bags=4.0, commercial_feed_kg=100.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-06", pond_id=1, commercial_feed_bags=2.0, commercial_feed_kg=50.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-06", pond_id=1, commercial_feed_bags=2.0, commercial_feed_kg=50.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-06", pond_id=2, commercial_feed_bags=4.0, commercial_feed_kg=100.0, vaat_kg=0.0, feeding_time="Morning", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-06", pond_id=2, commercial_feed_bags=4.0, commercial_feed_kg=100.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-07", pond_id=1, commercial_feed_bags=2.0, commercial_feed_kg=50.0, vaat_kg=0.0, feeding_time="Morning", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-07", pond_id=1, commercial_feed_bags=2.0, commercial_feed_kg=50.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-07", pond_id=2, commercial_feed_bags=5.0, commercial_feed_kg=125.0, vaat_kg=0.0, feeding_time="Morning", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-07", pond_id=2, commercial_feed_bags=5.0, commercial_feed_kg=125.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-08", pond_id=1, commercial_feed_bags=4.0, commercial_feed_kg=100.0, vaat_kg=0.0, feeding_time="Both", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-08", pond_id=2, commercial_feed_bags=5.0, commercial_feed_kg=125.0, vaat_kg=0.0, feeding_time="Morning", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-08", pond_id=2, commercial_feed_bags=5.0, commercial_feed_kg=125.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-09", pond_id=1, commercial_feed_bags=4.0, commercial_feed_kg=100.0, vaat_kg=0.0, feeding_time="Both", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-09", pond_id=2, commercial_feed_bags=5.0, commercial_feed_kg=125.0, vaat_kg=0.0, feeding_time="Morning", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-09", pond_id=2, commercial_feed_bags=5.0, commercial_feed_kg=125.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-10", pond_id=1, commercial_feed_bags=4.0, commercial_feed_kg=100.0, vaat_kg=0.0, feeding_time="Both", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-10", pond_id=2, commercial_feed_bags=4.0, commercial_feed_kg=100.0, vaat_kg=0.0, feeding_time="Morning", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-10", pond_id=2, commercial_feed_bags=5.0, commercial_feed_kg=125.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-11", pond_id=1, commercial_feed_bags=4.0, commercial_feed_kg=100.0, vaat_kg=0.0, feeding_time="Both", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-11", pond_id=2, commercial_feed_bags=5.0, commercial_feed_kg=125.0, vaat_kg=0.0, feeding_time="Morning", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-11", pond_id=2, commercial_feed_bags=5.0, commercial_feed_kg=125.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-12", pond_id=1, commercial_feed_bags=4.0, commercial_feed_kg=100.0, vaat_kg=0.0, feeding_time="Both", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-12", pond_id=2, commercial_feed_bags=5.0, commercial_feed_kg=125.0, vaat_kg=0.0, feeding_time="Morning", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-12", pond_id=2, commercial_feed_bags=5.0, commercial_feed_kg=125.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-13", pond_id=1, commercial_feed_bags=5.0, commercial_feed_kg=125.0, vaat_kg=0.0, feeding_time="Both", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-14", pond_id=1, commercial_feed_bags=6.0, commercial_feed_kg=150.0, vaat_kg=0.0, feeding_time="Both", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-15", pond_id=1, commercial_feed_bags=6.0, commercial_feed_kg=150.0, vaat_kg=0.0, feeding_time="Both", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-15", pond_id=2, commercial_feed_bags=3.0, commercial_feed_kg=75.0, vaat_kg=0.0, feeding_time="Morning", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-15", pond_id=2, commercial_feed_bags=3.0, commercial_feed_kg=75.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-16", pond_id=1, commercial_feed_bags=6.0, commercial_feed_kg=150.0, vaat_kg=0.0, feeding_time="Both", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-16", pond_id=2, commercial_feed_bags=3.0, commercial_feed_kg=75.0, vaat_kg=0.0, feeding_time="Morning", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-16", pond_id=2, commercial_feed_bags=6.0, commercial_feed_kg=150.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-17", pond_id=1, commercial_feed_bags=6.0, commercial_feed_kg=150.0, vaat_kg=0.0, feeding_time="Both", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-17", pond_id=2, commercial_feed_bags=6.0, commercial_feed_kg=150.0, vaat_kg=0.0, feeding_time="Morning", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-17", pond_id=2, commercial_feed_bags=6.0, commercial_feed_kg=150.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-18", pond_id=1, commercial_feed_bags=6.0, commercial_feed_kg=150.0, vaat_kg=0.0, feeding_time="Both", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-18", pond_id=2, commercial_feed_bags=6.0, commercial_feed_kg=150.0, vaat_kg=0.0, feeding_time="Morning", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-18", pond_id=2, commercial_feed_bags=6.0, commercial_feed_kg=150.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
     ]
     db.add_all(daily_feedings)
     db.commit()
