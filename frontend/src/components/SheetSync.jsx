@@ -71,7 +71,7 @@ export default function SheetSync({ onSyncComplete }) {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h2 className="text-xl font-bold text-white flex items-center gap-2">
+          <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
             <FileSpreadsheet className="w-5 h-5 text-teal-400" />
             ম্যানুয়াল শিট ও বাল্ক ডাটা সিঙ্ক (Sheet Sync & Bulk Import)
           </h2>
@@ -82,7 +82,7 @@ export default function SheetSync({ onSyncComplete }) {
         <div className="flex items-center gap-2">
           <button
             onClick={handlePrintTemplate}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-teal-300 border border-slate-700 text-xs font-medium transition"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-700 text-teal-300 border border-slate-200 text-xs font-medium transition"
           >
             <Printer className="w-4 h-4" /> খাতার প্রিন্ট ফরম্যাট
           </button>
@@ -90,8 +90,8 @@ export default function SheetSync({ onSyncComplete }) {
       </div>
 
       {/* Step Explanation Banner */}
-      <div className="p-4 rounded-2xl bg-slate-800/80 border border-slate-700 space-y-2 text-xs text-slate-300">
-        <h3 className="font-bold text-white text-sm">💡 কিভাবে শিট থেকে সফটওয়্যারে সিঙ্ক করবেন?</h3>
+      <div className="p-4 rounded-2xl bg-white border border-slate-200 space-y-2 text-xs text-slate-300">
+        <h3 className="font-bold text-slate-900 text-sm">💡 কিভাবে শিট থেকে সফটওয়্যারে সিঙ্ক করবেন?</h3>
         <ol className="list-decimal pl-5 space-y-1 text-slate-300">
           <li><strong>১ম ধাপ:</strong> খামারের কর্মীরা প্রতিদিন পুকুরপাড়ে কাগজের রেজিস্টার খাতা বা এক্সেলে খাবার ও খরচের হিসাব লিখে রাখে।</li>
           <li><strong>২য় ধাপ:</strong> ম্যানেজার বা অ্যাডমিন সপ্তাহে বা দিনে একবার সেই এক্সেল ফাইল বা কমা-সেপারেটেড (CSV) টেক্সট নিচের বক্সে পেস্ট করে।</li>
@@ -107,11 +107,11 @@ export default function SheetSync({ onSyncComplete }) {
       )}
 
       {/* Main Sync Tool Box */}
-      <div className="p-5 rounded-2xl bg-slate-800/80 border border-slate-700 shadow-xl space-y-4">
+      <div className="p-5 rounded-2xl bg-white border border-slate-200 shadow-xl space-y-4">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
           <div className="flex items-center gap-2">
             <span className="text-xs text-slate-400">ডাটার ধরণ:</span>
-            <div className="flex bg-slate-900 rounded-xl p-1 border border-slate-700">
+            <div className="flex bg-white rounded-xl p-1 border border-slate-200">
               <button
                 onClick={() => setImportType('feeding')}
                 className={`px-3 py-1 rounded-lg text-xs font-medium transition ${
@@ -152,7 +152,7 @@ export default function SheetSync({ onSyncComplete }) {
           <label className="text-xs font-medium text-slate-300 block mb-1.5">
             এক্সেল বা শিট থেকে কমা (CSV) আকারে পেস্ট করুন:
           </label>
-          <div className="text-[11px] text-slate-400 mb-2 font-mono bg-slate-900/60 p-2 rounded-lg border border-slate-800">
+          <div className="text-[11px] text-slate-400 mb-2 font-mono bg-slate-50 p-2 rounded-lg border border-slate-200">
             {importType === 'feeding' 
               ? 'ফরম্যাট: তারিখ, পুকুর_আইডি (1 বা 2), ফিড_ব্যাগ, ফিড_কেজি, ভাত_কেজি, সময়, আবহাওয়া, মন্তব্য'
               : 'ফরম্যাট: তারিখ, পুকুর_আইডি (বা খালি), খাত_নাম, টাকার_পরিমাণ, বিবরণ, ভাউচার_নং'
@@ -162,7 +162,7 @@ export default function SheetSync({ onSyncComplete }) {
             rows={7}
             value={rawText}
             onChange={(e) => setRawText(e.target.value)}
-            className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs font-mono text-slate-200 focus:outline-none focus:border-teal-500 leading-relaxed"
+            className="w-full bg-white border border-slate-200 rounded-xl p-3 text-xs font-mono text-slate-200 focus:outline-none focus:border-teal-500 leading-relaxed"
             placeholder="2026-10-15, 1, 2.5, 62.5, 30.0, Morning, Sunny, Feed ok..."
           />
         </div>

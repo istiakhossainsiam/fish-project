@@ -112,30 +112,30 @@ export default function FeedManagement({ ponds = [], feedInventory, dailyFeeding
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h2 className="text-xl font-bold text-white flex items-center gap-2">
+          <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
             <Package className="w-5 h-5 text-cyan-400" />
             খাবার ও স্টক ব্যবস্থাপনা (Feed & Food Records)
           </h2>
           <p className="text-xs text-slate-400 mt-0.5">
-            প্রতিটি পুকুরের আলাদা খাবারের খাতা, ৩১০ ব্যাগ ফিড চালান, মাসিক ফিল্টার ও সম্পূরক ভাতের রেকর্ড
+            প্রতিটি পুকুরের আলাদা খাবারের খাতা, ফিড চালান, মাসিক ফিল্টার ও সম্পূরক ভাতের রেকর্ড
           </p>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
           <button
             onClick={() => onOpenModal('feed', { pond_id: selectedPondId })}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-teal-600 hover:bg-teal-500 text-white text-xs font-semibold shadow-md transition"
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-teal-600 hover:bg-teal-700 text-white text-xs font-semibold shadow-sm transition cursor-pointer"
           >
             <Plus className="w-4 h-4" /> দৈনিক খাবার দিন
           </button>
           <button
             onClick={() => onOpenModal('feed_inventory')}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-cyan-300 border border-slate-700 text-xs font-medium transition"
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-50 hover:bg-slate-100 text-cyan-800 border border-slate-300 text-xs font-semibold shadow-sm transition cursor-pointer"
           >
             <Plus className="w-4 h-4" /> ফিড চালান আনুন
           </button>
           <button
             onClick={() => onOpenModal('vaat')}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-300 border border-slate-700 text-xs font-medium transition"
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-50 hover:bg-slate-100 text-amber-800 border border-slate-300 text-xs font-semibold shadow-sm transition cursor-pointer"
           >
             <Utensils className="w-4 h-4" /> ভাত রান্না এন্ট্রি
           </button>
@@ -144,11 +144,13 @@ export default function FeedManagement({ ponds = [], feedInventory, dailyFeeding
 
       {/* Global Overview Cards */}
       {(() => {
-        const totalReceivedBags = feedInventory?.total_bags_received || batches.reduce((sum, b) => sum + (b.bag_count || 0), 0) || 310;
+        const totalReceivedBags = feedInventory?.total_bags_received || batches.reduce((sum, b) => sum + (b.bag_count || 0), 0) || 430;
         const totalConsumedBags = feedings.reduce((sum, f) => sum + (Number(f.commercial_feed_bags) || 0), 0);
         const remainingFeedBags = Math.max(0, Math.round((totalReceivedBags - totalConsumedBags) * 10) / 10);
         const remainingBagsDisplay = remainingFeedBags % 1 === 0 ? remainingFeedBags : remainingFeedBags.toFixed(1);
         const totalConsumedKg = feedings.reduce((sum, f) => sum + (Number(f.commercial_feed_kg) || 0), 0);
+        const batch202Bags = batches.filter(b => b.brand_name?.includes('202') || b.feed_type?.includes('202')).reduce((sum, b) => sum + (b.bag_count || 0), 0) || 210;
+        const batch204Bags = batches.filter(b => b.brand_name?.includes('204') || b.feed_type?.includes('204')).reduce((sum, b) => sum + (b.bag_count || 0), 0) || 220;
 
         return (
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
@@ -158,17 +160,17 @@ export default function FeedManagement({ ponds = [], feedInventory, dailyFeeding
                 {totalReceivedBags} <span className="text-xs text-cyan-700 font-bold">ব্যাগ</span>
               </div>
               <span className="text-[11px] text-slate-500 mt-1 block">
-                ব্যাচ ২০২ (২১০ ব্যাগ) + ব্যাচ ২০৪ (১০০ ব্যাগ)
+                ব্যাচ ২০২ ({batch202Bags} ব্যাগ) + ব্যাচ ২০৪ ({batch204Bags} ব্যাগ)
               </span>
             </div>
 
             <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
               <span className="text-xs text-slate-500 font-semibold block">মোট ফিড ক্রয় ব্যয় (Cost)</span>
               <div className="text-xl font-black text-slate-900 mt-1">
-                ৳ {feedInventory?.total_feed_spent_bdt?.toLocaleString() || "5,68,750"}
+                ৳ {feedInventory?.total_feed_spent_bdt?.toLocaleString() || "7,81,750"}
               </div>
               <span className="text-[11px] text-slate-500 mt-1 block">
-                গড় দর: ৳ {feedInventory?.avg_cost_per_bag || "1,834.68"} /ব্যাগ
+                গড় দর: ৳ {feedInventory?.avg_cost_per_bag || "1,818.02"} /ব্যাগ
               </span>
             </div>
 
@@ -378,26 +380,26 @@ export default function FeedManagement({ ponds = [], feedInventory, dailyFeeding
           </div>
 
           {/* Selected Pond Detailed Feed Log & Summary */}
-          <div className="p-5 sm:p-6 rounded-3xl bg-slate-900/90 border border-slate-700 shadow-xl space-y-5">
+          <div className="p-5 sm:p-6 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-5">
             
             {/* Selected Pond Title Banner */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-800 gap-3">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-100 gap-3">
               <div>
                 <div className="flex items-center gap-2.5">
-                  <div className="w-3.5 h-3.5 rounded-full bg-teal-400 animate-pulse" />
-                  <h3 className="text-lg font-bold text-white">
+                  <div className="w-3.5 h-3.5 rounded-full bg-teal-500 animate-pulse" />
+                  <h3 className="text-lg font-bold text-slate-900">
                     {activePond.name} - এর ব্যক্তিগত খাবারের পূর্ণাঙ্গ খাতা
                   </h3>
-                  <span className={`text-xs px-2.5 py-0.5 rounded-full font-medium ${
+                  <span className={`text-xs px-2.5 py-0.5 rounded-full font-semibold ${
                     activePond.status === 'active' 
-                      ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' 
-                      : 'bg-slate-700 text-slate-300'
+                      ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' 
+                      : 'bg-slate-100 text-slate-600'
                   }`}>
                     {activePond.status === 'active' ? 'চলমান পুকুর' : 'প্রস্তুতি'}
                   </span>
                 </div>
-                <p className="text-xs text-slate-400 mt-1">
-                  মোট মজুদ মাছ: <strong className="text-teal-300">{activePond.total_fish?.toLocaleString() || 0} পিস</strong> • 
+                <p className="text-xs text-slate-500 mt-1">
+                  মোট মজুদ মাছ: <strong className="text-teal-700">{activePond.total_fish?.toLocaleString() || 0} পিস</strong> • 
                   {selectedMonth === 'all' 
                     ? ' ২১/০৯/২০২৬ থেকে শুরু হওয়া সকল খাদ্য এন্ট্রি' 
                     : ` ${formatMonthLabel(selectedMonth)}-এর খাদ্য এন্ট্রি`}
@@ -407,7 +409,7 @@ export default function FeedManagement({ ponds = [], feedInventory, dailyFeeding
               <div className="flex items-center gap-2 self-start sm:self-center">
                 <button
                   onClick={() => onOpenModal('feed', { pond_id: activePond.id })}
-                  className="px-4 py-2 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-semibold text-xs shadow-md transition flex items-center gap-1.5"
+                  className="px-4 py-2 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-semibold text-xs shadow-sm transition flex items-center gap-1.5 cursor-pointer"
                 >
                   <Plus className="w-4 h-4" /> + এই পুকুরে খাবার দিন
                 </button>
@@ -416,63 +418,63 @@ export default function FeedManagement({ ponds = [], feedInventory, dailyFeeding
 
             {/* Selected Pond 4 Metric Counters (Updates with Monthly Filter) */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              <div className="p-3.5 rounded-2xl bg-slate-950/80 border border-slate-800">
+              <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200">
                 <div className="flex justify-between items-center">
-                  <span className="text-xs text-slate-400 block">বাণিজ্যিক ফিড</span>
-                  <span className="text-[10px] text-teal-400 uppercase font-semibold">
+                  <span className="text-xs text-slate-500 font-medium block">বাণিজ্যিক ফিড</span>
+                  <span className="text-[10px] text-teal-700 uppercase font-bold">
                     {selectedMonth === 'all' ? 'সর্বমোট' : formatMonthLabel(selectedMonth)}
                   </span>
                 </div>
-                <span className="text-xl font-black text-teal-300 mt-1 block">
-                  {pondTotalBags.toFixed(1)} <span className="text-xs font-normal text-slate-400">ব্যাগ</span>
+                <span className="text-xl font-black text-teal-700 mt-1 block">
+                  {pondTotalBags.toFixed(1)} <span className="text-xs font-normal text-slate-500">ব্যাগ</span>
                 </span>
-                <span className="text-[11px] text-slate-400 mt-0.5 block">
+                <span className="text-[11px] text-slate-500 mt-0.5 block">
                   মোট {monthFilteredPondFeedings.length} বার খাবার দেওয়া হয়েছে
                 </span>
               </div>
 
-              <div className="p-3.5 rounded-2xl bg-slate-950/80 border border-slate-800">
+              <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200">
                 <div className="flex justify-between items-center">
-                  <span className="text-xs text-slate-400 block">ফিডের ওজন (Kg)</span>
-                  <span className="text-[10px] text-cyan-400 uppercase font-semibold">
+                  <span className="text-xs text-slate-500 font-medium block">ফিডের ওজন (Kg)</span>
+                  <span className="text-[10px] text-cyan-700 uppercase font-bold">
                     {selectedMonth === 'all' ? 'সর্বমোট' : formatMonthLabel(selectedMonth)}
                   </span>
                 </div>
-                <span className="text-xl font-black text-cyan-300 mt-1 block">
-                  {pondTotalKg.toFixed(0)} <span className="text-xs font-normal text-slate-400">কেজি</span>
+                <span className="text-xl font-black text-cyan-700 mt-1 block">
+                  {pondTotalKg.toFixed(0)} <span className="text-xs font-normal text-slate-500">কেজি</span>
                 </span>
-                <span className="text-[11px] text-slate-400 mt-0.5 block">
+                <span className="text-[11px] text-slate-500 mt-0.5 block">
                   প্রতি ব্যাগে ২৫ কেজি ফিড
                 </span>
               </div>
 
-              <div className="p-3.5 rounded-2xl bg-slate-950/80 border border-slate-800">
+              <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200">
                 <div className="flex justify-between items-center">
-                  <span className="text-xs text-slate-400 block">সম্পূরক ভাত (Vaat)</span>
-                  <span className="text-[10px] text-amber-400 uppercase font-semibold">
+                  <span className="text-xs text-slate-500 font-medium block">সম্পূরক ভাত (Vaat)</span>
+                  <span className="text-[10px] text-amber-700 uppercase font-bold">
                     {selectedMonth === 'all' ? 'সর্বমোট' : formatMonthLabel(selectedMonth)}
                   </span>
                 </div>
-                <span className="text-xl font-black text-amber-300 mt-1 block">
-                  {pondTotalVaat.toFixed(0)} <span className="text-xs font-normal text-slate-400">কেজি</span>
+                <span className="text-xl font-black text-amber-700 mt-1 block">
+                  {pondTotalVaat.toFixed(0)} <span className="text-xs font-normal text-slate-500">কেজি</span>
                 </span>
-                <span className="text-[11px] text-slate-400 mt-0.5 block">
+                <span className="text-[11px] text-slate-500 mt-0.5 block">
                   {pondTotalVaat === 0 ? 'এখনও ভাত দেওয়া হয়নি' : 'ভাত ও ফিড মিশ্রণ'}
                 </span>
               </div>
 
-              <div className="p-3.5 rounded-2xl bg-slate-950/80 border border-slate-800">
+              <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200">
                 <div className="flex justify-between items-center">
-                  <span className="text-xs text-slate-400 block">খাবারের খরচ</span>
-                  <span className="text-[10px] text-emerald-400 uppercase font-semibold">
+                  <span className="text-xs text-slate-500 font-medium block">খাবারের খরচ</span>
+                  <span className="text-[10px] text-emerald-700 uppercase font-bold">
                     {selectedMonth === 'all' ? 'সর্বমোট' : formatMonthLabel(selectedMonth)}
                   </span>
                 </div>
-                <span className="text-xl font-black text-emerald-400 mt-1 block">
-                  ৳ {(pondTotalBags * 1834.68).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                <span className="text-xl font-black text-emerald-700 mt-1 block">
+                  ৳ {(pondTotalBags * 1818.02).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
                 </span>
-                <span className="text-[11px] text-slate-400 mt-0.5 block">
-                  গড় দর: ৳ ১,৮৩৪.৬৮/ব্যাগ
+                <span className="text-[11px] text-slate-500 mt-0.5 block">
+                  গড় দর: ৳ ১,৮১৮.০২/ব্যাগ
                 </span>
               </div>
             </div>
@@ -486,25 +488,25 @@ export default function FeedManagement({ ponds = [], feedInventory, dailyFeeding
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     placeholder="তারিখ, সময়, কর্মী বা মন্তব্য দিয়ে খুঁজুন..."
-                    className="w-full bg-slate-950 border border-slate-700 rounded-xl pl-9 pr-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-teal-500"
+                    className="w-full bg-white border border-slate-300 rounded-xl pl-9 pr-3 py-2 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-teal-600 shadow-sm"
                   />
-                  <Search className="w-3.5 h-3.5 text-slate-500 absolute left-3 top-2.5" />
+                  <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5" />
                 </div>
               </div>
 
               <div className="flex items-center gap-2 flex-wrap">
                 {/* Monthly dropdown filter */}
-                <div className="flex items-center gap-1.5 bg-slate-950 px-2.5 py-1 rounded-xl border border-slate-800 text-xs">
-                  <CalendarDays className="w-3.5 h-3.5 text-teal-400" />
-                  <span className="text-slate-400">মাস:</span>
+                <div className="flex items-center gap-1.5 bg-white px-2.5 py-1 rounded-xl border border-slate-300 text-xs shadow-sm">
+                  <CalendarDays className="w-3.5 h-3.5 text-teal-600" />
+                  <span className="text-slate-500 font-medium">মাস:</span>
                   <select
                     value={selectedMonth}
                     onChange={(e) => setSelectedMonth(e.target.value)}
-                    className="bg-transparent text-white focus:outline-none font-medium cursor-pointer"
+                    className="bg-transparent text-slate-800 focus:outline-none font-semibold cursor-pointer"
                   >
-                    <option value="all" className="bg-slate-900 text-white">সকল মাস</option>
+                    <option value="all" className="bg-white text-slate-800">সকল মাস</option>
                     {availableMonths.map((ym) => (
-                      <option key={ym} value={ym} className="bg-slate-900 text-white">
+                      <option key={ym} value={ym} className="bg-white text-slate-800">
                         {formatMonthLabel(ym)}
                       </option>
                     ))}
@@ -512,15 +514,15 @@ export default function FeedManagement({ ponds = [], feedInventory, dailyFeeding
                 </div>
 
                 {/* Time filter */}
-                <div className="flex bg-slate-950 rounded-xl p-1 border border-slate-800 text-xs">
+                <div className="flex bg-slate-100 rounded-xl p-1 border border-slate-200 text-xs">
                   {['all', 'সকাল', 'বিকেল'].map((t) => (
                     <button
                       key={t}
                       onClick={() => setTimeFilter(t)}
-                      className={`px-3 py-1 rounded-lg font-medium transition ${
+                      className={`px-3 py-1 rounded-lg font-semibold transition cursor-pointer ${
                         timeFilter === t
-                          ? 'bg-teal-600 text-white font-bold'
-                          : 'text-slate-400 hover:text-white'
+                          ? 'bg-teal-600 text-white shadow-sm'
+                          : 'text-slate-600 hover:text-slate-900'
                       }`}
                     >
                       {t === 'all' ? 'সকল সময়' : t}
@@ -532,9 +534,9 @@ export default function FeedManagement({ ponds = [], feedInventory, dailyFeeding
 
             {/* Feeding Table for this Pond */}
             {filteredPondFeedings.length > 0 ? (
-              <div className="overflow-x-auto rounded-2xl border border-slate-800 bg-slate-950/70">
-                <table className="w-full text-left text-xs text-slate-300">
-                  <thead className="bg-slate-900 text-slate-400 uppercase text-[11px] border-b border-slate-800">
+              <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
+                <table className="w-full text-left text-xs text-slate-700">
+                  <thead className="bg-slate-50 text-slate-600 font-semibold uppercase text-[11px] border-b border-slate-200">
                     <tr>
                       <th className="p-3.5">তারিখ</th>
                       <th className="p-3.5">খাবারের সময়</th>
@@ -547,48 +549,48 @@ export default function FeedManagement({ ponds = [], feedInventory, dailyFeeding
                       {isAdmin && <th className="p-3.5 text-center">অ্যাকশন</th>}
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-800/80">
+                  <tbody className="divide-y divide-slate-100">
                     {filteredPondFeedings.map((f) => (
-                      <tr key={f.id} className="hover:bg-slate-900/60 transition">
-                        <td className="p-3.5 font-bold text-white whitespace-nowrap">
+                      <tr key={f.id} className="hover:bg-slate-50/80 transition">
+                        <td className="p-3.5 font-bold text-slate-900 whitespace-nowrap">
                           {f.date}
                         </td>
                         <td className="p-3.5">
                           <span className={`px-2.5 py-1 rounded-lg text-xs font-semibold ${
                             f.feeding_time?.includes('সকাল') || f.feeding_time?.toLowerCase().includes('morning')
-                              ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
-                              : 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30'
+                              ? 'bg-amber-50 text-amber-700 border border-amber-200'
+                              : 'bg-indigo-50 text-indigo-700 border border-indigo-200'
                           }`}>
                             {f.feeding_time || 'সাধারণ'}
                           </span>
                         </td>
-                        <td className="p-3.5 font-bold text-white text-sm">
-                          <span className="px-2.5 py-1 rounded-lg bg-teal-500/20 text-teal-300 border border-teal-500/30 font-mono">
+                        <td className="p-3.5 font-bold text-slate-900 text-sm">
+                          <span className="px-2.5 py-1 rounded-lg bg-teal-50 text-teal-700 border border-teal-200 font-mono font-bold">
                             {f.commercial_feed_bags} ব্যাগ
                           </span>
                         </td>
-                        <td className="p-3.5 font-bold text-slate-200">
+                        <td className="p-3.5 font-bold text-slate-800">
                           {f.commercial_feed_kg} kg
                         </td>
                         <td className="p-3.5">
                           {f.vaat_kg > 0 ? (
-                            <span className="px-2 py-0.5 rounded-lg bg-amber-500/20 text-amber-300 font-bold border border-amber-500/30">
+                            <span className="px-2 py-0.5 rounded-lg bg-amber-50 text-amber-700 font-bold border border-amber-200">
                               {f.vaat_kg} kg ভাত
                             </span>
                           ) : (
-                            <span className="text-slate-500">০ কেজি</span>
+                            <span className="text-slate-400">০ কেজি</span>
                           )}
                         </td>
-                        <td className="p-3.5 text-slate-300">
+                        <td className="p-3.5 text-slate-600">
                           <div className="flex items-center gap-1.5">
-                            <CloudSun className="w-3.5 h-3.5 text-teal-400" />
+                            <CloudSun className="w-3.5 h-3.5 text-teal-600" />
                             <span>{f.weather_condition || 'স্বাভাবিক'}</span>
                           </div>
                         </td>
-                        <td className="p-3.5 text-slate-400 font-medium">
+                        <td className="p-3.5 text-slate-600 font-medium">
                           {f.logged_by || 'কর্মী'}
                         </td>
-                        <td className="p-3.5 text-slate-300 italic max-w-xs truncate">
+                        <td className="p-3.5 text-slate-500 italic max-w-xs truncate">
                           {f.notes || '-'}
                         </td>
                         {isAdmin && (
@@ -597,14 +599,14 @@ export default function FeedManagement({ ponds = [], feedInventory, dailyFeeding
                               <button
                                 onClick={() => onOpenModal('feed', { editItem: f, pond_id: activePond.id })}
                                 title="সম্পাদনা করুন (Edit)"
-                                className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-teal-300 hover:text-white transition"
+                                className="p-1.5 rounded-lg bg-slate-50 hover:bg-teal-50 text-teal-700 hover:text-teal-800 border border-slate-200 transition cursor-pointer"
                               >
                                 <Edit3 className="w-3.5 h-3.5" />
                               </button>
                               <button
                                 onClick={() => handleDeleteFeeding(f.id)}
                                 title="মুছে ফেলুন (Delete)"
-                                className="p-1.5 rounded-lg bg-slate-800 hover:bg-rose-900/50 text-rose-400 hover:text-rose-200 transition"
+                                className="p-1.5 rounded-lg bg-slate-50 hover:bg-rose-50 text-rose-600 hover:text-rose-700 border border-slate-200 transition cursor-pointer"
                               >
                                 <Trash2 className="w-3.5 h-3.5" />
                               </button>
@@ -617,7 +619,7 @@ export default function FeedManagement({ ponds = [], feedInventory, dailyFeeding
                 </table>
               </div>
             ) : (
-              <div className="p-10 text-center bg-slate-950/40 rounded-2xl border border-slate-800 text-slate-400 text-xs space-y-2">
+              <div className="p-10 text-center bg-slate-50 rounded-2xl border border-slate-200 text-slate-500 text-xs space-y-2">
                 <p>
                   {selectedMonth !== 'all'
                     ? `${formatMonthLabel(selectedMonth)}-এ ${activePond.name}-এ কোনো খাবার রেকর্ড পাওয়া যায়নি।`
@@ -625,7 +627,7 @@ export default function FeedManagement({ ponds = [], feedInventory, dailyFeeding
                 </p>
                 <button
                   onClick={() => onOpenModal('feed', { pond_id: activePond.id })}
-                  className="px-4 py-2 rounded-xl bg-teal-600/80 hover:bg-teal-600 text-white font-medium text-xs transition"
+                  className="px-4 py-2 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-semibold text-xs shadow-sm transition cursor-pointer"
                 >
                   + {activePond.name}-এ খাবার এন্ট্রি দিন
                 </button>
@@ -642,13 +644,13 @@ export default function FeedManagement({ ponds = [], feedInventory, dailyFeeding
         <div className="space-y-4 animate-in fade-in">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 flex-wrap">
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-xs text-slate-400">পুকুর:</span>
+              <span className="text-xs text-slate-500 font-medium">পুকুর:</span>
               <button
                 onClick={() => setFilterPond('all')}
-                className={`px-3 py-1 rounded-xl text-xs font-semibold transition ${
+                className={`px-3 py-1 rounded-xl text-xs font-semibold transition cursor-pointer ${
                   filterPond === 'all'
-                    ? 'bg-teal-600 text-white'
-                    : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+                    ? 'bg-teal-600 text-white shadow-sm'
+                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                 }`}
               >
                 সব পুকুর (All)
@@ -657,10 +659,10 @@ export default function FeedManagement({ ponds = [], feedInventory, dailyFeeding
                 <button
                   key={p.id}
                   onClick={() => setFilterPond(p.id.toString())}
-                  className={`px-3 py-1 rounded-xl text-xs font-semibold transition ${
+                  className={`px-3 py-1 rounded-xl text-xs font-semibold transition cursor-pointer ${
                     filterPond === p.id.toString()
-                      ? 'bg-teal-600 text-white'
-                      : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+                      ? 'bg-teal-600 text-white shadow-sm'
+                      : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                   }`}
                 >
                   {p.name}
@@ -668,17 +670,17 @@ export default function FeedManagement({ ponds = [], feedInventory, dailyFeeding
               ))}
 
               {/* Monthly Filter in Daily Logs */}
-              <div className="flex items-center gap-1.5 bg-slate-850 px-2.5 py-1 rounded-xl border border-slate-700 text-xs ml-0 sm:ml-2">
-                <CalendarDays className="w-3.5 h-3.5 text-teal-400" />
-                <span className="text-slate-400">মাস:</span>
+              <div className="flex items-center gap-1.5 bg-white px-2.5 py-1 rounded-xl border border-slate-300 text-xs ml-0 sm:ml-2 shadow-sm">
+                <CalendarDays className="w-3.5 h-3.5 text-teal-600" />
+                <span className="text-slate-500 font-medium">মাস:</span>
                 <select
                   value={selectedMonth}
                   onChange={(e) => setSelectedMonth(e.target.value)}
-                  className="bg-transparent text-white focus:outline-none font-medium cursor-pointer"
+                  className="bg-transparent text-slate-800 focus:outline-none font-semibold cursor-pointer"
                 >
-                  <option value="all" className="bg-slate-900 text-white">সকল মাস</option>
+                  <option value="all" className="bg-white text-slate-800">সকল মাস</option>
                   {availableMonths.map((ym) => (
-                    <option key={ym} value={ym} className="bg-slate-900 text-white">
+                    <option key={ym} value={ym} className="bg-white text-slate-800">
                       {formatMonthLabel(ym)}
                     </option>
                   ))}
@@ -688,15 +690,15 @@ export default function FeedManagement({ ponds = [], feedInventory, dailyFeeding
 
             <button
               onClick={() => onOpenModal('feed')}
-              className="text-xs text-teal-400 hover:text-teal-300 font-medium whitespace-nowrap self-end sm:self-center"
+              className="text-xs text-teal-700 hover:text-teal-800 font-semibold whitespace-nowrap self-end sm:self-center cursor-pointer"
             >
               + খাবার দিন (যে কোনো পূর্ববর্তী তারিখ নির্বাচনযোগ্য)
             </button>
           </div>
 
-          <div className="overflow-x-auto rounded-2xl border border-slate-700/80 bg-slate-850">
-            <table className="w-full text-left text-xs text-slate-300">
-              <thead className="bg-slate-900/90 text-slate-400 uppercase text-[11px] border-b border-slate-700">
+          <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
+            <table className="w-full text-left text-xs text-slate-700">
+              <thead className="bg-slate-50 text-slate-600 font-semibold uppercase text-[11px] border-b border-slate-200">
                 <tr>
                   <th className="p-3.5">তারিখ</th>
                   <th className="p-3.5">পুকুর</th>
@@ -708,45 +710,45 @@ export default function FeedManagement({ ponds = [], feedInventory, dailyFeeding
                   {isAdmin && <th className="p-3.5 text-center">অ্যাকশন</th>}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800">
+              <tbody className="divide-y divide-slate-100">
                 {filteredFeedings.map((f) => (
-                  <tr key={f.id} className="hover:bg-slate-800/50">
-                    <td className="p-3.5 font-medium text-white">{f.date}</td>
-                    <td className="p-3.5 font-semibold text-teal-300">{f.pond_name}</td>
-                    <td className="p-3.5 font-bold text-white text-sm">
-                      <span className="px-2 py-0.5 rounded-lg bg-cyan-500/10 text-cyan-300 border border-cyan-500/20">
+                  <tr key={f.id} className="hover:bg-slate-50/80 transition">
+                    <td className="p-3.5 font-bold text-slate-900">{f.date}</td>
+                    <td className="p-3.5 font-bold text-teal-700">{f.pond_name}</td>
+                    <td className="p-3.5 font-bold text-slate-900 text-sm">
+                      <span className="px-2 py-0.5 rounded-lg bg-teal-50 text-teal-700 border border-teal-200 font-mono font-bold">
                         {f.commercial_feed_bags} ব্যাগ
                       </span>
                     </td>
-                    <td className="p-3.5 font-semibold text-slate-200">{f.commercial_feed_kg} kg</td>
+                    <td className="p-3.5 font-bold text-slate-800">{f.commercial_feed_kg} kg</td>
                     <td className="p-3.5">
                       {f.vaat_kg > 0 ? (
-                        <span className="px-2 py-0.5 rounded-lg bg-amber-500/10 text-amber-300 border border-amber-500/20 font-semibold">
+                        <span className="px-2 py-0.5 rounded-lg bg-amber-50 text-amber-700 border border-amber-200 font-bold">
                           {f.vaat_kg} kg ভাত
                         </span>
                       ) : (
-                        <span className="text-slate-500">০ কেজি</span>
+                        <span className="text-slate-400">০ কেজি</span>
                       )}
                     </td>
-                    <td className="p-3.5 text-slate-300">
-                      <div>{f.feeding_time}</div>
-                      <div className="text-[11px] text-slate-400">{f.weather_condition}</div>
+                    <td className="p-3.5 text-slate-600">
+                      <div className="font-medium text-slate-800">{f.feeding_time}</div>
+                      <div className="text-[11px] text-slate-500">{f.weather_condition}</div>
                     </td>
-                    <td className="p-3.5 text-slate-300 italic">{f.notes || '-'}</td>
+                    <td className="p-3.5 text-slate-500 italic">{f.notes || '-'}</td>
                     {isAdmin && (
                       <td className="p-3.5 text-center">
                         <div className="flex items-center justify-center gap-1.5">
                           <button
                             onClick={() => onOpenModal('feed', { editItem: f })}
                             title="সম্পাদনা করুন (Edit)"
-                            className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-teal-300 hover:text-white transition"
+                            className="p-1.5 rounded-lg bg-slate-50 hover:bg-teal-50 text-teal-700 hover:text-teal-800 border border-slate-200 transition cursor-pointer"
                           >
                             <Edit3 className="w-3.5 h-3.5" />
                           </button>
                           <button
                             onClick={() => handleDeleteFeeding(f.id)}
                             title="মুছে ফেলুন (Delete)"
-                            className="p-1.5 rounded-lg bg-slate-800 hover:bg-rose-900/50 text-rose-400 hover:text-rose-200 transition"
+                            className="p-1.5 rounded-lg bg-slate-50 hover:bg-rose-50 text-rose-600 hover:text-rose-700 border border-slate-200 transition cursor-pointer"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
                           </button>
@@ -767,20 +769,20 @@ export default function FeedManagement({ ponds = [], feedInventory, dailyFeeding
       {activeSubTab === 'inventory' && (
         <div className="space-y-4 animate-in fade-in">
           <div className="flex justify-between items-center">
-            <span className="text-xs text-slate-400">
-              প্রকল্পে আসা ৩১০ ব্যাগ ফিডের একাধিক রেট ও চালানের বিস্তারিত তালিকা
+            <span className="text-xs text-slate-500">
+              প্রকল্পে আসা মোট {totalReceivedBags} ব্যাগ ফিডের একাধিক রেট ও চালানের বিস্তারিত তালিকা
             </span>
             <button
               onClick={() => onOpenModal('feed_inventory')}
-              className="text-xs text-teal-400 hover:text-teal-300 font-medium"
+              className="text-xs text-teal-700 hover:text-teal-800 font-semibold cursor-pointer"
             >
               + নতুন চালান অন্তর্ভুক্ত করুন
             </button>
           </div>
 
-          <div className="overflow-x-auto rounded-2xl border border-slate-700/80 bg-slate-855">
-            <table className="w-full text-left text-xs text-slate-300">
-              <thead className="bg-slate-900/90 text-slate-400 uppercase text-[11px] border-b border-slate-700">
+          <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
+            <table className="w-full text-left text-xs text-slate-700">
+              <thead className="bg-slate-50 text-slate-600 font-semibold uppercase text-[11px] border-b border-slate-200">
                 <tr>
                   <th className="p-3.5">চালান তারিখ</th>
                   <th className="p-3.5">ফিড ব্র্যান্ড ও ব্যাচ নং</th>
@@ -792,37 +794,37 @@ export default function FeedManagement({ ponds = [], feedInventory, dailyFeeding
                   {isAdmin && <th className="p-3.5 text-center">অ্যাকশন</th>}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800">
+              <tbody className="divide-y divide-slate-100">
                 {batches.map((b) => (
-                  <tr key={b.id} className="hover:bg-slate-800/50">
-                    <td className="p-3.5 font-medium text-white">{b.date}</td>
+                  <tr key={b.id} className="hover:bg-slate-50/80 transition">
+                    <td className="p-3.5 font-bold text-slate-900">{b.date}</td>
                     <td className="p-3.5">
-                      <div className="font-semibold text-cyan-300">{b.brand_name}</div>
-                      <div className="text-[11px] text-slate-400">{b.feed_type}</div>
+                      <div className="font-bold text-teal-700">{b.brand_name}</div>
+                      <div className="text-[11px] text-slate-500">{b.feed_type}</div>
                     </td>
-                    <td className="p-3.5 font-bold text-white text-sm">
-                      <span className="px-2 py-0.5 rounded-lg bg-cyan-500/10 text-cyan-300 border border-cyan-500/20">
+                    <td className="p-3.5 font-black text-slate-900 text-sm">
+                      <span className="px-2 py-0.5 rounded-lg bg-teal-50 text-teal-700 border border-teal-200 font-mono font-bold">
                         {b.bag_count} ব্যাগ
                       </span>
                     </td>
-                    <td className="p-3.5 font-semibold text-slate-200">৳ {b.rate_per_bag?.toLocaleString()}</td>
-                    <td className="p-3.5 font-bold text-emerald-400 text-sm">৳ {b.total_cost?.toLocaleString()}</td>
-                    <td className="p-3.5 text-slate-300">{b.supplier || '-'}</td>
-                    <td className="p-3.5 text-slate-400 text-[11px]">{b.notes || b.invoice_no || '-'}</td>
+                    <td className="p-3.5 font-semibold text-slate-800">৳ {b.rate_per_bag?.toLocaleString()}</td>
+                    <td className="p-3.5 font-bold text-emerald-700 text-sm">৳ {b.total_cost?.toLocaleString()}</td>
+                    <td className="p-3.5 text-slate-600">{b.supplier || '-'}</td>
+                    <td className="p-3.5 text-slate-500 text-[11px]">{b.notes || b.invoice_no || '-'}</td>
                     {isAdmin && (
                       <td className="p-3.5 text-center">
                         <div className="flex items-center justify-center gap-1.5">
                           <button
                             onClick={() => onOpenModal('feed_inventory', { editItem: b })}
                             title="সম্পাদনা করুন (Edit)"
-                            className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-cyan-300 hover:text-white transition"
+                            className="p-1.5 rounded-lg bg-slate-50 hover:bg-teal-50 text-teal-700 hover:text-teal-800 border border-slate-200 transition cursor-pointer"
                           >
                             <Edit3 className="w-3.5 h-3.5" />
                           </button>
                           <button
                             onClick={() => handleDeleteBatch(b.id)}
                             title="মুছে ফেলুন (Delete)"
-                            className="p-1.5 rounded-lg bg-slate-800 hover:bg-rose-900/50 text-rose-400 hover:text-rose-200 transition"
+                            className="p-1.5 rounded-lg bg-slate-50 hover:bg-rose-50 text-rose-600 hover:text-rose-700 border border-slate-200 transition cursor-pointer"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
                           </button>
@@ -842,18 +844,18 @@ export default function FeedManagement({ ponds = [], feedInventory, dailyFeeding
       {/* ========================================================================= */}
       {activeSubTab === 'vaat' && (
         <div className="space-y-4 animate-in fade-in">
-          <div className="p-4 rounded-2xl bg-amber-950/20 border border-amber-500/30 flex items-start gap-3">
-            <Utensils className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
-            <div className="text-xs text-amber-200">
+          <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200 flex items-start gap-3">
+            <Utensils className="w-5 h-5 text-amber-700 shrink-0 mt-0.5" />
+            <div className="text-xs text-amber-900">
               <strong>সম্পূরক ভাত সরবরাহ পদ্ধতি:</strong> আপনার নির্দেশনা অনুযায়ী প্রকল্পে এখনও পর্যন্ত কোনো ভাত দেওয়া হয়নি (ভবিষ্যতে দেওয়া হবে)। যখনই ভাত রান্না বা সরবরাহ শুরু করবেন, নিচের <strong>"+ ভাত রান্না এন্ট্রি"</strong> বাটনে চাপ দিয়ে চালের কেজি ও রান্নার খরচ লিখে সংরক্ষণ করতে পারবেন।
             </div>
           </div>
 
-          <div className="p-8 text-center bg-slate-900/40 rounded-2xl border border-slate-800 text-xs text-slate-400 space-y-2">
+          <div className="p-8 text-center bg-slate-50 rounded-2xl border border-slate-200 text-xs text-slate-500 space-y-2">
             <p>বর্তমানে কোনো ভাত দেওয়া হয়নি। ভবিষ্যতে ভাত সরবরাহ শুরু হলে এখানে স্বয়ংক্রিয়ভাবে তালিকা যুক্ত হবে।</p>
             <button
               onClick={() => onOpenModal('vaat')}
-              className="px-4 py-2 rounded-xl bg-amber-500/20 text-amber-300 border border-amber-500/30 hover:bg-amber-500/30 font-medium transition"
+              className="px-4 py-2 rounded-xl bg-amber-100 text-amber-900 border border-amber-300 hover:bg-amber-200 font-semibold transition cursor-pointer shadow-sm"
             >
               + ভাত রান্না ও সরবরাহ এন্ট্রি করুন
             </button>

@@ -3,7 +3,7 @@ import { CloudSun, Droplets, Wind, Compass, AlertTriangle, CheckCircle2, Info, T
 
 export default function WeatherView({ weather, onRefresh }) {
   if (!weather) {
-    return <div className="p-8 text-center text-slate-400">Loading Live Weather Data...</div>;
+    return <div className="p-8 text-center text-slate-500">Loading Live Weather Data...</div>;
   }
 
   const current = weather.current || {};
@@ -15,19 +15,19 @@ export default function WeatherView({ weather, onRefresh }) {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h2 className="text-xl font-bold text-white flex items-center gap-2">
+          <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
             <CloudSun className="w-5 h-5 text-amber-400" />
             আবহাওয়া ও অ্যাকুয়াকালচার পূর্বাভাস (Weather & DO Advisory)
           </h2>
-          <p className="text-xs text-slate-400 mt-0.5">
+          <p className="text-xs text-slate-500 mt-0.5">
             ওপেন-মেটিও (Open-Meteo) লাইভ এপিআই • মাছের পুকুরে অক্সিজেন ও জলজ পরিবেশ রক্ষা
           </p>
         </div>
-        <div className="flex flex-wrap items-center gap-2 text-xs text-slate-400">
-          <span className="px-3 py-1.5 rounded-xl bg-slate-800 border border-slate-700 text-teal-300 font-semibold">
+        <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
+          <span className="px-3 py-1.5 rounded-xl bg-slate-100 border border-slate-200 text-teal-300 font-semibold">
             📍 {weather.location || 'Shah Amanat Airport, Patenga, Chittagong'}
           </span>
-          <span className="px-3 py-1.5 rounded-xl bg-slate-800/80 border border-slate-700 text-slate-300">
+          <span className="px-3 py-1.5 rounded-xl bg-white border border-slate-200 text-slate-700">
             🕒 Timezone: {weather.timezone || 'Asia/Dhaka (GMT+6)'}
           </span>
         </div>
@@ -35,7 +35,7 @@ export default function WeatherView({ weather, onRefresh }) {
 
       {/* AQUACULTURE ADVISOR ALERTS */}
       <div className="space-y-3">
-        <h3 className="text-sm font-bold text-white flex items-center gap-2">
+        <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
           <AlertTriangle className="w-4 h-4 text-amber-400" />
           আজকের জন্য মৎস্য খামারের সতর্কতা ও করণীয়
         </h3>
@@ -60,8 +60,8 @@ export default function WeatherView({ weather, onRefresh }) {
                     {isWarning ? <AlertTriangle className="w-4 h-4" /> : <Info className="w-4 h-4" />}
                   </div>
                   <div>
-                    <h4 className="font-bold text-white text-sm">{al.title}</h4>
-                    <p className="text-xs text-slate-300 mt-1 leading-relaxed">{al.message}</p>
+                    <h4 className="font-bold text-slate-900 text-sm">{al.title}</h4>
+                    <p className="text-xs text-slate-700 mt-1 leading-relaxed">{al.message}</p>
                   </div>
                 </div>
               </div>
@@ -72,69 +72,69 @@ export default function WeatherView({ weather, onRefresh }) {
 
       {/* CURRENT WEATHER METRICS */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        <div className="bg-slate-800/70 p-4 rounded-2xl border border-slate-700">
-          <div className="flex justify-between items-center text-slate-400 text-xs">
+        <div className="bg-white p-4 rounded-2xl border border-slate-200">
+          <div className="flex justify-between items-center text-slate-500 text-xs">
             <span>বর্তমান তাপমাত্রা</span>
             <Thermometer className="w-4 h-4 text-rose-400" />
           </div>
-          <div className="text-2xl font-bold text-white mt-2">
+          <div className="text-2xl font-bold text-slate-900 mt-2">
             {current.temperature || 29}°C
           </div>
           <span className="text-[11px] text-teal-300 block mt-1">মাছের আদর্শ বৃদ্ধির তাপমাত্রা</span>
         </div>
 
-        <div className="bg-slate-800/70 p-4 rounded-2xl border border-slate-700">
-          <div className="flex justify-between items-center text-slate-400 text-xs">
+        <div className="bg-white p-4 rounded-2xl border border-slate-200">
+          <div className="flex justify-between items-center text-slate-500 text-xs">
             <span>বাতাসের আর্দ্রতা (Humidity)</span>
             <Droplets className="w-4 h-4 text-sky-400" />
           </div>
-          <div className="text-2xl font-bold text-white mt-2">
+          <div className="text-2xl font-bold text-slate-900 mt-2">
             {current.humidity || 75}%
           </div>
-          <span className="text-[11px] text-slate-400 block mt-1">স্বাভাবিক জলীয় বাষ্প</span>
+          <span className="text-[11px] text-slate-500 block mt-1">স্বাভাবিক জলীয় বাষ্প</span>
         </div>
 
-        <div className="bg-slate-800/70 p-4 rounded-2xl border border-slate-700">
-          <div className="flex justify-between items-center text-slate-400 text-xs">
+        <div className="bg-white p-4 rounded-2xl border border-slate-200">
+          <div className="flex justify-between items-center text-slate-500 text-xs">
             <span>বাতাসের গতি (Wind Speed)</span>
             <Wind className="w-4 h-4 text-teal-400" />
           </div>
-          <div className="text-2xl font-bold text-white mt-2">
-            {current.wind_speed || 8} <span className="text-xs font-normal text-slate-400">km/h</span>
+          <div className="text-2xl font-bold text-slate-900 mt-2">
+            {current.wind_speed || 8} <span className="text-xs font-normal text-slate-500">km/h</span>
           </div>
-          <span className="text-[11px] text-slate-400 block mt-1">স্বাভাবিক প্রাকৃতিক ঢেউ</span>
+          <span className="text-[11px] text-slate-500 block mt-1">স্বাভাবিক প্রাকৃতিক ঢেউ</span>
         </div>
 
-        <div className="bg-slate-800/70 p-4 rounded-2xl border border-slate-700">
-          <div className="flex justify-between items-center text-slate-400 text-xs">
+        <div className="bg-white p-4 rounded-2xl border border-slate-200">
+          <div className="flex justify-between items-center text-slate-500 text-xs">
             <span>বৃষ্টিপাত (Precipitation)</span>
             <CloudRain className="w-4 h-4 text-indigo-400" />
           </div>
-          <div className="text-2xl font-bold text-white mt-2">
-            {current.precipitation || 0.0} <span className="text-xs font-normal text-slate-400">mm</span>
+          <div className="text-2xl font-bold text-slate-900 mt-2">
+            {current.precipitation || 0.0} <span className="text-xs font-normal text-slate-500">mm</span>
           </div>
-          <span className="text-[11px] text-slate-400 block mt-1">শুকনো আবহাওয়া</span>
+          <span className="text-[11px] text-slate-500 block mt-1">শুকনো আবহাওয়া</span>
         </div>
       </div>
 
       {/* 7-DAY FORECAST TABLE */}
       {daily?.time && (
-        <div className="p-5 rounded-2xl bg-slate-800/80 border border-slate-700 shadow-md space-y-3">
-          <h3 className="text-sm font-bold text-white flex items-center gap-2">
+        <div className="p-5 rounded-2xl bg-white border border-slate-200 shadow-md space-y-3">
+          <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
             <CloudSun className="w-4 h-4 text-teal-400" />
             আগামী ৭ দিনের আবহাওয়ার পূর্বাভাস (7-Day Forecast)
           </h3>
 
           <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2">
             {daily.time.slice(0, 7).map((date, i) => (
-              <div key={date} className="p-3 rounded-xl bg-slate-900/60 border border-slate-800 text-center text-xs">
-                <span className="text-slate-400 block font-medium">
+              <div key={date} className="p-3 rounded-xl bg-slate-50 border border-slate-200 text-center text-xs">
+                <span className="text-slate-500 block font-medium">
                   {new Date(date).toLocaleDateString('bn-BD', { weekday: 'short' })}
                 </span>
                 <span className="text-[11px] text-slate-500 block">{date.slice(5)}</span>
                 
-                <div className="my-2 text-base font-bold text-white">
-                  {daily.temperature_2m_max?.[i]}° / <span className="text-xs font-normal text-slate-400">{daily.temperature_2m_min?.[i]}°</span>
+                <div className="my-2 text-base font-bold text-slate-900">
+                  {daily.temperature_2m_max?.[i]}° / <span className="text-xs font-normal text-slate-500">{daily.temperature_2m_min?.[i]}°</span>
                 </div>
 
                 <div className="text-[11px] text-sky-300 flex items-center justify-center gap-1">
@@ -148,7 +148,7 @@ export default function WeatherView({ weather, onRefresh }) {
       )}
 
       {/* FARM OPERATIONAL TIPS */}
-      <div className="p-4 rounded-2xl bg-slate-900/40 border border-slate-800 text-xs text-slate-400 space-y-2">
+      <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-xs text-slate-500 space-y-2">
         <h4 className="font-semibold text-slate-200">💡 আবহাওয়া উপযোগী মৎস্য ব্যবস্থাপনা গাইড:</h4>
         <ul className="list-disc pl-5 space-y-1">
           <li>ভোর রাতে (৩:০০ AM - ৬:০০ AM) পুকুরের তলদেশের অক্সিজেন সবচেয়ে কমে যায়। মেঘলা দিনে অবশ্যই এরেটর চালু রাখুন।</li>

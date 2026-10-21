@@ -168,7 +168,7 @@ def get_dashboard_stats(db: Session = Depends(get_db)):
     total_feed_purchase_cost = sum(b.total_cost for b in feed_inventory)
     total_pona_purchase_cost = sum(s.cost_bdt for s in stockings)
     total_vaat_cost = sum((v.rice_cost_bdt + v.cooking_fuel_cost_bdt) for v in vaat_records)
-    other_expenses = sum(e.amount_bdt for e in expenses)
+    other_expenses = sum(e.amount_bdt for e in expenses if e.category != "Feed Purchase")
     total_investment_bdt = total_feed_purchase_cost + total_pona_purchase_cost + total_vaat_cost + other_expenses
 
     total_harvest_revenue = sum(h.total_income_bdt for h in harvests)
@@ -930,7 +930,7 @@ def get_profit_analysis(target_weight_kg: float = 1.2, selling_price_bdt: float 
     total_feed_cost = sum(b.total_cost for b in feed_inventory)
     total_pona_cost = sum(s.cost_bdt for s in stockings)
     total_vaat_cost = sum(v.rice_cost_bdt + v.cooking_fuel_cost_bdt for v in vaat_records)
-    total_other_expenses = sum(e.amount_bdt for e in expenses)
+    total_other_expenses = sum(e.amount_bdt for e in expenses if e.category != "Feed Purchase")
     total_cost_invested = total_feed_cost + total_pona_cost + total_vaat_cost + total_other_expenses
 
     # Fish count breakdown

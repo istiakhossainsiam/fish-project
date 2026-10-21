@@ -114,7 +114,7 @@ export default function UserManager({ currentUser, onUserUpdated }) {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h2 className="text-xl font-bold text-white flex items-center gap-2">
+          <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
             <Users className="w-5 h-5 text-teal-400" />
             ব্যবহারকারী ও অ্যাক্সেস কন্ট্রোল (User Management)
           </h2>
@@ -126,7 +126,7 @@ export default function UserManager({ currentUser, onUserUpdated }) {
         <div className="flex items-center gap-2">
           <button
             onClick={loadUsers}
-            className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition"
+            className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 border border-slate-300 transition cursor-pointer"
             title="রিফ্রেশ"
           >
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin text-teal-400' : ''}`} />
@@ -151,13 +151,13 @@ export default function UserManager({ currentUser, onUserUpdated }) {
 
       {/* Role Access Information Banner */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
-        <div className="p-4 rounded-2xl bg-slate-850 border border-slate-700/80 space-y-2">
+        <div className="p-4 rounded-2xl bg-white border border-slate-200 space-y-2">
           <div className="flex items-center gap-2">
             <div className="p-2 rounded-xl bg-emerald-500/20 text-emerald-400">
               <Shield className="w-4 h-4" />
             </div>
             <div>
-              <h4 className="font-bold text-white text-sm">১. সুপারএডমিন ড্যাশবোর্ড</h4>
+              <h4 className="font-bold text-slate-900 text-sm">১. সুপারএডমিন ড্যাশবোর্ড</h4>
               <span className="text-[10px] text-emerald-400">মালিক ও অংশীদারদের জন্য</span>
             </div>
           </div>
@@ -166,13 +166,13 @@ export default function UserManager({ currentUser, onUserUpdated }) {
           </p>
         </div>
 
-        <div className="p-4 rounded-2xl bg-slate-850 border border-slate-700/80 space-y-2">
+        <div className="p-4 rounded-2xl bg-white border border-slate-200 space-y-2">
           <div className="flex items-center gap-2">
             <div className="p-2 rounded-xl bg-cyan-500/20 text-cyan-400">
               <User className="w-4 h-4" />
             </div>
             <div>
-              <h4 className="font-bold text-white text-sm">২. ম্যানেজার ড্যাশবোর্ড</h4>
+              <h4 className="font-bold text-slate-900 text-sm">২. ম্যানেজার ড্যাশবোর্ড</h4>
               <span className="text-[10px] text-cyan-400">খামার ইন-চার্জ ও সুপারভাইজার</span>
             </div>
           </div>
@@ -181,13 +181,13 @@ export default function UserManager({ currentUser, onUserUpdated }) {
           </p>
         </div>
 
-        <div className="p-4 rounded-2xl bg-slate-850 border border-slate-700/80 space-y-2">
+        <div className="p-4 rounded-2xl bg-white border border-slate-200 space-y-2">
           <div className="flex items-center gap-2">
             <div className="p-2 rounded-xl bg-amber-500/20 text-amber-400">
               <HardHat className="w-4 h-4" />
             </div>
             <div>
-              <h4 className="font-bold text-white text-sm">৩. মাঠ কর্মী ড্যাশবোর্ড</h4>
+              <h4 className="font-bold text-slate-900 text-sm">৩. মাঠ কর্মী ড্যাশবোর্ড</h4>
               <span className="text-[10px] text-amber-400">পুকুরপাড়ে মোবাইল ব্যবহারের জন্য</span>
             </div>
           </div>
@@ -198,9 +198,9 @@ export default function UserManager({ currentUser, onUserUpdated }) {
       </div>
 
       {/* Users Table */}
-      <div className="overflow-x-auto rounded-2xl border border-slate-700/80 bg-slate-850">
+      <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
         <table className="w-full text-left text-xs text-slate-300">
-          <thead className="bg-slate-900 text-slate-400 uppercase text-[11px] border-b border-slate-700">
+          <thead className="bg-slate-50 text-slate-600 font-semibold uppercase text-[11px] border-b border-slate-200">
             <tr>
               <th className="p-3.5">পূর্ণ নাম (Full Name)</th>
               <th className="p-3.5">ইউজারনেম (Username / ID)</th>
@@ -209,14 +209,14 @@ export default function UserManager({ currentUser, onUserUpdated }) {
               <th className="p-3.5 text-right">অ্যাকশন</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-800">
+          <tbody className="divide-y divide-slate-100">
             {users.map((u) => {
               const roleMeta = getRoleBadge(u.role);
               const RoleIcon = roleMeta.icon;
               return (
-                <tr key={u.id} className="hover:bg-slate-800/50">
-                  <td className="p-3.5 font-bold text-white text-sm flex items-center gap-2.5">
-                    <div className="w-8 h-8 rounded-xl bg-slate-800 flex items-center justify-center font-bold text-teal-400 border border-slate-700">
+                <tr key={u.id} className="hover:bg-slate-50/80 transition">
+                  <td className="p-3.5 font-bold text-slate-900 text-sm flex items-center gap-2.5">
+                    <div className="w-8 h-8 rounded-xl bg-slate-100 flex items-center justify-center font-bold text-teal-400 border border-slate-200">
                       {u.full_name[0] || 'U'}
                     </div>
                     <div>
@@ -234,7 +234,7 @@ export default function UserManager({ currentUser, onUserUpdated }) {
                     </span>
                   </td>
                   <td className="p-3.5 font-mono text-slate-300">
-                    <span className="px-2 py-0.5 rounded-lg bg-slate-900 border border-slate-800">
+                    <span className="px-2 py-0.5 rounded-lg bg-white border border-slate-200">
                       PIN: {u.pin || '****'}
                     </span>
                   </td>
@@ -251,7 +251,7 @@ export default function UserManager({ currentUser, onUserUpdated }) {
                         });
                         setShowEditModal(true);
                       }}
-                      className="p-1.5 text-slate-400 hover:text-teal-300 hover:bg-slate-800 rounded-lg transition mr-1"
+                      className="p-1.5 text-slate-500 hover:text-teal-700 hover:bg-teal-50 rounded-lg border border-slate-200 transition cursor-pointer mr-1"
                       title="সম্পাদনা করুন"
                     >
                       <Edit3 className="w-4 h-4" />
@@ -259,7 +259,7 @@ export default function UserManager({ currentUser, onUserUpdated }) {
                     {u.username !== 'superadmin' && (
                       <button
                         onClick={() => handleDelete(u)}
-                        className="p-1.5 text-slate-400 hover:text-rose-400 hover:bg-slate-800 rounded-lg transition"
+                        className="p-1.5 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-lg border border-slate-200 transition cursor-pointer"
                         title="মুছে ফেলুন"
                       >
                         <Trash2 className="w-4 h-4" />
@@ -275,9 +275,9 @@ export default function UserManager({ currentUser, onUserUpdated }) {
 
       {/* CREATE USER MODAL */}
       {showCreateModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm overflow-y-auto">
-          <div className="bg-slate-900 border border-slate-700 w-full max-w-md rounded-3xl p-5 sm:p-6 shadow-2xl relative my-8 text-xs">
-            <h3 className="text-base font-bold text-white flex items-center gap-2 pb-2 border-b border-slate-800">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-50 backdrop-blur-sm overflow-y-auto">
+          <div className="bg-white border border-slate-200 w-full max-w-md rounded-3xl p-5 sm:p-6 shadow-2xl relative my-8 text-xs">
+            <h3 className="text-base font-bold text-slate-900 flex items-center gap-2 pb-2 border-b border-slate-100">
               <UserPlus className="w-5 h-5 text-teal-400" />
               নতুন ইউজার অ্যাকাউন্ট তৈরি করুন (Create User)
             </h3>
@@ -291,7 +291,7 @@ export default function UserManager({ currentUser, onUserUpdated }) {
                   placeholder="যেমন: মো: আরিফুল ইসলাম"
                   value={formData.full_name}
                   onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
-                  className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white font-medium"
+                  className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 shadow-sm focus:border-teal-600 focus:outline-none font-medium"
                 />
               </div>
 
@@ -304,7 +304,7 @@ export default function UserManager({ currentUser, onUserUpdated }) {
                     placeholder="ariful_worker"
                     value={formData.username}
                     onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-                    className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white font-mono"
+                    className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 shadow-sm focus:border-teal-600 focus:outline-none font-mono"
                   />
                 </div>
                 <div>
@@ -312,7 +312,7 @@ export default function UserManager({ currentUser, onUserUpdated }) {
                   <select
                     value={formData.role}
                     onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-                    className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white font-medium"
+                    className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 shadow-sm focus:border-teal-600 focus:outline-none font-medium"
                   >
                     <option value="worker">👷 মাঠ কর্মী (Worker)</option>
                     <option value="manager">👔 খামার ম্যানেজার (Manager)</option>
@@ -331,7 +331,7 @@ export default function UserManager({ currentUser, onUserUpdated }) {
                     placeholder="1234"
                     value={formData.pin}
                     onChange={(e) => setFormData({ ...formData, pin: e.target.value })}
-                    className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white font-mono font-bold"
+                    className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 shadow-sm focus:border-teal-600 focus:outline-none font-mono font-bold"
                   />
                   <span className="text-[10px] text-slate-500 mt-0.5 block">মোবাইলে দ্রুত লগইনের জন্য</span>
                 </div>
@@ -343,12 +343,12 @@ export default function UserManager({ currentUser, onUserUpdated }) {
                     placeholder="farm123"
                     value={formData.password}
                     onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                    className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white"
+                    className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 shadow-sm focus:border-teal-600 focus:outline-none"
                   />
                 </div>
               </div>
 
-              <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 text-[11px] text-slate-400">
+              <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 text-[11px] text-slate-400">
                 <span className="text-teal-300 font-bold block mb-0.5">রোল অনুযায়ী স্বয়ংক্রিয় ড্যাশবোর্ড:</span>
                 কর্মী নির্বাচন করলে সে লগইন করার পর শুধু সহজ খাবার ইনপুট ও মাঠ চেকলিস্ট দেখবে। ম্যানেজার বা সুপারএডমিন নির্বাচন করলে পূর্ণ হিসাব দেখতে পারবে।
               </div>
@@ -357,7 +357,7 @@ export default function UserManager({ currentUser, onUserUpdated }) {
                 <button
                   type="button"
                   onClick={() => setShowCreateModal(false)}
-                  className="px-4 py-2.5 rounded-xl bg-slate-800 text-slate-300 hover:bg-slate-700"
+                  className="px-4 py-2.5 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-300 cursor-pointer"
                 >
                   বাতিল
                 </button>
@@ -375,9 +375,9 @@ export default function UserManager({ currentUser, onUserUpdated }) {
 
       {/* EDIT USER MODAL */}
       {showEditModal && selectedUser && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm overflow-y-auto">
-          <div className="bg-slate-900 border border-slate-700 w-full max-w-md rounded-3xl p-5 sm:p-6 shadow-2xl relative my-8 text-xs">
-            <h3 className="text-base font-bold text-white flex items-center gap-2 pb-2 border-b border-slate-800">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-50 backdrop-blur-sm overflow-y-auto">
+          <div className="bg-white border border-slate-200 w-full max-w-md rounded-3xl p-5 sm:p-6 shadow-2xl relative my-8 text-xs">
+            <h3 className="text-base font-bold text-slate-900 flex items-center gap-2 pb-2 border-b border-slate-100">
               <Edit3 className="w-5 h-5 text-teal-400" />
               ইউজার তথ্য ও রোল পরিবর্তন (Edit User: {selectedUser.username})
             </h3>
@@ -390,7 +390,7 @@ export default function UserManager({ currentUser, onUserUpdated }) {
                   required
                   value={formData.full_name}
                   onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
-                  className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white font-medium"
+                  className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 shadow-sm focus:border-teal-600 focus:outline-none font-medium"
                 />
               </div>
 
@@ -401,7 +401,7 @@ export default function UserManager({ currentUser, onUserUpdated }) {
                     disabled={selectedUser.username === 'superadmin'}
                     value={formData.role}
                     onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-                    className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white font-medium disabled:opacity-50"
+                    className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 shadow-sm focus:border-teal-600 focus:outline-none font-medium disabled:opacity-50"
                   >
                     <option value="worker">মাঠ কর্মী (Worker)</option>
                     <option value="manager">ম্যানেজার (Manager)</option>
@@ -415,7 +415,7 @@ export default function UserManager({ currentUser, onUserUpdated }) {
                     maxLength={6}
                     value={formData.pin}
                     onChange={(e) => setFormData({ ...formData, pin: e.target.value })}
-                    className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white font-mono font-bold"
+                    className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 shadow-sm focus:border-teal-600 focus:outline-none font-mono font-bold"
                   />
                 </div>
               </div>
@@ -427,7 +427,7 @@ export default function UserManager({ currentUser, onUserUpdated }) {
                   placeholder="পরিবর্তন না করতে চাইলে ফাঁকা রাখুন"
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                  className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white"
+                  className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 shadow-sm focus:border-teal-600 focus:outline-none"
                 />
               </div>
 
@@ -435,7 +435,7 @@ export default function UserManager({ currentUser, onUserUpdated }) {
                 <button
                   type="button"
                   onClick={() => setShowEditModal(false)}
-                  className="px-4 py-2.5 rounded-xl bg-slate-800 text-slate-300 hover:bg-slate-700"
+                  className="px-4 py-2.5 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-300 cursor-pointer"
                 >
                   বাতিল
                 </button>

@@ -157,7 +157,7 @@ export default function InvestorManagement({ currentUser, onRefreshParent }) {
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 no-print">
         <div>
-          <h2 className="text-xl font-bold text-white flex items-center gap-2">
+          <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
             <Users className="w-5 h-5 text-teal-400" />
             ইনভেস্টর ব্যবস্থাপনা ও মুনাফা বণ্টন ক্যালকুলেটর (Investor & Profit Share)
           </h2>
@@ -177,7 +177,7 @@ export default function InvestorManagement({ currentUser, onRefreshParent }) {
               </button>
               <button
                 onClick={() => setShowInvestorModal(true)}
-                className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-teal-300 border border-slate-700 text-xs font-medium transition"
+                className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-700 text-teal-300 border border-slate-200 text-xs font-medium transition"
               >
                 <Plus className="w-4 h-4" /> নতুন ইনভেস্টর
               </button>
@@ -185,7 +185,7 @@ export default function InvestorManagement({ currentUser, onRefreshParent }) {
           )}
           <button
             onClick={() => window.print()}
-            className="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition"
+            className="p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 border border-slate-300 transition cursor-pointer"
             title="প্রিন্ট করুন"
           >
             <Printer className="w-4 h-4" />
@@ -195,9 +195,9 @@ export default function InvestorManagement({ currentUser, onRefreshParent }) {
 
       {/* OVERVIEW STATS BANNER */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
-        <div className="p-4 rounded-2xl bg-slate-850 border border-slate-700/80">
+        <div className="p-4 rounded-2xl bg-white border border-slate-200">
           <span className="text-slate-400 block font-medium">মোট পার্টনার ইনভেস্টর</span>
-          <div className="text-xl font-bold text-white mt-1">
+          <div className="text-xl font-bold text-slate-900 mt-1">
             {investors.length} জন
           </div>
           <span className="text-[11px] text-slate-400 mt-0.5 block">
@@ -205,7 +205,7 @@ export default function InvestorManagement({ currentUser, onRefreshParent }) {
           </span>
         </div>
 
-        <div className="p-4 rounded-2xl bg-slate-850 border border-slate-700/80">
+        <div className="p-4 rounded-2xl bg-white border border-slate-200">
           <span className="text-slate-400 block font-medium">মোট সংগৃহীত মূলধন</span>
           <div className="text-xl font-bold text-cyan-300 mt-1">
             ৳ {totalFundsInvested.toLocaleString()}
@@ -215,7 +215,7 @@ export default function InvestorManagement({ currentUser, onRefreshParent }) {
           </span>
         </div>
 
-        <div className="p-4 rounded-2xl bg-slate-850 border border-slate-700/80">
+        <div className="p-4 rounded-2xl bg-white border border-slate-200">
           <span className="text-slate-400 block font-medium">ইনভেস্টরদের সম্ভাব্য লভ্যাংশ</span>
           <div className="text-xl font-bold text-emerald-400 mt-1">
             ৳ {totalProjectedProfit.toLocaleString()}
@@ -237,7 +237,7 @@ export default function InvestorManagement({ currentUser, onRefreshParent }) {
       </div>
 
       {/* SUB-TAB NAVIGATOR */}
-      <div className="flex items-center gap-2 border-b border-slate-800 pb-2 text-xs no-print">
+      <div className="flex items-center gap-2 border-b border-slate-100 pb-2 text-xs no-print">
         <button
           onClick={() => setActiveSubTab('simulator')}
           className={`px-3.5 py-1.5 rounded-xl font-bold transition flex items-center gap-1.5 ${
@@ -275,13 +275,13 @@ export default function InvestorManagement({ currentUser, onRefreshParent }) {
       {/* ========================================================================= */}
       {activeSubTab === 'simulator' && (
         <div className="p-5 sm:p-6 rounded-3xl bg-gradient-to-br from-slate-900 via-slate-850 to-teal-950/40 border border-teal-500/40 shadow-xl space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-slate-700/80">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-slate-200">
             <div className="flex items-center gap-2.5">
               <span className="p-2.5 rounded-2xl bg-teal-500/20 text-teal-400">
                 <Sliders className="w-5 h-5" />
               </span>
               <div>
-                <h3 className="font-bold text-white text-base">
+                <h3 className="font-bold text-slate-900 text-base">
                   ইনভেস্টর মুনাফা ও রিটার্ন সিমুলেটর (Investor Profit Calculator)
                 </h3>
                 <p className="text-xs text-slate-400">
@@ -297,10 +297,10 @@ export default function InvestorManagement({ currentUser, onRefreshParent }) {
           {/* Interactive Controls Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
             {/* 1. Investment Amount */}
-            <div className="bg-slate-900/70 p-4 rounded-2xl border border-slate-800 space-y-2">
+            <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-2">
               <div className="flex justify-between items-center">
                 <span className="text-slate-300 font-medium">বিনিয়োগের পরিমাণ:</span>
-                <span className="font-bold text-white text-sm">৳ {simParams.investmentAmount.toLocaleString()}</span>
+                <span className="font-bold text-slate-900 text-sm">৳ {simParams.investmentAmount.toLocaleString()}</span>
               </div>
               <input
                 type="range"
@@ -319,7 +319,7 @@ export default function InvestorManagement({ currentUser, onRefreshParent }) {
             </div>
 
             {/* 2. Profit Share % */}
-            <div className="bg-slate-900/70 p-4 rounded-2xl border border-slate-800 space-y-2">
+            <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-2">
               <div className="flex justify-between items-center">
                 <span className="text-slate-300 font-medium">প্রফিট শেয়ার অনুপাত:</span>
                 <span className="font-bold text-teal-300 text-sm">{simParams.sharePct}% শেয়ার</span>
@@ -341,7 +341,7 @@ export default function InvestorManagement({ currentUser, onRefreshParent }) {
             </div>
 
             {/* 3. Fish Selling Price */}
-            <div className="bg-slate-900/70 p-4 rounded-2xl border border-slate-800 space-y-2">
+            <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-2">
               <div className="flex justify-between items-center">
                 <span className="text-slate-300 font-medium">মাছ বিক্রির বাজার দর:</span>
                 <span className="font-bold text-emerald-400 text-sm">৳ {simParams.pangashPrice} /কেজি</span>
@@ -363,12 +363,12 @@ export default function InvestorManagement({ currentUser, onRefreshParent }) {
             </div>
 
             {/* 4. Target Pond Selection */}
-            <div className="bg-slate-900/70 p-4 rounded-2xl border border-slate-800 space-y-1.5">
+            <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-1.5">
               <label className="text-slate-300 font-medium block">বিনিয়োগকৃত সাইকেল / পুকুর:</label>
               <select
                 value={simParams.pondId}
                 onChange={(e) => setSimParams({ ...simParams, pondId: parseInt(e.target.value) })}
-                className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white font-medium"
+                className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 shadow-sm focus:border-teal-600 focus:outline-none font-medium"
               >
                 <option value={2}>পুকুর ২ (উচ্চঘনত্ব পাঙ্গাশ ~৫৬,০০০ কেজি)</option>
                 <option value={1}>পুকুর ১ (পাঙ্গাশ ও কার্প ~১৯,০০০ কেজি)</option>
@@ -400,9 +400,9 @@ export default function InvestorManagement({ currentUser, onRefreshParent }) {
                 </div>
 
                 {/* 2. Total Payout (Capital + Profit) */}
-                <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-700/80">
+                <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200">
                   <span className="text-slate-400 block font-medium">মোট প্রাপ্তি (মূলধন + মুনাফা)</span>
-                  <div className="text-2xl font-bold text-white mt-1">
+                  <div className="text-2xl font-bold text-slate-900 mt-1">
                     ৳ {simResult.investor_total_payout_bdt?.toLocaleString()}
                   </div>
                   <span className="text-[11px] text-teal-300 mt-1 block">
@@ -411,7 +411,7 @@ export default function InvestorManagement({ currentUser, onRefreshParent }) {
                 </div>
 
                 {/* 3. Investor ROI */}
-                <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-700/80">
+                <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200">
                   <span className="text-slate-400 block font-medium">বিনিয়োগের রিটার্ন (ROI)</span>
                   <div className="text-2xl font-bold text-cyan-300 mt-1">
                     {simResult.investor_roi_pct}%
@@ -422,7 +422,7 @@ export default function InvestorManagement({ currentUser, onRefreshParent }) {
                 </div>
 
                 {/* 4. Monthly Equivalent */}
-                <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-700/80">
+                <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200">
                   <span className="text-slate-400 block font-medium">মাসিক সমতুল্য আয়</span>
                   <div className="text-2xl font-bold text-amber-300 mt-1">
                     ~ ৳ {simResult.monthly_profit_equivalent?.toLocaleString()} <span className="text-xs font-normal text-slate-400">/মাস</span>
@@ -434,14 +434,14 @@ export default function InvestorManagement({ currentUser, onRefreshParent }) {
               </div>
 
               {/* Cycle Project Reference Table */}
-              <div className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800 text-[11px] grid grid-cols-2 sm:grid-cols-4 gap-3 text-slate-300">
+              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-[11px] grid grid-cols-2 sm:grid-cols-4 gap-3 text-slate-300">
                 <div>
                   <span className="text-slate-500 block">সাইকেল লক্ষ্যমাত্রা উৎপাদন:</span>
-                  <strong className="text-white">{simResult.target_biomass_kg?.toLocaleString()} কেজি ({simResult.target_maund} মণ)</strong>
+                  <strong className="text-slate-900">{simResult.target_biomass_kg?.toLocaleString()} কেজি ({simResult.target_maund} মণ)</strong>
                 </div>
                 <div>
                   <span className="text-slate-500 block">প্রজেক্টেড গ্রস বিক্রয়মূল্য:</span>
-                  <strong className="text-white">৳ {simResult.projected_cycle_revenue_bdt?.toLocaleString()}</strong>
+                  <strong className="text-slate-900">৳ {simResult.projected_cycle_revenue_bdt?.toLocaleString()}</strong>
                 </div>
                 <div>
                   <span className="text-slate-500 block">অনুমিত মোট খাদ্য ও খামার ব্যয়:</span>
@@ -463,17 +463,17 @@ export default function InvestorManagement({ currentUser, onRefreshParent }) {
       {activeSubTab === 'investments' && (
         <div className="space-y-4">
           <div className="flex justify-between items-center text-xs">
-            <h3 className="font-bold text-white text-sm">
+            <h3 className="font-bold text-slate-900 text-sm">
               চলমান বিনিয়োগ ও লভ্যাংশ বণ্টন চুক্তি (Active Investment Agreements)
             </h3>
             <span className="text-slate-400">
-              মোট বিনিয়োগ: <strong className="text-white">৳ {totalFundsInvested.toLocaleString()}</strong>
+              মোট বিনিয়োগ: <strong className="text-slate-900">৳ {totalFundsInvested.toLocaleString()}</strong>
             </span>
           </div>
 
-          <div className="overflow-x-auto rounded-2xl border border-slate-700/80 bg-slate-850">
+          <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
             <table className="w-full text-left text-xs text-slate-300">
-              <thead className="bg-slate-900 text-slate-400 uppercase text-[11px] border-b border-slate-700">
+              <thead className="bg-slate-50 text-slate-600 font-semibold uppercase text-[11px] border-b border-slate-200">
                 <tr>
                   <th className="p-3.5">ইনভেস্টরের নাম</th>
                   <th className="p-3.5">সাইকেল / পুকুর</th>
@@ -486,7 +486,7 @@ export default function InvestorManagement({ currentUser, onRefreshParent }) {
                   {isAdmin && <th className="p-3.5 text-right">অ্যাকশন</th>}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800">
+              <tbody className="divide-y divide-slate-100">
                 {investments.length === 0 ? (
                   <tr>
                     <td colSpan={9} className="p-6 text-center text-slate-500">
@@ -495,13 +495,13 @@ export default function InvestorManagement({ currentUser, onRefreshParent }) {
                   </tr>
                 ) : (
                   investments.map((inv) => (
-                    <tr key={inv.id} className="hover:bg-slate-800/50">
-                      <td className="p-3.5 font-bold text-white">
+                    <tr key={inv.id} className="hover:bg-slate-50/80 transition">
+                      <td className="p-3.5 font-bold text-slate-900">
                         {inv.investor_name}
                         <span className="block text-[10px] text-slate-400 font-normal">{inv.investor_phone}</span>
                       </td>
                       <td className="p-3.5 text-teal-300 font-semibold">{inv.cycle_name}</td>
-                      <td className="p-3.5 font-bold text-white text-sm">৳ {inv.amount_bdt?.toLocaleString()}</td>
+                      <td className="p-3.5 font-bold text-slate-900 text-sm">৳ {inv.amount_bdt?.toLocaleString()}</td>
                       <td className="p-3.5 text-slate-300">{inv.investment_date}</td>
                       <td className="p-3.5">
                         <span className="px-2 py-0.5 rounded-lg bg-teal-500/10 text-teal-300 border border-teal-500/20 font-bold">
@@ -511,7 +511,7 @@ export default function InvestorManagement({ currentUser, onRefreshParent }) {
                       <td className="p-3.5 font-bold text-emerald-400">
                         + ৳ {inv.estimated_profit_bdt?.toLocaleString()}
                       </td>
-                      <td className="p-3.5 font-bold text-white text-sm">
+                      <td className="p-3.5 font-bold text-slate-900 text-sm">
                         ৳ {inv.total_expected_payout_bdt?.toLocaleString()}
                       </td>
                       <td className="p-3.5">
@@ -543,7 +543,7 @@ export default function InvestorManagement({ currentUser, onRefreshParent }) {
                           <button
                             onClick={() => handleDeleteInvestment(inv.id)}
                             title="মুছে ফেলুন"
-                            className="p-1.5 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-slate-800 transition"
+                            className="p-1.5 rounded-lg text-slate-500 hover:text-rose-600 hover:bg-rose-50 border border-slate-200 transition cursor-pointer"
                           >
                             <Trash2 className="w-4 h-4" />
                           </button>
@@ -564,26 +564,26 @@ export default function InvestorManagement({ currentUser, onRefreshParent }) {
       {activeSubTab === 'investors' && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
           {investors.map((inv) => (
-            <div key={inv.id} className="p-5 rounded-2xl bg-slate-850 border border-slate-700/80 shadow-md space-y-3">
+            <div key={inv.id} className="p-5 rounded-2xl bg-white border border-slate-200 shadow-md space-y-3">
               <div className="flex justify-between items-start">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-2xl bg-teal-500/20 text-teal-400 flex items-center justify-center font-bold text-base">
                     {inv.name[0]}
                   </div>
                   <div>
-                    <h4 className="font-bold text-white text-sm">{inv.name}</h4>
+                    <h4 className="font-bold text-slate-900 text-sm">{inv.name}</h4>
                     <p className="text-slate-400 text-[11px]">{inv.phone} • {inv.address || 'চট্টগ্রাম'}</p>
                   </div>
                 </div>
-                <span className="px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 text-[10px]">
+                <span className="px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-200 text-[10px]">
                   {inv.investments_count || 0} টি চুক্তি
                 </span>
               </div>
 
-              <div className="grid grid-cols-3 gap-2 bg-slate-900/60 p-3 rounded-xl border border-slate-800">
+              <div className="grid grid-cols-3 gap-2 bg-slate-50 p-3 rounded-xl border border-slate-200">
                 <div>
                   <span className="text-slate-500 block text-[10px]">মোট বিনিয়োগ</span>
-                  <span className="font-bold text-white mt-0.5 block">৳ {inv.total_invested_bdt?.toLocaleString()}</span>
+                  <span className="font-bold text-slate-900 mt-0.5 block">৳ {inv.total_invested_bdt?.toLocaleString()}</span>
                 </div>
                 <div>
                   <span className="text-slate-500 block text-[10px]">প্রত্যাশিত লভ্যাংশ</span>
@@ -611,9 +611,9 @@ export default function InvestorManagement({ currentUser, onRefreshParent }) {
 
       {/* Modal A: New Investor Profile */}
       {showInvestorModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm overflow-y-auto">
-          <div className="bg-slate-900 border border-slate-700 w-full max-w-md rounded-3xl p-5 sm:p-6 shadow-2xl relative my-8 text-xs">
-            <h3 className="text-base font-bold text-white flex items-center gap-2 pb-2 border-b border-slate-800">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-50 backdrop-blur-sm overflow-y-auto">
+          <div className="bg-white border border-slate-200 w-full max-w-md rounded-3xl p-5 sm:p-6 shadow-2xl relative my-8 text-xs">
+            <h3 className="text-base font-bold text-slate-900 flex items-center gap-2 pb-2 border-b border-slate-100">
               <Users className="w-5 h-5 text-teal-400" />
               নতুন ইনভেস্টর প্রোফাইল (New Investor Profile)
             </h3>
@@ -627,7 +627,7 @@ export default function InvestorManagement({ currentUser, onRefreshParent }) {
                   placeholder="যেমন: আলহাজ্ব রফিক উদ্দিন"
                   value={newInvestor.name}
                   onChange={(e) => setNewInvestor({ ...newInvestor, name: e.target.value })}
-                  className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white font-medium"
+                  className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 shadow-sm focus:border-teal-600 focus:outline-none font-medium"
                 />
               </div>
 
@@ -640,7 +640,7 @@ export default function InvestorManagement({ currentUser, onRefreshParent }) {
                     placeholder="01819-XXXXXX"
                     value={newInvestor.phone}
                     onChange={(e) => setNewInvestor({ ...newInvestor, phone: e.target.value })}
-                    className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white"
+                    className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 shadow-sm focus:border-teal-600 focus:outline-none"
                   />
                 </div>
                 <div>
@@ -649,7 +649,7 @@ export default function InvestorManagement({ currentUser, onRefreshParent }) {
                     type="text"
                     value={newInvestor.nid}
                     onChange={(e) => setNewInvestor({ ...newInvestor, nid: e.target.value })}
-                    className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white"
+                    className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 shadow-sm focus:border-teal-600 focus:outline-none"
                   />
                 </div>
               </div>
@@ -661,7 +661,7 @@ export default function InvestorManagement({ currentUser, onRefreshParent }) {
                   placeholder="যেমন: পতেঙ্গা, চট্টগ্রাম"
                   value={newInvestor.address}
                   onChange={(e) => setNewInvestor({ ...newInvestor, address: e.target.value })}
-                  className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white"
+                  className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 shadow-sm focus:border-teal-600 focus:outline-none"
                 />
               </div>
 
@@ -671,7 +671,7 @@ export default function InvestorManagement({ currentUser, onRefreshParent }) {
                   rows="2"
                   value={newInvestor.notes}
                   onChange={(e) => setNewInvestor({ ...newInvestor, notes: e.target.value })}
-                  className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white"
+                  className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 shadow-sm focus:border-teal-600 focus:outline-none"
                 />
               </div>
 
@@ -679,13 +679,13 @@ export default function InvestorManagement({ currentUser, onRefreshParent }) {
                 <button
                   type="button"
                   onClick={() => setShowInvestorModal(false)}
-                  className="px-4 py-2.5 rounded-xl bg-slate-800 text-slate-300"
+                  className="px-4 py-2.5 rounded-xl bg-slate-100 text-slate-700 border border-slate-200"
                 >
                   বাতিল
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-bold"
+                  className="px-5 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-slate-900 font-bold"
                 >
                   সংরক্ষণ করুন
                 </button>
@@ -697,9 +697,9 @@ export default function InvestorManagement({ currentUser, onRefreshParent }) {
 
       {/* Modal B: New Investment Agreement */}
       {showInvestmentModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm overflow-y-auto">
-          <div className="bg-slate-900 border border-slate-700 w-full max-w-lg rounded-3xl p-5 sm:p-6 shadow-2xl relative my-8 text-xs">
-            <h3 className="text-base font-bold text-white flex items-center gap-2 pb-2 border-b border-slate-800">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-50 backdrop-blur-sm overflow-y-auto">
+          <div className="bg-white border border-slate-200 w-full max-w-lg rounded-3xl p-5 sm:p-6 shadow-2xl relative my-8 text-xs">
+            <h3 className="text-base font-bold text-slate-900 flex items-center gap-2 pb-2 border-b border-slate-100">
               <DollarSign className="w-5 h-5 text-emerald-400" />
               নতুন বিনিয়োগ চুক্তি ও লভ্যাংশ নির্ধারণ (New Investment Agreement)
             </h3>
@@ -711,7 +711,7 @@ export default function InvestorManagement({ currentUser, onRefreshParent }) {
                   <select
                     value={newInvestment.investor_id}
                     onChange={(e) => setNewInvestment({ ...newInvestment, investor_id: parseInt(e.target.value) })}
-                    className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white"
+                    className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 shadow-sm focus:border-teal-600 focus:outline-none"
                   >
                     {investors.map(inv => (
                       <option key={inv.id} value={inv.id}>{inv.name} ({inv.phone})</option>
@@ -723,7 +723,7 @@ export default function InvestorManagement({ currentUser, onRefreshParent }) {
                   <select
                     value={newInvestment.cycle_id}
                     onChange={(e) => setNewInvestment({ ...newInvestment, cycle_id: parseInt(e.target.value) })}
-                    className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white"
+                    className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 shadow-sm focus:border-teal-600 focus:outline-none"
                   >
                     <option value="">সমগ্র খামার (All Ponds / Farm)</option>
                     {cycles.map(c => (
@@ -741,7 +741,7 @@ export default function InvestorManagement({ currentUser, onRefreshParent }) {
                     required
                     value={newInvestment.amount_bdt}
                     onChange={(e) => setNewInvestment({ ...newInvestment, amount_bdt: parseFloat(e.target.value) || 0 })}
-                    className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-emerald-400 font-bold text-sm"
+                    className="w-full bg-slate-100 border border-slate-200 rounded-xl px-3 py-2 text-emerald-400 font-bold text-sm"
                   />
                 </div>
                 <div>
@@ -752,7 +752,7 @@ export default function InvestorManagement({ currentUser, onRefreshParent }) {
                     required
                     value={newInvestment.share_percentage}
                     onChange={(e) => setNewInvestment({ ...newInvestment, share_percentage: parseFloat(e.target.value) || 0 })}
-                    className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-teal-300 font-bold text-sm"
+                    className="w-full bg-slate-100 border border-slate-200 rounded-xl px-3 py-2 text-teal-300 font-bold text-sm"
                   />
                   <span className="text-[10px] text-slate-500 mt-0.5 block">
                     নিট মুনাফার শতকরা অংশ
@@ -766,7 +766,7 @@ export default function InvestorManagement({ currentUser, onRefreshParent }) {
                   type="date"
                   value={newInvestment.investment_date}
                   onChange={(e) => setNewInvestment({ ...newInvestment, investment_date: e.target.value })}
-                  className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white"
+                  className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 shadow-sm focus:border-teal-600 focus:outline-none"
                 />
               </div>
 
@@ -776,7 +776,7 @@ export default function InvestorManagement({ currentUser, onRefreshParent }) {
                   rows="2"
                   value={newInvestment.agreement_terms}
                   onChange={(e) => setNewInvestment({ ...newInvestment, agreement_terms: e.target.value })}
-                  className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white"
+                  className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 shadow-sm focus:border-teal-600 focus:outline-none"
                 />
               </div>
 
@@ -784,13 +784,13 @@ export default function InvestorManagement({ currentUser, onRefreshParent }) {
                 <button
                   type="button"
                   onClick={() => setShowInvestmentModal(false)}
-                  className="px-4 py-2.5 rounded-xl bg-slate-800 text-slate-300"
+                  className="px-4 py-2.5 rounded-xl bg-slate-100 text-slate-700 border border-slate-200"
                 >
                   বাতিল
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold"
+                  className="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-slate-900 font-bold"
                 >
                   চুক্তি চূড়ান্ত করুন
                 </button>
@@ -802,9 +802,9 @@ export default function InvestorManagement({ currentUser, onRefreshParent }) {
 
       {/* Modal C: Payout Recording */}
       {showPayoutModal && selectedInvestment && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm overflow-y-auto">
-          <div className="bg-slate-900 border border-slate-700 w-full max-w-md rounded-3xl p-5 sm:p-6 shadow-2xl relative my-8 text-xs">
-            <h3 className="text-base font-bold text-white flex items-center gap-2 pb-2 border-b border-slate-800">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-50 backdrop-blur-sm overflow-y-auto">
+          <div className="bg-white border border-slate-200 w-full max-w-md rounded-3xl p-5 sm:p-6 shadow-2xl relative my-8 text-xs">
+            <h3 className="text-base font-bold text-slate-900 flex items-center gap-2 pb-2 border-b border-slate-100">
               <DollarSign className="w-5 h-5 text-emerald-400" />
               ইনভেস্টরকে লভ্যাংশ ও মূলধন পরিশোধ (Dividend Payout)
             </h3>
@@ -820,7 +820,7 @@ export default function InvestorManagement({ currentUser, onRefreshParent }) {
                     type="number"
                     value={payoutForm.paid_profit_bdt}
                     onChange={(e) => setPayoutForm({ ...payoutForm, paid_profit_bdt: parseFloat(e.target.value) || 0 })}
-                    className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-emerald-400 font-bold"
+                    className="w-full bg-slate-100 border border-slate-200 rounded-xl px-3 py-2 text-emerald-400 font-bold"
                   />
                 </div>
                 <div>
@@ -829,7 +829,7 @@ export default function InvestorManagement({ currentUser, onRefreshParent }) {
                     type="number"
                     value={payoutForm.returned_capital_bdt}
                     onChange={(e) => setPayoutForm({ ...payoutForm, returned_capital_bdt: parseFloat(e.target.value) || 0 })}
-                    className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white font-bold"
+                    className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 shadow-sm focus:border-teal-600 focus:outline-none font-bold"
                   />
                 </div>
               </div>
@@ -841,7 +841,7 @@ export default function InvestorManagement({ currentUser, onRefreshParent }) {
                     type="date"
                     value={payoutForm.payout_date}
                     onChange={(e) => setPayoutForm({ ...payoutForm, payout_date: e.target.value })}
-                    className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white"
+                    className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 shadow-sm focus:border-teal-600 focus:outline-none"
                   />
                 </div>
                 <div>
@@ -850,7 +850,7 @@ export default function InvestorManagement({ currentUser, onRefreshParent }) {
                     type="text"
                     value={payoutForm.voucher_no}
                     onChange={(e) => setPayoutForm({ ...payoutForm, voucher_no: e.target.value })}
-                    className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white font-mono"
+                    className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 shadow-sm focus:border-teal-600 focus:outline-none font-mono"
                   />
                 </div>
               </div>
@@ -859,13 +859,13 @@ export default function InvestorManagement({ currentUser, onRefreshParent }) {
                 <button
                   type="button"
                   onClick={() => setShowPayoutModal(false)}
-                  className="px-4 py-2.5 rounded-xl bg-slate-800 text-slate-300"
+                  className="px-4 py-2.5 rounded-xl bg-slate-100 text-slate-700 border border-slate-200"
                 >
                   বাতিল
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold"
+                  className="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-slate-900 font-bold"
                 >
                   পরিশোধ রেকর্ড করুন
                 </button>

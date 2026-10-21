@@ -64,7 +64,7 @@ export default function Reports({ stats, ponds, feedInventory, expensesData }) {
       {/* Top Header & Print Action (no-print on physical sheet) */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 no-print">
         <div>
-          <h2 className="text-xl font-bold text-white flex items-center gap-2">
+          <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
             <FileText className="w-5 h-5 text-teal-400" />
             খাবার ও অপারেশনাল খরচের পূর্ণাঙ্গ রিপোর্ট (Costing & Audit Reports)
           </h2>
@@ -76,7 +76,7 @@ export default function Reports({ stats, ponds, feedInventory, expensesData }) {
           <button
             onClick={loadReport}
             title="রিফ্রেশ করুন"
-            className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition"
+            className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 border border-slate-300 cursor-pointer transition"
           >
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin text-teal-400' : ''}`} />
           </button>
@@ -90,10 +90,10 @@ export default function Reports({ stats, ponds, feedInventory, expensesData }) {
       </div>
 
       {/* FILTER & PERIOD SELECTOR CARD (Hidden in print) */}
-      <div className="p-4 sm:p-5 rounded-2xl bg-slate-850 border border-slate-700/80 shadow-xl space-y-4 no-print">
+      <div className="p-4 sm:p-5 rounded-2xl bg-white border border-slate-200 shadow-sm space-y-4 no-print">
         {/* Period Selector Buttons */}
         <div>
-          <label className="text-xs font-semibold text-slate-300 block mb-2">
+          <label className="text-xs font-semibold text-slate-700 block mb-2">
             রিপোর্টের সময়কাল নির্বাচন করুন (Select Time Period):
           </label>
           <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
@@ -109,8 +109,8 @@ export default function Reports({ stats, ponds, feedInventory, expensesData }) {
                 onClick={() => setPeriod(p.id)}
                 className={`p-3 rounded-xl border text-left transition flex flex-col justify-between ${
                   period === p.id
-                    ? 'bg-teal-500/15 border-teal-500 text-white ring-1 ring-teal-500/40 shadow-md'
-                    : 'bg-slate-900/60 border-slate-700/80 text-slate-400 hover:border-slate-600 hover:text-slate-200'
+                    ? 'bg-teal-50 border-teal-600 text-teal-900 ring-2 ring-teal-500/20 shadow-sm'
+                    : 'bg-slate-50 border-slate-200 text-slate-600 hover:border-slate-300 hover:text-slate-900'
                 }`}
               >
                 <span className="font-bold text-xs">{p.label}</span>
@@ -121,7 +121,7 @@ export default function Reports({ stats, ponds, feedInventory, expensesData }) {
         </div>
 
         {/* Dynamic Filters depending on Period */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-3 pt-2 border-t border-slate-700/60 text-xs">
+        <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-3 pt-2 border-t border-slate-100 text-xs">
           {/* Daily Date Picker */}
           {period === 'daily' && (
             <div>
@@ -130,18 +130,18 @@ export default function Reports({ stats, ponds, feedInventory, expensesData }) {
                 type="date"
                 value={targetDate}
                 onChange={(e) => setTargetDate(e.target.value)}
-                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-white font-medium focus:border-teal-500 focus:outline-none"
+                className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 font-medium focus:border-teal-600 shadow-sm focus:outline-none"
               />
               <div className="flex gap-1.5 mt-1.5">
                 <button 
                   onClick={() => setTargetDate('2026-10-15')}
-                  className="px-2 py-0.5 rounded bg-slate-800 text-[10px] text-teal-300 hover:bg-slate-700"
+                  className="px-2 py-0.5 rounded bg-slate-100 text-[10px] text-teal-700 hover:bg-slate-200 border border-slate-200"
                 >
                   ১৫ অক্টোবর
                 </button>
                 <button 
                   onClick={() => setTargetDate('2026-09-21')}
-                  className="px-2 py-0.5 rounded bg-slate-800 text-[10px] text-teal-300 hover:bg-slate-700"
+                  className="px-2 py-0.5 rounded bg-slate-100 text-[10px] text-teal-700 hover:bg-slate-200 border border-slate-200"
                 >
                   ২১ সেপ্টেম্বর
                 </button>
@@ -158,7 +158,7 @@ export default function Reports({ stats, ponds, feedInventory, expensesData }) {
                   type="date"
                   value={startDate}
                   onChange={(e) => setStartDate(e.target.value)}
-                  className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-white font-medium focus:border-teal-500 focus:outline-none"
+                  className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 font-medium focus:border-teal-600 shadow-sm focus:outline-none"
                 />
               </div>
               <div>
@@ -167,7 +167,7 @@ export default function Reports({ stats, ponds, feedInventory, expensesData }) {
                   type="date"
                   value={endDate}
                   onChange={(e) => setEndDate(e.target.value)}
-                  className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-white font-medium focus:border-teal-500 focus:outline-none"
+                  className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 font-medium focus:border-teal-600 shadow-sm focus:outline-none"
                 />
               </div>
             </>
@@ -179,7 +179,7 @@ export default function Reports({ stats, ponds, feedInventory, expensesData }) {
             <select
               value={pondId}
               onChange={(e) => setPondId(e.target.value)}
-              className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-white font-medium focus:border-teal-500 focus:outline-none"
+              className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 font-medium focus:border-teal-600 shadow-sm focus:outline-none"
             >
               <option value="all">সব পুকুর (All 4 Ponds)</option>
               {ponds?.map(p => (
@@ -197,7 +197,7 @@ export default function Reports({ stats, ponds, feedInventory, expensesData }) {
                 placeholder="ফিড, ওষুধ, ভাউচার, পাঙ্গাশ..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full bg-slate-900 border border-slate-700 rounded-xl pl-8 pr-3 py-2 text-white placeholder-slate-500 focus:border-teal-500 focus:outline-none"
+                className="w-full bg-white border border-slate-300 rounded-xl pl-8 pr-3 py-2 text-slate-900 placeholder-slate-400 focus:border-teal-600 shadow-sm focus:outline-none"
               />
               <Search className="w-4 h-4 text-slate-500 absolute left-2.5 top-2.5" />
             </div>
@@ -208,10 +208,10 @@ export default function Reports({ stats, ponds, feedInventory, expensesData }) {
       {/* ========================================================================= */}
       {/* OFFICIAL PRINTABLE REPORT CONTAINER (Renders on screen and print) */}
       {/* ========================================================================= */}
-      <div className="printable-report p-6 sm:p-8 rounded-3xl bg-slate-900 border border-slate-700 shadow-2xl space-y-6 text-slate-200">
+      <div className="printable-report p-6 sm:p-8 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-6 text-slate-800">
         
         {/* Printable Official Header */}
-        <div className="border-b border-slate-800 pb-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div className="border-b border-slate-200 pb-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
             <div className="flex items-center gap-2">
               <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-teal-500/20 text-teal-300 border border-teal-500/30 uppercase tracking-wider">
@@ -219,7 +219,7 @@ export default function Reports({ stats, ponds, feedInventory, expensesData }) {
               </span>
               <span className="text-xs text-slate-400">• ৪টি পুকুর</span>
             </div>
-            <h1 className="text-2xl font-black text-white mt-1.5 tracking-tight">
+            <h1 className="text-2xl font-black text-slate-900 mt-1.5 tracking-tight">
               শাহ আমানত ফিশারি অ্যান্ড এগ্রো প্রজেক্ট
             </h1>
             <p className="text-xs text-slate-400 mt-1">
@@ -227,12 +227,12 @@ export default function Reports({ stats, ponds, feedInventory, expensesData }) {
             </p>
           </div>
 
-          <div className="text-right text-xs text-slate-400 sm:border-l sm:border-slate-800 sm:pl-4">
+          <div className="text-right text-xs text-slate-400 sm:border-l sm:border-slate-200 sm:pl-4">
             <div className="font-bold text-teal-400 text-sm">
               {report?.period_label || 'খরচ ও খাদ্য রিপোর্ট'}
             </div>
-            <div className="text-slate-300 mt-0.5">
-              তারিখ ব্যপ্তি: <span className="font-semibold text-white">{report?.start_date}</span> হতে <span className="font-semibold text-white">{report?.end_date}</span>
+            <div className="text-slate-600 mt-0.5">
+              তারিখ ব্যপ্তি: <span className="font-semibold text-slate-900">{report?.start_date}</span> হতে <span className="font-semibold text-slate-900">{report?.end_date}</span>
             </div>
             <div className="text-[11px] text-slate-400 mt-0.5">
               রিপোর্ট জেনারেট: {new Date().toLocaleDateString('bn-BD')}
@@ -254,7 +254,7 @@ export default function Reports({ stats, ponds, feedInventory, expensesData }) {
               <div className="text-xl font-bold text-cyan-300 mt-1">
                 {summary.feed_bags_consumed || 0} <span className="text-xs text-slate-400 font-normal">ব্যাগ</span>
               </div>
-              <div className="text-xs font-semibold text-white mt-0.5">
+              <div className="text-xs font-semibold text-slate-900 mt-0.5">
                 = ৳ {summary.feed_consumed_cost_bdt?.toLocaleString() || 0}
               </div>
               <span className="text-[10px] text-slate-400 mt-1 block">
@@ -268,7 +268,7 @@ export default function Reports({ stats, ponds, feedInventory, expensesData }) {
               <div className="text-xl font-bold text-amber-300 mt-1">
                 {summary.vaat_kg_consumed || 0} <span className="text-xs text-slate-400 font-normal">কেজি</span>
               </div>
-              <div className="text-xs font-semibold text-white mt-0.5">
+              <div className="text-xs font-semibold text-slate-900 mt-0.5">
                 = ৳ {summary.vaat_cost_bdt?.toLocaleString() || 0}
               </div>
               <span className="text-[10px] text-slate-400 mt-1 block">
@@ -279,7 +279,7 @@ export default function Reports({ stats, ponds, feedInventory, expensesData }) {
             {/* 3. Medicine & Operations */}
             <div className="printable-card bg-slate-850 p-4 rounded-2xl border border-slate-700/80">
               <span className="text-slate-400 block font-medium">ওষুধ, বিদ্যুৎ ও মজুরি</span>
-              <div className="text-xl font-bold text-white mt-1">
+              <div className="text-xl font-bold text-slate-900 mt-1">
                 ৳ {summary.total_other_expenses_bdt?.toLocaleString() || 0}
               </div>
               <div className="text-[10px] text-slate-400 mt-1 space-y-0.5">
@@ -303,13 +303,13 @@ export default function Reports({ stats, ponds, feedInventory, expensesData }) {
 
         {/* 2. SIX-MONTH TOTAL CYCLE MASTER ENGINE (সম্পূর্ণ ৬ মাসের কালচার সাইকেল হিসাব) */}
         <div className="printable-card p-5 rounded-2xl bg-gradient-to-br from-slate-950 via-slate-900 to-teal-950/30 border border-teal-500/40 space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-800">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-200">
             <div className="flex items-center gap-2.5">
               <span className="p-2 rounded-xl bg-teal-500/20 text-teal-400 shrink-0">
                 <Sparkles className="w-5 h-5" />
               </span>
               <div>
-                <h4 className="font-bold text-white text-base">
+                <h4 className="font-bold text-slate-900 text-base">
                   ৬ মাসের পূর্ণাঙ্গ কালচার সাইকেল মাস্টার প্ল্যান (Total 6-Month Culture Cycle)
                 </h4>
                 <p className="text-xs text-slate-400">
@@ -317,35 +317,35 @@ export default function Reports({ stats, ponds, feedInventory, expensesData }) {
                 </p>
               </div>
             </div>
-            <div className="px-3 py-1 rounded-xl bg-teal-500/10 border border-teal-500/30 text-teal-300 font-bold text-xs">
+            <div className="px-3 py-1 rounded-xl bg-teal-50 border border-teal-200 text-teal-700 font-bold text-xs">
               সাইকেল সময়কাল: ৬ মাস
             </div>
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
-            <div className="bg-slate-900/80 p-3.5 rounded-xl border border-slate-800">
+            <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
               <span className="text-slate-400 block font-medium">অনুমিত মোট খাদ্য প্রয়োজন</span>
-              <span className="font-bold text-white text-base mt-1 block">
+              <span className="font-bold text-slate-900 text-base mt-1 block">
                 {cycle.estimated_total_feed_bags?.toLocaleString()} ব্যাগ
               </span>
-              <span className="text-[10px] text-teal-300 mt-0.5 block">
+              <span className="text-[10px] text-teal-700 mt-0.5 block">
                 ~ ৳ {cycle.estimated_total_feed_cost_bdt?.toLocaleString()} (FCR 1.35)
               </span>
             </div>
 
-            <div className="bg-slate-900/80 p-3.5 rounded-xl border border-slate-800">
+            <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
               <span className="text-slate-400 block font-medium">বর্তমান পর্যন্ত খাওয়ানো ফিড</span>
-              <span className="font-bold text-cyan-300 text-base mt-1 block">
+              <span className="font-bold text-cyan-700 text-base mt-1 block">
                 {cycle.actual_feed_bags_consumed_to_date} ব্যাগ
               </span>
               <span className="text-[10px] text-slate-400 mt-0.5 block">
-                স্টকে আছে: {310 - cycle.actual_feed_bags_consumed_to_date} ব্যাগ
+                স্টকে আছে: {((stats?.feed_summary?.total_feed_bags_received) || 430) - cycle.actual_feed_bags_consumed_to_date} ব্যাগ
               </span>
             </div>
 
-            <div className="bg-slate-900/80 p-3.5 rounded-xl border border-slate-800">
+            <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
               <span className="text-slate-400 block font-medium">সম্ভাব্য মোট বিক্রয়মূল্য (Revenue)</span>
-              <span className="font-bold text-emerald-400 text-base mt-1 block">
+              <span className="font-bold text-emerald-700 text-base mt-1 block">
                 ৳ {cycle.projected_gross_revenue_bdt?.toLocaleString()}
               </span>
               <span className="text-[10px] text-slate-400 mt-0.5 block">
@@ -353,12 +353,12 @@ export default function Reports({ stats, ponds, feedInventory, expensesData }) {
               </span>
             </div>
 
-            <div className="bg-slate-900/80 p-3.5 rounded-xl border border-slate-800">
+            <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
               <span className="text-slate-400 block font-medium">সম্ভাব্য মোট নিট মুনাফা (Net Profit)</span>
-              <span className="font-bold text-teal-300 text-base mt-1 block">
+              <span className="font-bold text-teal-700 text-base mt-1 block">
                 + ৳ {cycle.projected_net_profit_bdt?.toLocaleString()}
               </span>
-              <span className="text-[10px] text-emerald-400 mt-0.5 block font-semibold">
+              <span className="text-[10px] text-emerald-700 mt-0.5 block font-semibold">
                 আনুমানিক ROI: ~৪৫-৫০%
               </span>
             </div>
@@ -372,7 +372,7 @@ export default function Reports({ stats, ponds, feedInventory, expensesData }) {
                 {((cycle.actual_feed_bags_consumed_to_date / (cycle.estimated_total_feed_bags || 1)) * 100).toFixed(1)}% সম্পন্ন
               </span>
             </div>
-            <div className="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden">
+            <div className="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden">
               <div 
                 className="bg-gradient-to-r from-teal-500 to-cyan-400 h-full rounded-full transition-all duration-500"
                 style={{ width: `${Math.min(100, (cycle.actual_feed_bags_consumed_to_date / (cycle.estimated_total_feed_bags || 1)) * 100)}%` }}
@@ -385,7 +385,7 @@ export default function Reports({ stats, ponds, feedInventory, expensesData }) {
         <div>
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
             <div>
-              <h3 className="text-sm font-bold text-white flex items-center gap-1.5">
+              <h3 className="text-sm font-bold text-slate-900 flex items-center gap-1.5">
                 <Layers className="w-4 h-4 text-teal-400" />
                 বিস্তারিত দৈনিক খরচ ও খাদ্য লগ বিবরণী (Itemized Costing Ledger)
               </h3>
@@ -394,13 +394,13 @@ export default function Reports({ stats, ponds, feedInventory, expensesData }) {
               </p>
             </div>
             <span className="text-xs text-slate-400 font-medium">
-              মোট রেকর্ড: <span className="font-bold text-white">{filteredLedger.length} টি</span>
+              মোট রেকর্ড: <span className="font-bold text-slate-900">{filteredLedger.length} টি</span>
             </span>
           </div>
 
-          <div className="overflow-x-auto rounded-2xl border border-slate-800 bg-slate-850">
+          <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
             <table className="w-full text-left text-xs text-slate-300">
-              <thead className="bg-slate-900 text-slate-400 uppercase text-[11px] border-b border-slate-700">
+              <thead className="bg-slate-50 text-slate-600 font-semibold uppercase text-[11px] border-b border-slate-200">
                 <tr>
                   <th className="p-3">তারিখ</th>
                   <th className="p-3">খাত / বিবরণ</th>
@@ -410,7 +410,7 @@ export default function Reports({ stats, ponds, feedInventory, expensesData }) {
                   <th className="p-3 text-right">টাকার পরিমাণ (BDT)</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800">
+              <tbody className="divide-y divide-slate-100">
                 {filteredLedger.length === 0 ? (
                   <tr>
                     <td colSpan={6} className="p-4 text-center text-slate-500">
@@ -419,8 +419,8 @@ export default function Reports({ stats, ponds, feedInventory, expensesData }) {
                   </tr>
                 ) : (
                   filteredLedger.map((item, idx) => (
-                    <tr key={idx} className="hover:bg-slate-800/50">
-                      <td className="p-3 font-semibold text-white whitespace-nowrap">{item.date}</td>
+                    <tr key={idx} className="hover:bg-slate-50/80 transition">
+                      <td className="p-3 font-semibold text-slate-900 whitespace-nowrap">{item.date}</td>
                       <td className="p-3 font-medium">
                         <span className={`px-2 py-0.5 rounded-lg border text-[11px] ${
                           item.badge_color === 'cyan' 
@@ -434,17 +434,17 @@ export default function Reports({ stats, ponds, feedInventory, expensesData }) {
                           {item.type}
                         </span>
                       </td>
-                      <td className="p-3 text-teal-300 font-medium">{item.pond}</td>
-                      <td className="p-3 font-semibold text-white">{item.quantity}</td>
-                      <td className="p-3 text-slate-300 text-[11px]">{item.description}</td>
-                      <td className="p-3 text-right font-bold text-white whitespace-nowrap">
+                      <td className="p-3 text-teal-700 font-medium">{item.pond}</td>
+                      <td className="p-3 font-semibold text-slate-900">{item.quantity}</td>
+                      <td className="p-3 text-slate-600 text-[11px]">{item.description}</td>
+                      <td className="p-3 text-right font-bold text-slate-900 whitespace-nowrap">
                         {item.amount_bdt > 0 ? `৳ ${item.amount_bdt.toLocaleString()}` : '-'}
                       </td>
                     </tr>
                   ))
                 )}
               </tbody>
-              <tfoot className="bg-slate-900 border-t border-slate-700 font-bold text-white text-xs">
+              <tfoot className="bg-slate-900 border-t border-slate-700 font-bold text-slate-900 text-xs">
                 <tr>
                   <td colSpan={5} className="p-3 text-right">নির্বাচিত সময়ের মোট ব্যয় (Total):</td>
                   <td className="p-3 text-right text-emerald-400 font-black text-sm">
@@ -457,20 +457,20 @@ export default function Reports({ stats, ponds, feedInventory, expensesData }) {
         </div>
 
         {/* 4. OFFICIAL SIGNATURES FOR PRINT / AUDIT */}
-        <div className="pt-8 border-t border-slate-800 mt-6 grid grid-cols-3 gap-6 text-center text-xs">
+        <div className="pt-8 border-t border-slate-200 mt-6 grid grid-cols-3 gap-6 text-center text-xs">
           <div>
-            <div className="h-10 border-b border-dashed border-slate-600 mb-2" />
-            <span className="font-bold text-slate-300 block">ফিল্ড ম্যানেজার / হিসাবরক্ষক</span>
+            <div className="h-10 border-b border-dashed border-slate-300 mb-2" />
+            <span className="font-bold text-slate-800 block">ফিল্ড ম্যানেজার / হিসাবরক্ষক</span>
             <span className="text-[11px] text-slate-500 block">শাহ আমানত ফিশারি অ্যান্ড এগ্রো</span>
           </div>
           <div>
-            <div className="h-10 border-b border-dashed border-slate-600 mb-2" />
-            <span className="font-bold text-slate-300 block">নিরীক্ষক / ইন্টারনাল অডিটর</span>
+            <div className="h-10 border-b border-dashed border-slate-300 mb-2" />
+            <span className="font-bold text-slate-800 block">নিরীক্ষক / ইন্টারনাল অডিটর</span>
             <span className="text-[11px] text-slate-500 block">যাচাইকৃত ও সঠিক</span>
           </div>
           <div>
-            <div className="h-10 border-b border-dashed border-slate-600 mb-2" />
-            <span className="font-bold text-teal-400 block">সুপারএডমিন / প্রকল্প পরিচালক</span>
+            <div className="h-10 border-b border-dashed border-slate-300 mb-2" />
+            <span className="font-bold text-teal-700 block">সুপারএডমিন / প্রকল্প পরিচালক</span>
             <span className="text-[11px] text-slate-500 block">চূড়ান্ত অনুমোদনকারী</span>
           </div>
         </div>

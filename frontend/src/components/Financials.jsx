@@ -52,7 +52,7 @@ export default function Financials({ expensesData, harvestData, currentUser, onO
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h2 className="text-xl font-bold text-white flex items-center gap-2">
+          <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
             <DollarSign className="w-5 h-5 text-emerald-400" />
             খরচ, লাভ ও ফিনান্সিয়াল হিসাব (Financials & Profit Engine)
           </h2>
@@ -63,7 +63,7 @@ export default function Financials({ expensesData, harvestData, currentUser, onO
         <div className="flex items-center gap-2">
           <button
             onClick={() => onOpenModal('expense')}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-300 border border-slate-700 text-xs font-medium transition"
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-700 text-amber-300 border border-slate-200 text-xs font-medium transition"
           >
             <Plus className="w-4 h-4" /> নতুন খরচ এন্ট্রি
           </button>
@@ -79,13 +79,13 @@ export default function Financials({ expensesData, harvestData, currentUser, onO
       {/* INTERACTIVE PROFIT SIMULATOR & FORECASTING */}
       {analysis && (
         <div className="p-5 rounded-2xl bg-gradient-to-br from-slate-900 via-slate-850 to-teal-950/40 border border-teal-500/40 shadow-xl space-y-5">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-700/80">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-200">
             <div className="flex items-center gap-2">
               <span className="p-2 rounded-xl bg-teal-500/20 text-teal-400">
                 <Sliders className="w-5 h-5" />
               </span>
               <div>
-                <h3 className="font-bold text-white text-base">মাছ বিক্রির মুনাফা সিমুলেটর (Live Harvest Profit Calculator)</h3>
+                <h3 className="font-bold text-slate-900 text-base">মাছ বিক্রির মুনাফা সিমুলেটর (Live Harvest Profit Calculator)</h3>
                 <p className="text-xs text-slate-400">টার্গেট ওজন ও সম্ভাব্য বাজারদর পরিবর্তন করে এখনই সম্ভাব্য লাভ ও ব্রেক-ইভেন রেট দেখুন</p>
               </div>
             </div>
@@ -93,7 +93,7 @@ export default function Financials({ expensesData, harvestData, currentUser, onO
 
           {/* Interactive Sliders / Inputs */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="bg-slate-900/60 p-4 rounded-xl border border-slate-800 space-y-2">
+            <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
               <div className="flex justify-between text-xs">
                 <span className="text-slate-300 font-medium">পাঙ্গাশ বিক্রয় সাইজ (Target Weight):</span>
                 <span className="font-bold text-teal-300">{targetWeight} কেজি / পিস</span>
@@ -114,7 +114,7 @@ export default function Financials({ expensesData, harvestData, currentUser, onO
               </div>
             </div>
 
-            <div className="bg-slate-900/60 p-4 rounded-xl border border-slate-800 space-y-2">
+            <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
               <div className="flex justify-between text-xs">
                 <span className="text-slate-300 font-medium">সম্ভাব্য বাজার দর (Pangash Selling Price):</span>
                 <span className="font-bold text-emerald-400">৳ {sellingPrice} / কেজি</span>
@@ -138,9 +138,9 @@ export default function Financials({ expensesData, harvestData, currentUser, onO
 
           {/* Computed Results Grid */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 pt-2">
-            <div className="bg-slate-900/70 p-3.5 rounded-xl border border-slate-800">
+            <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
               <span className="text-xs text-slate-400 block">মোট সম্ভাব্য উৎপাদন (Biomass)</span>
-              <div className="text-lg font-bold text-white mt-1">
+              <div className="text-lg font-bold text-slate-900 mt-1">
                 {analysis.fish_projections.total_projected_biomass_kg?.toLocaleString()} <span className="text-xs font-normal text-slate-400">কেজি</span>
               </div>
               <span className="text-[11px] text-teal-300 block mt-0.5">
@@ -148,7 +148,7 @@ export default function Financials({ expensesData, harvestData, currentUser, onO
               </span>
             </div>
 
-            <div className="bg-slate-900/70 p-3.5 rounded-xl border border-slate-800">
+            <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
               <span className="text-xs text-slate-400 block">মোট বিক্রয়মূল্য (Gross Revenue)</span>
               <div className="text-lg font-bold text-teal-300 mt-1">
                 ৳ {analysis.profit_forecast.total_projected_revenue?.toLocaleString()}
@@ -158,7 +158,7 @@ export default function Financials({ expensesData, harvestData, currentUser, onO
               </span>
             </div>
 
-            <div className="bg-slate-900/70 p-3.5 rounded-xl border border-slate-800">
+            <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
               <span className="text-xs text-slate-400 block">ব্রেক-ইভেন ও কেজি প্রতি খরচ</span>
               <div className="text-lg font-bold text-amber-300 mt-1">
                 ৳ {analysis.profit_forecast.cost_per_kg_produced} <span className="text-xs font-normal text-slate-400">/কেজি</span>
@@ -168,7 +168,7 @@ export default function Financials({ expensesData, harvestData, currentUser, onO
               </span>
             </div>
 
-            <div className="bg-slate-900/70 p-3.5 rounded-xl border border-slate-800">
+            <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
               <span className="text-xs text-slate-400 block">সম্ভাব্য নীট মুনাফা (Net Profit)</span>
               <div className="text-xl font-bold text-emerald-400 mt-1">
                 + ৳ {analysis.profit_forecast.projected_net_profit?.toLocaleString()}
@@ -183,7 +183,7 @@ export default function Financials({ expensesData, harvestData, currentUser, onO
 
       {/* EXPENSE CATEGORIES SUMMARY */}
       {expensesData?.by_category && (
-        <div className="p-4 rounded-2xl bg-slate-800/60 border border-slate-700 space-y-3">
+        <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
           <div className="flex justify-between items-center">
             <h4 className="text-xs font-bold text-slate-300 uppercase tracking-wider">
               খাতওয়ারি খরচের বিবরণ (Expense Breakdown)
@@ -195,7 +195,7 @@ export default function Financials({ expensesData, harvestData, currentUser, onO
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
             {Object.entries(expensesData.by_category).map(([cat, amt]) => (
-              <div key={cat} className="p-2.5 rounded-xl bg-slate-900/50 border border-slate-800 text-xs">
+              <div key={cat} className="p-2.5 rounded-xl bg-white border border-slate-200 shadow-sm text-xs">
                 <span className="text-slate-400 block truncate">{cat}</span>
                 <span className="font-bold text-white mt-0.5 block">৳ {Number(amt).toLocaleString()}</span>
               </div>
@@ -207,11 +207,11 @@ export default function Financials({ expensesData, harvestData, currentUser, onO
       {/* EXPENSES LOG TABLE */}
       <div>
         <div className="flex justify-between items-center mb-3">
-          <h3 className="text-sm font-semibold text-white">দৈনিক ব্যয়ের খাতা (Expense Logs)</h3>
+          <h3 className="text-sm font-semibold text-slate-900">দৈনিক ব্যয়ের খাতা (Expense Logs)</h3>
           <select
             value={filterCategory}
             onChange={(e) => setFilterCategory(e.target.value)}
-            className="bg-slate-800 border border-slate-700 text-xs rounded-xl px-3 py-1.5 text-slate-300 focus:outline-none"
+            className="bg-slate-100 border border-slate-200 text-xs rounded-xl px-3 py-1.5 text-slate-300 focus:outline-none"
           >
             <option value="all">সব খাত (All Categories)</option>
             <option value="Feed Purchase">Feed Purchase</option>
@@ -223,9 +223,9 @@ export default function Financials({ expensesData, harvestData, currentUser, onO
           </select>
         </div>
 
-        <div className="overflow-x-auto rounded-2xl border border-slate-700/80 bg-slate-850">
+        <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
           <table className="w-full text-left text-xs text-slate-300">
-            <thead className="bg-slate-900/90 text-slate-400 uppercase text-[11px] border-b border-slate-700">
+            <thead className="bg-slate-50 text-slate-600 font-semibold uppercase text-[11px] border-b border-slate-200">
               <tr>
                 <th className="p-3.5">তারিখ</th>
                 <th className="p-3.5">খাত (Category)</th>
@@ -236,17 +236,17 @@ export default function Financials({ expensesData, harvestData, currentUser, onO
                 {isAdmin && <th className="p-3.5 text-right">অ্যাকশন</th>}
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800">
+            <tbody className="divide-y divide-slate-100">
               {filteredExpenses.map((e) => (
-                <tr key={e.id} className="hover:bg-slate-800/50">
-                  <td className="p-3.5 font-medium text-white">{e.date}</td>
+                <tr key={e.id} className="hover:bg-slate-50/80 transition">
+                  <td className="p-3.5 font-medium text-slate-900">{e.date}</td>
                   <td className="p-3.5">
                     <span className="px-2 py-0.5 rounded-lg bg-amber-500/10 text-amber-300 border border-amber-500/20 font-medium">
                       {e.category}
                     </span>
                   </td>
                   <td className="p-3.5 text-slate-200">{e.description}</td>
-                  <td className="p-3.5 font-bold text-white text-sm">৳ {e.amount_bdt?.toLocaleString()}</td>
+                  <td className="p-3.5 font-bold text-slate-900 text-sm">৳ {e.amount_bdt?.toLocaleString()}</td>
                   <td className="p-3.5 text-slate-400 font-mono text-[11px]">{e.voucher_no || '-'}</td>
                   <td className="p-3.5 text-slate-400">{e.recorded_by}</td>
                   {isAdmin && (
@@ -254,14 +254,14 @@ export default function Financials({ expensesData, harvestData, currentUser, onO
                       <button
                         onClick={() => onOpenModal('expense', { editItem: e })}
                         title="সম্পাদনা করুন"
-                        className="p-1.5 text-slate-400 hover:text-teal-300 hover:bg-slate-800 rounded-lg transition mr-1"
+                        className="p-1.5 text-slate-500 hover:text-teal-700 hover:bg-slate-100 rounded-lg border border-slate-200 cursor-pointer transition mr-1"
                       >
                         <Edit3 className="w-4 h-4" />
                       </button>
                       <button
                         onClick={() => handleDeleteExpense(e.id)}
                         title="মুছে ফেলুন"
-                        className="p-1.5 text-slate-400 hover:text-rose-400 hover:bg-slate-800 rounded-lg transition"
+                        className="p-1.5 text-slate-500 hover:text-rose-600 hover:bg-slate-100 rounded-lg border border-slate-200 cursor-pointer transition"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -277,15 +277,15 @@ export default function Financials({ expensesData, harvestData, currentUser, onO
       {/* HARVEST & SALES TABLE */}
       <div>
         <div className="flex justify-between items-center mb-3">
-          <h3 className="text-sm font-semibold text-white">মাছ বিক্রি ও আয়ের রেকর্ড (Fish Harvest & Sales)</h3>
+          <h3 className="text-sm font-semibold text-slate-900">মাছ বিক্রি ও আয়ের রেকর্ড (Fish Harvest & Sales)</h3>
           <span className="text-xs text-slate-400">
             মোট বিক্রয়: ৳ {harvestData?.total_revenue_bdt?.toLocaleString() || 0}
           </span>
         </div>
 
-        <div className="overflow-x-auto rounded-2xl border border-slate-700/80 bg-slate-850">
+        <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
           <table className="w-full text-left text-xs text-slate-300">
-            <thead className="bg-slate-900/90 text-slate-400 uppercase text-[11px] border-b border-slate-700">
+            <thead className="bg-slate-50 text-slate-600 font-semibold uppercase text-[11px] border-b border-slate-200">
               <tr>
                 <th className="p-3.5">তারিখ</th>
                 <th className="p-3.5">পুকুর নং</th>
@@ -297,7 +297,7 @@ export default function Financials({ expensesData, harvestData, currentUser, onO
                 {isAdmin && <th className="p-3.5 text-right">অ্যাকশন</th>}
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800">
+            <tbody className="divide-y divide-slate-100">
               {harvests.length === 0 ? (
                 <tr>
                   <td colSpan={isAdmin ? 8 : 7} className="p-4 text-center text-slate-500">
@@ -306,8 +306,8 @@ export default function Financials({ expensesData, harvestData, currentUser, onO
                 </tr>
               ) : (
                 harvests.map((h) => (
-                  <tr key={h.id} className="hover:bg-slate-800/50">
-                    <td className="p-3.5 font-medium text-white">{h.date}</td>
+                  <tr key={h.id} className="hover:bg-slate-50/80 transition">
+                    <td className="p-3.5 font-medium text-slate-900">{h.date}</td>
                     <td className="p-3.5 text-teal-300 font-semibold">{h.pond_name || `পুকুর ${h.pond_id}`}</td>
                     <td className="p-3.5 font-medium text-slate-200">{h.fish_type}</td>
                     <td className="p-3.5 font-bold text-white">{h.total_weight_kg?.toLocaleString()} কেজি</td>
@@ -319,14 +319,14 @@ export default function Financials({ expensesData, harvestData, currentUser, onO
                         <button
                           onClick={() => onOpenModal('harvest', { editItem: h })}
                           title="সম্পাদনা করুন"
-                          className="p-1.5 text-slate-400 hover:text-teal-300 hover:bg-slate-800 rounded-lg transition mr-1"
+                          className="p-1.5 text-slate-500 hover:text-teal-700 hover:bg-slate-100 rounded-lg border border-slate-200 cursor-pointer transition mr-1"
                         >
                           <Edit3 className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => handleDeleteHarvest(h.id)}
                           title="মুছে ফেলুন"
-                          className="p-1.5 text-slate-400 hover:text-rose-400 hover:bg-slate-800 rounded-lg transition"
+                          className="p-1.5 text-slate-500 hover:text-rose-600 hover:bg-slate-100 rounded-lg border border-slate-200 cursor-pointer transition"
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>

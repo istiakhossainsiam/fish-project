@@ -516,7 +516,7 @@ export default function Dashboard({ stats, ponds, weather, setActiveTab, onOpenM
           </div>
         </div>
 
-        {/* Feed Stock (310 Bags Received) */}
+        {/* Feed Stock */}
         <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm">
           <div className="flex items-center justify-between">
             <span className="text-xs text-slate-500 font-semibold">ফিড স্টক (Feed Bags)</span>
@@ -529,7 +529,7 @@ export default function Dashboard({ stats, ponds, weather, setActiveTab, onOpenM
               {feed_summary.remaining_feed_bags % 1 === 0 ? feed_summary.remaining_feed_bags : Number(feed_summary.remaining_feed_bags).toFixed(1)} <span className="text-xs text-cyan-700 font-bold">ব্যাগ অবশিষ্ট</span>
             </div>
             <p className="text-xs text-slate-500 mt-1">
-              মোট ৩১০ ব্যাগ এসেছে (ব্যবহৃত: {feed_summary.total_feed_bags_consumed} ব্যাগ)
+              মোট {feed_summary.total_feed_bags_received || 430} ব্যাগ এসেছে (ব্যবহৃত: {feed_summary.total_feed_bags_consumed} ব্যাগ)
             </p>
           </div>
         </div>

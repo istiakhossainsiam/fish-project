@@ -14,11 +14,11 @@ export default function Modals({ modalType, modalProps, onClose, onSuccess, pond
   if (!modalType) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm overflow-y-auto">
-      <div className="bg-slate-900 border border-slate-700 w-full max-w-lg rounded-3xl p-5 sm:p-6 shadow-2xl relative my-8">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm overflow-y-auto">
+      <div className="bg-white border border-slate-200 w-full max-w-lg rounded-3xl p-5 sm:p-6 shadow-2xl relative my-8 text-slate-800">
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-2 text-slate-400 hover:text-white rounded-xl bg-slate-800 hover:bg-slate-700 transition"
+          className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-800 rounded-xl bg-slate-100 hover:bg-slate-200 cursor-pointer transition"
         >
           <X className="w-5 h-5" />
         </button>
@@ -90,32 +90,32 @@ function FeedModal({ ponds, initialPond, editItem, onClose, onSuccess }) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4 text-xs">
-      <div className="flex items-center gap-2 pb-2 border-b border-slate-800">
-        <Package className="w-5 h-5 text-teal-400" />
+      <div className="flex items-center gap-2 pb-2 border-b border-slate-100">
+        <Package className="w-5 h-5 text-teal-600" />
         <div>
-          <h3 className="text-base font-bold text-white">
+          <h3 className="text-base font-bold text-slate-900">
             {isEdit ? 'খাবারের হিসাব সম্পাদনা (Edit Daily Feed)' : 'দৈনিক খাবার এন্ট্রি (Daily Feed Entry)'}
           </h3>
-          <p className="text-[11px] text-slate-400">২১/০৯/২০২৬ বা পূর্ববর্তী যেকোনো তারিখ নির্বাচন করে ব্যাগের হিসাব দিতে পারবেন</p>
+          <p className="text-[11px] text-slate-500">২১/০৯/২০২৬ বা পূর্ববর্তী যেকোনো তারিখ নির্বাচন করে ব্যাগের হিসাব দিতে পারবেন</p>
         </div>
       </div>
 
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="text-slate-300 font-medium block mb-1">খাবার দেওয়ার তারিখ (Date)</label>
+          <label className="text-slate-700 font-semibold block mb-1">খাবার দেওয়ার তারিখ (Date)</label>
           <input
             type="date"
             value={formData.date}
             onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-            className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white font-medium focus:border-teal-500 focus:outline-none"
+            className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 font-medium focus:border-teal-600 focus:outline-none shadow-sm"
           />
         </div>
         <div>
-          <label className="text-slate-300 font-medium block mb-1">পুকুর নির্বাচন</label>
+          <label className="text-slate-700 font-semibold block mb-1">পুকুর নির্বাচন</label>
           <select
             value={formData.pond_id}
             onChange={(e) => setFormData({ ...formData, pond_id: parseInt(e.target.value) })}
-            className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white font-medium focus:border-teal-500 focus:outline-none"
+            className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 font-medium focus:border-teal-600 focus:outline-none shadow-sm"
           >
             {ponds.map(p => (
               <option key={p.id} value={p.id}>{p.name}</option>
@@ -126,7 +126,7 @@ function FeedModal({ ponds, initialPond, editItem, onClose, onSuccess }) {
 
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="text-slate-300 font-medium block mb-1">বাণিজ্যিক ফিড (ব্যাগ সংখ্যা)</label>
+          <label className="text-slate-700 font-semibold block mb-1">বাণিজ্যিক ফিড (ব্যাগ সংখ্যা)</label>
           <input
             type="number"
             step="0.1"
@@ -140,43 +140,43 @@ function FeedModal({ ponds, initialPond, editItem, onClose, onSuccess }) {
               });
             }}
             placeholder="যেমন: 2.5 বা 5"
-            className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-cyan-300 font-bold text-sm focus:border-teal-500 focus:outline-none"
+            className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-cyan-700 font-bold shadow-sm focus:outline-none focus:border-cyan-600 text-sm focus:border-teal-500 focus:outline-none"
           />
           <span className="text-[10px] text-slate-400 mt-0.5 block">১ ব্যাগ = ২৫ কেজি</span>
         </div>
         <div>
-          <label className="text-slate-300 font-medium block mb-1">মোট ফিড ওজন (কেজি)</label>
+          <label className="text-slate-700 font-semibold block mb-1">মোট ফিড ওজন (কেজি)</label>
           <input
             type="number"
             step="0.5"
             value={formData.commercial_feed_kg}
             onChange={(e) => setFormData({ ...formData, commercial_feed_kg: parseFloat(e.target.value) || 0 })}
-            className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white font-bold text-sm focus:border-teal-500 focus:outline-none"
+            className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 shadow-sm focus:outline-none focus:border-teal-600 font-bold text-sm focus:border-teal-500 focus:outline-none"
           />
           <span className="text-[10px] text-slate-400 mt-0.5 block">স্বয়ংক্রিয় বা কাস্টম কেজি</span>
         </div>
       </div>
 
       <div>
-        <label className="text-slate-300 font-medium block mb-1">ভাত সরবরাহ (Vaat in Kg)</label>
+        <label className="text-slate-700 font-semibold block mb-1">ভাত সরবরাহ (Vaat in Kg)</label>
         <input
           type="number"
           step="1"
           value={formData.vaat_kg}
           onChange={(e) => setFormData({ ...formData, vaat_kg: parseFloat(e.target.value) || 0 })}
           placeholder="এখনও দেওয়া না হলে ০ রাখুন"
-          className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-amber-300 font-bold focus:border-teal-500 focus:outline-none"
+          className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-amber-700 font-bold shadow-sm focus:outline-none focus:border-amber-600 focus:border-teal-500 focus:outline-none"
         />
         <span className="text-[10px] text-slate-400 mt-0.5 block">বর্তমানে ০ কেজি (ভবিষ্যতে ভাত দিলে কেজি লিখবেন)</span>
       </div>
 
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="text-slate-300 font-medium block mb-1">খাবার দেওয়ার সময়</label>
+          <label className="text-slate-700 font-semibold block mb-1">খাবার দেওয়ার সময়</label>
           <select
             value={formData.feeding_time}
             onChange={(e) => setFormData({ ...formData, feeding_time: e.target.value })}
-            className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white"
+            className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 shadow-sm focus:outline-none focus:border-teal-600"
           >
             <option value="Morning">Morning (সকাল)</option>
             <option value="Afternoon">Afternoon (বিকাল)</option>
@@ -184,11 +184,11 @@ function FeedModal({ ponds, initialPond, editItem, onClose, onSuccess }) {
           </select>
         </div>
         <div>
-          <label className="text-slate-300 font-medium block mb-1">আবহাওয়া</label>
+          <label className="text-slate-700 font-semibold block mb-1">আবহাওয়া</label>
           <select
             value={formData.weather_condition}
             onChange={(e) => setFormData({ ...formData, weather_condition: e.target.value })}
-            className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white"
+            className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 shadow-sm focus:outline-none focus:border-teal-600"
           >
             <option value="Sunny">Sunny (রোদোজ্জ্বল)</option>
             <option value="Coastal Breeze">Coastal Breeze (উপকূলীয় বাতাস)</option>
@@ -199,20 +199,20 @@ function FeedModal({ ponds, initialPond, editItem, onClose, onSuccess }) {
       </div>
 
       <div>
-        <label className="text-slate-300 font-medium block mb-1">মন্তব্য / মাছের ফিডিং রেসপন্স</label>
+        <label className="text-slate-700 font-semibold block mb-1">মন্তব্য / মাছের ফিডিং রেসপন্স</label>
         <input
           type="text"
           value={formData.notes}
           onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
           placeholder="যেমন: দ্রুত খেয়েছে, পানির অবস্থা ভালো..."
-          className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white"
+          className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 shadow-sm focus:outline-none focus:border-teal-600"
         />
       </div>
 
       <button
         type="submit"
         disabled={loading}
-        className="w-full py-3.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-bold text-sm shadow-lg transition"
+        className="w-full py-3.5 rounded-xl bg-teal-600 hover:bg-teal-700 cursor-pointer text-white font-bold text-sm shadow-lg transition"
       >
         {loading ? 'সংরক্ষণ হচ্ছে...' : (isEdit ? 'আপডেট সংরক্ষণ করুন' : 'দৈনিক খাবারের হিসাব সেভ করুন')}
       </button>
@@ -291,10 +291,10 @@ function StockingModal({ ponds, initialPond, editItem, onClose, onSuccess }) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4 text-xs">
-      <div className="flex items-center gap-2 pb-2 border-b border-slate-800">
-        <Scale className="w-5 h-5 text-teal-400" />
+      <div className="flex items-center gap-2 pb-2 border-b border-slate-100">
+        <Scale className="w-5 h-5 text-teal-600" />
         <div>
-          <h3 className="text-base font-bold text-white">
+          <h3 className="text-base font-bold text-slate-900">
             {isEdit ? 'পোনা মজুদের তথ্য সম্পাদনা (Edit Stock)' : 'পুকুরে পোনা ছাড়ার হিসাব (Stock Fish)'}
           </h3>
           <p className="text-[11px] text-teal-300">
@@ -305,20 +305,20 @@ function StockingModal({ ponds, initialPond, editItem, onClose, onSuccess }) {
 
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="text-slate-300 font-medium block mb-1">পোনা ছাড়ার তারিখ</label>
+          <label className="text-slate-700 font-semibold block mb-1">পোনা ছাড়ার তারিখ</label>
           <input
             type="date"
             value={formData.date}
             onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-            className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white"
+            className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 shadow-sm focus:outline-none focus:border-teal-600"
           />
         </div>
         <div>
-          <label className="text-slate-300 font-medium block mb-1">পুকুর</label>
+          <label className="text-slate-700 font-semibold block mb-1">পুকুর</label>
           <select
             value={formData.pond_id}
             onChange={(e) => setFormData({ ...formData, pond_id: parseInt(e.target.value) })}
-            className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white font-medium"
+            className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 shadow-sm focus:outline-none focus:border-teal-600 font-medium"
           >
             {ponds.map(p => (
               <option key={p.id} value={p.id}>{p.name}</option>
@@ -328,18 +328,18 @@ function StockingModal({ ponds, initialPond, editItem, onClose, onSuccess }) {
       </div>
 
       <div>
-        <label className="text-slate-300 font-medium block mb-1">মাছের জাত ও বিবরণ</label>
+        <label className="text-slate-700 font-semibold block mb-1">মাছের জাত ও বিবরণ</label>
         <input
           type="text"
           value={formData.fish_type}
           onChange={(e) => setFormData({ ...formData, fish_type: e.target.value })}
-          className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white"
+          className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 shadow-sm focus:outline-none focus:border-teal-600"
         />
       </div>
 
       {/* 3-WAY BI-DIRECTIONAL STOCKING CALCULATOR */}
-      <div className="p-3.5 rounded-2xl bg-slate-950 border border-teal-500/30 space-y-3">
-        <span className="text-[11px] font-bold text-teal-400 uppercase tracking-wider block">
+      <div className="p-3.5 rounded-2xl bg-teal-50/50 border border-teal-200 space-y-3">
+        <span className="text-[11px] font-bold text-teal-600 uppercase tracking-wider block">
           পোনা পরিমাপ ক্যালকুলেটর (Weight & Count Auto-Sync):
         </span>
 
@@ -351,7 +351,7 @@ function StockingModal({ ponds, initialPond, editItem, onClose, onSuccess }) {
               step="0.1"
               value={formData.initial_weight_kg}
               onChange={(e) => handleWeightChange(parseFloat(e.target.value) || 0)}
-              className="w-full bg-slate-900 border border-slate-700 rounded-xl px-2.5 py-2 text-amber-300 font-bold text-sm focus:border-teal-500"
+              className="w-full bg-white border border-slate-300 rounded-xl px-2.5 py-2 text-amber-700 font-bold text-sm focus:border-teal-600 shadow-sm"
             />
           </div>
 
@@ -362,7 +362,7 @@ function StockingModal({ ponds, initialPond, editItem, onClose, onSuccess }) {
               step="0.1"
               value={formData.pcs_per_kg}
               onChange={(e) => handleRateChange(parseFloat(e.target.value) || 1)}
-              className="w-full bg-slate-900 border border-slate-700 rounded-xl px-2.5 py-2 text-teal-300 font-bold text-sm focus:border-teal-500"
+              className="w-full bg-white border border-slate-300 rounded-xl px-2.5 py-2 text-teal-700 font-bold text-sm focus:border-teal-600 shadow-sm"
             />
           </div>
 
@@ -372,51 +372,51 @@ function StockingModal({ ponds, initialPond, editItem, onClose, onSuccess }) {
               type="number"
               value={formData.count_pcs}
               onChange={(e) => handleCountChange(parseInt(e.target.value) || 0)}
-              className="w-full bg-slate-900 border border-slate-700 rounded-xl px-2.5 py-2 text-white font-bold text-sm focus:border-teal-500"
+              className="w-full bg-white border border-slate-300 rounded-xl px-2.5 py-2 text-slate-900 shadow-sm focus:outline-none focus:border-teal-600 font-bold text-sm focus:border-teal-500"
             />
           </div>
         </div>
 
-        <div className="text-[11px] text-slate-400 bg-slate-900/60 p-2 rounded-lg border border-slate-800">
+        <div className="text-[11px] text-slate-500 bg-slate-50 p-2 rounded-lg border border-slate-200">
           হিসাব: <strong>{formData.initial_weight_kg} kg</strong> × <strong>{formData.pcs_per_kg} pcs/kg</strong> = <strong className="text-teal-300">{Number(formData.count_pcs).toLocaleString()} pcs</strong> মাছ
         </div>
       </div>
 
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="text-slate-300 font-medium block mb-1">পোনা ক্রয়মূল্য (BDT)</label>
+          <label className="text-slate-700 font-semibold block mb-1">পোনা ক্রয়মূল্য (BDT)</label>
           <input
             type="number"
             value={formData.cost_bdt}
             onChange={(e) => setFormData({ ...formData, cost_bdt: parseFloat(e.target.value) || 0 })}
-            className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white font-bold"
+            className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 shadow-sm focus:outline-none focus:border-teal-600 font-bold"
           />
         </div>
         <div>
-          <label className="text-slate-300 font-medium block mb-1">হ্যাচারি / সরবরাহকারী</label>
+          <label className="text-slate-700 font-semibold block mb-1">হ্যাচারি / সরবরাহকারী</label>
           <input
             type="text"
             value={formData.supplier}
             onChange={(e) => setFormData({ ...formData, supplier: e.target.value })}
-            className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white"
+            className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 shadow-sm focus:outline-none focus:border-teal-600"
           />
         </div>
       </div>
 
       <div>
-        <label className="text-slate-300 font-medium block mb-1">মন্তব্য / রেফারেন্স</label>
+        <label className="text-slate-700 font-semibold block mb-1">মন্তব্য / রেফারেন্স</label>
         <input
           type="text"
           value={formData.notes}
           onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-          className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white"
+          className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 shadow-sm focus:outline-none focus:border-teal-600"
         />
       </div>
 
       <button
         type="submit"
         disabled={loading}
-        className="w-full py-3.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-bold text-sm transition"
+        className="w-full py-3.5 rounded-xl bg-teal-600 hover:bg-teal-700 cursor-pointer text-white font-bold text-sm transition"
       >
         {loading ? 'সংরক্ষণ হচ্ছে...' : (isEdit ? 'আপডেট সম্পন্ন করুন' : 'পোনা মজুদের তথ্য সংরক্ষণ করুন')}
       </button>
@@ -462,29 +462,29 @@ function SamplingModal({ ponds, initialPond, editItem, onClose, onSuccess }) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4 text-xs">
-      <div className="flex items-center gap-2 pb-2 border-b border-slate-800">
-        <Scale className="w-5 h-5 text-teal-400" />
-        <h3 className="text-base font-bold text-white">
+      <div className="flex items-center gap-2 pb-2 border-b border-slate-100">
+        <Scale className="w-5 h-5 text-teal-600" />
+        <h3 className="text-base font-bold text-slate-900">
           {isEdit ? 'স্যাম্পলিং রেকর্ড সম্পাদনা' : '১৫-১৮ দিনের বৃদ্ধি স্যাম্পলিং'}
         </h3>
       </div>
 
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="text-slate-400 block mb-1">তারিখ</label>
+          <label className="text-slate-600 font-medium block mb-1">তারিখ</label>
           <input
             type="date"
             value={formData.date}
             onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-            className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white"
+            className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 shadow-sm focus:outline-none focus:border-teal-600"
           />
         </div>
         <div>
-          <label className="text-slate-400 block mb-1">পুকুর</label>
+          <label className="text-slate-600 font-medium block mb-1">পুকুর</label>
           <select
             value={formData.pond_id}
             onChange={(e) => setFormData({ ...formData, pond_id: parseInt(e.target.value) })}
-            className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white"
+            className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 shadow-sm focus:outline-none focus:border-teal-600"
           >
             {ponds.map(p => (
               <option key={p.id} value={p.id}>{p.name}</option>
@@ -495,27 +495,27 @@ function SamplingModal({ ponds, initialPond, editItem, onClose, onSuccess }) {
 
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="text-slate-400 block mb-1">জালে ওঠা মাছের পিস</label>
+          <label className="text-slate-600 font-medium block mb-1">জালে ওঠা মাছের পিস</label>
           <input
             type="number"
             value={formData.sample_count_pcs}
             onChange={(e) => setFormData({ ...formData, sample_count_pcs: parseInt(e.target.value) || 0 })}
-            className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white font-bold"
+            className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 shadow-sm focus:outline-none focus:border-teal-600 font-bold"
           />
         </div>
         <div>
-          <label className="text-slate-400 block mb-1">নমুনার মোট ওজন (কেজি)</label>
+          <label className="text-slate-600 font-medium block mb-1">নমুনার মোট ওজন (কেজি)</label>
           <input
             type="number"
             step="0.01"
             value={formData.total_sample_weight_kg}
             onChange={(e) => setFormData({ ...formData, total_sample_weight_kg: parseFloat(e.target.value) || 0 })}
-            className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white font-bold"
+            className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 shadow-sm focus:outline-none focus:border-teal-600 font-bold"
           />
         </div>
       </div>
 
-      <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 flex justify-between items-center">
+      <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 flex justify-between items-center">
         <div>
           <span className="text-slate-400 block text-[11px]">কেজিতে পিস</span>
           <span className="font-bold text-teal-300 text-sm">{pcs_per_kg} pcs/kg</span>
@@ -531,19 +531,19 @@ function SamplingModal({ ponds, initialPond, editItem, onClose, onSuccess }) {
       </div>
 
       <div>
-        <label className="text-slate-400 block mb-1">মন্তব্য</label>
+        <label className="text-slate-600 font-medium block mb-1">মন্তব্য</label>
         <input
           type="text"
           value={formData.remarks}
           onChange={(e) => setFormData({ ...formData, remarks: e.target.value })}
-          className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white"
+          className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 shadow-sm focus:outline-none focus:border-teal-600"
         />
       </div>
 
       <button
         type="submit"
         disabled={loading}
-        className="w-full py-3.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-bold text-sm transition"
+        className="w-full py-3.5 rounded-xl bg-teal-600 hover:bg-teal-700 cursor-pointer text-white font-bold text-sm transition"
       >
         {loading ? 'সংরক্ষণ হচ্ছে...' : (isEdit ? 'আপডেট সেভ করুন' : 'বৃদ্ধি স্যাম্পলিং সংরক্ষণ করুন')}
       </button>
@@ -588,86 +588,86 @@ function FeedInventoryModal({ editItem, onClose, onSuccess }) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4 text-xs">
-      <div className="flex items-center gap-2 pb-2 border-b border-slate-800">
-        <Package className="w-5 h-5 text-cyan-400" />
-        <h3 className="text-base font-bold text-white">
+      <div className="flex items-center gap-2 pb-2 border-b border-slate-100">
+        <Package className="w-5 h-5 text-cyan-600" />
+        <h3 className="text-base font-bold text-slate-900">
           {isEdit ? 'ফিড চালান সম্পাদনা (Edit Batch)' : 'নতুন ফিড চালান যোগ করুন (Feed Batch)'}
         </h3>
       </div>
 
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="text-slate-400 block mb-1">চালানের তারিখ</label>
+          <label className="text-slate-600 font-medium block mb-1">চালানের তারিখ</label>
           <input
             type="date"
             value={formData.date}
             onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-            className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white"
+            className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 shadow-sm focus:outline-none focus:border-teal-600"
           />
         </div>
         <div>
-          <label className="text-slate-400 block mb-1">ব্যাচ / ইনভয়েস নং</label>
+          <label className="text-slate-600 font-medium block mb-1">ব্যাচ / ইনভয়েস নং</label>
           <input
             type="text"
             value={formData.invoice_no}
             onChange={(e) => setFormData({ ...formData, invoice_no: e.target.value })}
-            className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white font-mono"
+            className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 font-mono shadow-sm focus:outline-none focus:border-teal-600"
           />
         </div>
       </div>
 
       <div>
-        <label className="text-slate-400 block mb-1">ফিড ব্র্যান্ড ও ধরণ</label>
+        <label className="text-slate-600 font-medium block mb-1">ফিড ব্র্যান্ড ও ধরণ</label>
         <input
           type="text"
           value={formData.brand_name}
           onChange={(e) => setFormData({ ...formData, brand_name: e.target.value })}
-          className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white"
+          className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 shadow-sm focus:outline-none focus:border-teal-600"
         />
       </div>
 
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="text-slate-400 block mb-1">ব্যাগের সংখ্যা</label>
+          <label className="text-slate-600 font-medium block mb-1">ব্যাগের সংখ্যা</label>
           <input
             type="number"
             value={formData.bag_count}
             onChange={(e) => setFormData({ ...formData, bag_count: parseInt(e.target.value) || 0 })}
-            className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-cyan-300 font-bold"
+            className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-cyan-700 font-bold shadow-sm focus:outline-none focus:border-cyan-600"
           />
         </div>
         <div>
-          <label className="text-slate-400 block mb-1">প্রতি ব্যাগের রেট (BDT)</label>
+          <label className="text-slate-600 font-medium block mb-1">প্রতি ব্যাগের রেট (BDT)</label>
           <input
             type="number"
             value={formData.rate_per_bag}
             onChange={(e) => setFormData({ ...formData, rate_per_bag: parseFloat(e.target.value) || 0 })}
-            className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white font-bold"
+            className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 shadow-sm focus:outline-none focus:border-teal-600 font-bold"
           />
         </div>
       </div>
 
-      <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 flex justify-between items-center text-xs">
+      <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 flex justify-between items-center text-xs">
         <span className="text-slate-400">মোট মূল্য:</span>
-        <span className="font-bold text-emerald-400 text-sm">
+        <span className="font-bold text-emerald-600 text-sm">
           ৳ {(formData.bag_count * formData.rate_per_bag).toLocaleString()}
         </span>
       </div>
 
       <div>
-        <label className="text-slate-400 block mb-1">সরবরাহকারী (Supplier)</label>
+        <label className="text-slate-600 font-medium block mb-1">সরবরাহকারী (Supplier)</label>
         <input
           type="text"
           value={formData.supplier}
           onChange={(e) => setFormData({ ...formData, supplier: e.target.value })}
-          className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white"
+          className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 shadow-sm focus:outline-none focus:border-teal-600"
         />
       </div>
 
       <button
         type="submit"
         disabled={loading}
-        className="w-full py-3.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-bold text-sm transition"
+        className="w-full py-3.5 rounded-xl bg-teal-600 hover:bg-teal-700 cursor-pointer text-white font-bold text-sm transition"
       >
         {loading ? 'সংরক্ষণ হচ্ছে...' : (isEdit ? 'আপডেট সংরক্ষণ করুন' : 'ফিড চালান সেভ করুন')}
       </button>
@@ -709,29 +709,29 @@ function ExpenseModal({ ponds, editItem, onClose, onSuccess }) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4 text-xs">
-      <div className="flex items-center gap-2 pb-2 border-b border-slate-800">
-        <DollarSign className="w-5 h-5 text-amber-400" />
-        <h3 className="text-base font-bold text-white">
+      <div className="flex items-center gap-2 pb-2 border-b border-slate-100">
+        <DollarSign className="w-5 h-5 text-amber-600" />
+        <h3 className="text-base font-bold text-slate-900">
           {isEdit ? 'খরচের ভাউচার সম্পাদনা (Edit Expense)' : 'নতুন খরচ এন্ট্রি (Add Expense)'}
         </h3>
       </div>
 
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="text-slate-400 block mb-1">তারিখ</label>
+          <label className="text-slate-600 font-medium block mb-1">তারিখ</label>
           <input
             type="date"
             value={formData.date}
             onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-            className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white"
+            className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 shadow-sm focus:outline-none focus:border-teal-600"
           />
         </div>
         <div>
-          <label className="text-slate-400 block mb-1">খরচের খাত</label>
+          <label className="text-slate-600 font-medium block mb-1">খরচের খাত</label>
           <select
             value={formData.category}
             onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-            className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white"
+            className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 shadow-sm focus:outline-none focus:border-teal-600"
           >
             <option value="Feed Purchase">Feed Purchase (ফিড ক্রয়)</option>
             <option value="Medicine & Lime">Medicine & Lime (ওষুধ ও চুন)</option>
@@ -745,39 +745,39 @@ function ExpenseModal({ ponds, editItem, onClose, onSuccess }) {
       </div>
 
       <div>
-        <label className="text-slate-400 block mb-1">টাকার পরিমাণ (BDT)</label>
+        <label className="text-slate-600 font-medium block mb-1">টাকার পরিমাণ (BDT)</label>
         <input
           type="number"
           value={formData.amount_bdt}
           onChange={(e) => setFormData({ ...formData, amount_bdt: parseFloat(e.target.value) || 0 })}
-          className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white font-bold text-sm"
+          className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 shadow-sm focus:outline-none focus:border-teal-600 font-bold text-sm"
         />
       </div>
 
       <div>
-        <label className="text-slate-400 block mb-1">খরচের বিবরণ</label>
+        <label className="text-slate-600 font-medium block mb-1">খরচের বিবরণ</label>
         <input
           type="text"
           value={formData.description}
           onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-          className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white"
+          className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 shadow-sm focus:outline-none focus:border-teal-600"
         />
       </div>
 
       <div>
-        <label className="text-slate-400 block mb-1">ভাউচার / রসিদ নং</label>
+        <label className="text-slate-600 font-medium block mb-1">ভাউচার / রসিদ নং</label>
         <input
           type="text"
           value={formData.voucher_no}
           onChange={(e) => setFormData({ ...formData, voucher_no: e.target.value })}
-          className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white font-mono"
+          className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 font-mono shadow-sm focus:outline-none focus:border-teal-600"
         />
       </div>
 
       <button
         type="submit"
         disabled={loading}
-        className="w-full py-3.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-bold text-sm transition"
+        className="w-full py-3.5 rounded-xl bg-amber-600 hover:bg-amber-700 cursor-pointer text-white font-bold text-sm transition"
       >
         {loading ? 'সংরক্ষণ হচ্ছে...' : (isEdit ? 'আপডেট সেভ করুন' : 'খরচ সংরক্ষণ করুন')}
       </button>
@@ -820,29 +820,29 @@ function HarvestModal({ ponds, editItem, onClose, onSuccess }) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4 text-xs">
-      <div className="flex items-center gap-2 pb-2 border-b border-slate-800">
-        <DollarSign className="w-5 h-5 text-emerald-400" />
-        <h3 className="text-base font-bold text-white">
+      <div className="flex items-center gap-2 pb-2 border-b border-slate-100">
+        <DollarSign className="w-5 h-5 text-emerald-600" />
+        <h3 className="text-base font-bold text-slate-900">
           {isEdit ? 'মাছ বিক্রয় রেকর্ড সম্পাদনা' : 'মাছ বিক্রি / হার্ভেস্ট রেকর্ড (Fish Sale)'}
         </h3>
       </div>
 
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="text-slate-400 block mb-1">তারিখ</label>
+          <label className="text-slate-600 font-medium block mb-1">তারিখ</label>
           <input
             type="date"
             value={formData.date}
             onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-            className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white"
+            className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 shadow-sm focus:outline-none focus:border-teal-600"
           />
         </div>
         <div>
-          <label className="text-slate-400 block mb-1">পুকুর</label>
+          <label className="text-slate-600 font-medium block mb-1">পুকুর</label>
           <select
             value={formData.pond_id}
             onChange={(e) => setFormData({ ...formData, pond_id: parseInt(e.target.value) })}
-            className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white"
+            className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 shadow-sm focus:outline-none focus:border-teal-600"
           >
             {ponds.map(p => (
               <option key={p.id} value={p.id}>{p.name}</option>
@@ -853,38 +853,38 @@ function HarvestModal({ ponds, editItem, onClose, onSuccess }) {
 
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="text-slate-400 block mb-1">মোট ওজন (কেজি)</label>
+          <label className="text-slate-600 font-medium block mb-1">মোট ওজন (কেজি)</label>
           <input
             type="number"
             value={formData.total_weight_kg}
             onChange={(e) => setFormData({ ...formData, total_weight_kg: parseFloat(e.target.value) || 0 })}
-            className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white font-bold"
+            className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 shadow-sm focus:outline-none focus:border-teal-600 font-bold"
           />
         </div>
         <div>
-          <label className="text-slate-400 block mb-1">বিক্রয় দর (টাকা/কেজি)</label>
+          <label className="text-slate-600 font-medium block mb-1">বিক্রয় দর (টাকা/কেজি)</label>
           <input
             type="number"
             value={formData.rate_per_kg_bdt}
             onChange={(e) => setFormData({ ...formData, rate_per_kg_bdt: parseFloat(e.target.value) || 0 })}
-            className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-emerald-400 font-bold"
+            className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-emerald-700 font-bold shadow-sm focus:outline-none focus:border-emerald-600"
           />
         </div>
       </div>
 
       <div>
-        <label className="text-slate-400 block mb-1">আড়তদার / ক্রেতার নাম</label>
+        <label className="text-slate-600 font-medium block mb-1">আড়তদার / ক্রেতার নাম</label>
         <input
           type="text"
           value={formData.buyer_name}
           onChange={(e) => setFormData({ ...formData, buyer_name: e.target.value })}
-          className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white"
+          className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 shadow-sm focus:outline-none focus:border-teal-600"
         />
       </div>
 
-      <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 flex justify-between items-center text-xs">
+      <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 flex justify-between items-center text-xs">
         <span className="text-slate-400">মোট বিক্রয় মূল্য:</span>
-        <span className="font-bold text-emerald-400 text-sm">
+        <span className="font-bold text-emerald-600 text-sm">
           ৳ {(formData.total_weight_kg * formData.rate_per_kg_bdt).toLocaleString()}
         </span>
       </div>
@@ -892,7 +892,7 @@ function HarvestModal({ ponds, editItem, onClose, onSuccess }) {
       <button
         type="submit"
         disabled={loading}
-        className="w-full py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm transition"
+        className="w-full py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 cursor-pointer text-white font-bold text-sm transition"
       >
         {loading ? 'সংরক্ষণ হচ্ছে...' : (isEdit ? 'আপডেট সেভ করুন' : 'বিক্রি রেকর্ড সম্পন্ন করুন')}
       </button>
@@ -928,23 +928,23 @@ function VaatModal({ editItem, onClose, onSuccess }) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4 text-xs">
-      <div className="flex items-center gap-2 pb-2 border-b border-slate-800">
-        <Utensils className="w-5 h-5 text-amber-400" />
-        <h3 className="text-base font-bold text-white">ভাত রান্না ও সরবরাহ এন্ট্রি</h3>
+      <div className="flex items-center gap-2 pb-2 border-b border-slate-100">
+        <Utensils className="w-5 h-5 text-amber-600" />
+        <h3 className="text-base font-bold text-slate-900">ভাত রান্না ও সরবরাহ এন্ট্রি</h3>
       </div>
 
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="text-slate-400 block mb-1">তারিখ</label>
+          <label className="text-slate-600 font-medium block mb-1">তারিখ</label>
           <input
             type="date"
             value={formData.date}
             onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-            className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white"
+            className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 shadow-sm focus:outline-none focus:border-teal-600"
           />
         </div>
         <div>
-          <label className="text-slate-400 block mb-1">কাঁচা চাল (কেজি)</label>
+          <label className="text-slate-600 font-medium block mb-1">কাঁচা চাল (কেজি)</label>
           <input
             type="number"
             value={formData.raw_rice_kg}
@@ -957,46 +957,46 @@ function VaatModal({ editItem, onClose, onSuccess }) {
                 total_cooked_vaat_kg: kg * 2.5 
               });
             }}
-            className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white font-bold"
+            className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 shadow-sm focus:outline-none focus:border-teal-600 font-bold"
           />
         </div>
       </div>
 
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="text-slate-400 block mb-1">চালের খরচ (BDT)</label>
+          <label className="text-slate-600 font-medium block mb-1">চালের খরচ (BDT)</label>
           <input
             type="number"
             value={formData.rice_cost_bdt}
             onChange={(e) => setFormData({ ...formData, rice_cost_bdt: parseFloat(e.target.value) || 0 })}
-            className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white"
+            className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 shadow-sm focus:outline-none focus:border-teal-600"
           />
         </div>
         <div>
-          <label className="text-slate-400 block mb-1">জ্বালানি/গ্যাস খরচ (BDT)</label>
+          <label className="text-slate-600 font-medium block mb-1">জ্বালানি/গ্যাস খরচ (BDT)</label>
           <input
             type="number"
             value={formData.cooking_fuel_cost_bdt}
             onChange={(e) => setFormData({ ...formData, cooking_fuel_cost_bdt: parseFloat(e.target.value) || 0 })}
-            className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white"
+            className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 shadow-sm focus:outline-none focus:border-teal-600"
           />
         </div>
       </div>
 
       <div>
-        <label className="text-slate-400 block mb-1">রান্না হওয়া ভাত (কেজি)</label>
+        <label className="text-slate-600 font-medium block mb-1">রান্না হওয়া ভাত (কেজি)</label>
         <input
           type="number"
           value={formData.total_cooked_vaat_kg}
           onChange={(e) => setFormData({ ...formData, total_cooked_vaat_kg: parseFloat(e.target.value) || 0 })}
-          className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-amber-300 font-bold"
+          className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-amber-700 font-bold shadow-sm focus:outline-none focus:border-amber-600"
         />
       </div>
 
       <button
         type="submit"
         disabled={loading}
-        className="w-full py-3.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-bold text-sm transition"
+        className="w-full py-3.5 rounded-xl bg-amber-600 hover:bg-amber-700 cursor-pointer text-white font-bold text-sm transition"
       >
         {loading ? 'সংরক্ষণ হচ্ছে...' : 'ভাতের হিসাব জমা দিন'}
       </button>

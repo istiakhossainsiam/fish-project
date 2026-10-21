@@ -67,7 +67,7 @@ export default function WorkerInput({ ponds, onEntrySaved }) {
             <HardHat className="w-6 h-6" />
           </div>
           <div>
-            <h2 className="font-bold text-white text-base">মাঠ কর্মী সহজ মোড (Worker Quick Input)</h2>
+            <h2 className="font-bold text-slate-900 text-base">মাঠ কর্মী সহজ মোড (Worker Quick Input)</h2>
             <p className="text-xs text-amber-200">মোবাইল থেকে সরাসরি ১ ক্লিকে দৈনিক খাবার ও খামারের তথ্য দিন</p>
           </div>
         </div>
@@ -82,7 +82,7 @@ export default function WorkerInput({ ponds, onEntrySaved }) {
 
       <form onSubmit={handleSubmit} className="space-y-5">
         {/* Step 1: Select Pond */}
-        <div className="bg-slate-800/80 p-4 rounded-2xl border border-slate-700 space-y-2">
+        <div className="bg-white p-4 rounded-2xl border border-slate-200 space-y-2">
           <label className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
             <Waves className="w-4 h-4 text-teal-400" />
             ১. পুকুর নির্বাচন করুন (Select Pond)
@@ -102,7 +102,7 @@ export default function WorkerInput({ ponds, onEntrySaved }) {
                   className={`p-3.5 rounded-xl border text-left transition ${
                     isSelected
                       ? 'bg-teal-500/20 border-teal-500 text-white shadow-md ring-1 ring-teal-500'
-                      : 'bg-slate-900/60 border-slate-700/80 text-slate-400 hover:text-slate-200'
+                      : 'bg-slate-50 border-slate-200 text-slate-400 hover:text-slate-200'
                   }`}
                 >
                   <div className="font-bold text-sm">{p.name}</div>
@@ -114,7 +114,7 @@ export default function WorkerInput({ ponds, onEntrySaved }) {
         </div>
 
         {/* Step 2: Commercial Feed Bags Stepper */}
-        <div className="bg-slate-800/80 p-4 rounded-2xl border border-slate-700 space-y-3">
+        <div className="bg-white p-4 rounded-2xl border border-slate-200 space-y-3">
           <div className="flex justify-between items-center">
             <label className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
               <Package className="w-4 h-4 text-cyan-400" />
@@ -123,17 +123,17 @@ export default function WorkerInput({ ponds, onEntrySaved }) {
             <span className="text-xs text-slate-400 font-medium">{formData.commercial_feed_kg} কেজি</span>
           </div>
 
-          <div className="flex items-center justify-between gap-3 bg-slate-900/90 p-3 rounded-2xl border border-slate-800">
+          <div className="flex items-center justify-between gap-3 bg-white/90 p-3 rounded-2xl border border-slate-200">
             <button
               type="button"
               onClick={() => handleBagChange(-0.5)}
-              className="w-14 h-14 rounded-xl bg-slate-800 hover:bg-slate-700 text-white flex items-center justify-center text-xl font-bold transition shadow-inner active:scale-95"
+              className="w-14 h-14 rounded-xl bg-slate-100 hover:bg-slate-700 text-white flex items-center justify-center text-xl font-bold transition shadow-inner active:scale-95"
             >
               <Minus className="w-6 h-6" />
             </button>
 
             <div className="text-center">
-              <span className="text-3xl font-extrabold text-white block">
+              <span className="text-3xl font-extrabold text-slate-900 block">
                 {formData.commercial_feed_bags}
               </span>
               <span className="text-[11px] text-cyan-300 font-medium">ব্যাগ (১ ব্যাগ = ২৫ কেজি)</span>
@@ -150,17 +150,17 @@ export default function WorkerInput({ ponds, onEntrySaved }) {
         </div>
 
         {/* Step 3: Vaat (Cooked Rice) Stepper */}
-        <div className="bg-slate-800/80 p-4 rounded-2xl border border-slate-700 space-y-3">
+        <div className="bg-white p-4 rounded-2xl border border-slate-200 space-y-3">
           <label className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
             <Utensils className="w-4 h-4 text-amber-400" />
             ৩. ভাত দেওয়া হয়েছে (Vaat Provided in Kg)
           </label>
 
-          <div className="flex items-center justify-between gap-3 bg-slate-900/90 p-3 rounded-2xl border border-slate-800">
+          <div className="flex items-center justify-between gap-3 bg-white/90 p-3 rounded-2xl border border-slate-200">
             <button
               type="button"
               onClick={() => handleVaatChange(-5)}
-              className="w-14 h-14 rounded-xl bg-slate-800 hover:bg-slate-700 text-white flex items-center justify-center text-xl font-bold transition active:scale-95"
+              className="w-14 h-14 rounded-xl bg-slate-100 hover:bg-slate-700 text-white flex items-center justify-center text-xl font-bold transition active:scale-95"
             >
               -৫
             </button>
@@ -184,12 +184,12 @@ export default function WorkerInput({ ponds, onEntrySaved }) {
 
         {/* Step 4: Time & Condition */}
         <div className="grid grid-cols-2 gap-3">
-          <div className="bg-slate-800/80 p-3.5 rounded-2xl border border-slate-700">
+          <div className="bg-white p-3.5 rounded-2xl border border-slate-200">
             <label className="text-[11px] font-semibold text-slate-400 block mb-1">খাবার দেওয়ার সময়</label>
             <select
               value={formData.feeding_time}
               onChange={(e) => setFormData({ ...formData, feeding_time: e.target.value })}
-              className="w-full bg-slate-900 border border-slate-700 text-xs rounded-xl px-2.5 py-2 text-white focus:outline-none"
+              className="w-full bg-white border border-slate-200 text-xs rounded-xl px-2.5 py-2 text-white focus:outline-none"
             >
               <option value="Morning (সকাল)">Morning (সকাল)</option>
               <option value="Afternoon (বিকাল)">Afternoon (বিকাল)</option>
@@ -197,12 +197,12 @@ export default function WorkerInput({ ponds, onEntrySaved }) {
             </select>
           </div>
 
-          <div className="bg-slate-800/80 p-3.5 rounded-2xl border border-slate-700">
+          <div className="bg-white p-3.5 rounded-2xl border border-slate-200">
             <label className="text-[11px] font-semibold text-slate-400 block mb-1">আবহাওয়ার অবস্থা</label>
             <select
               value={formData.weather_condition}
               onChange={(e) => setFormData({ ...formData, weather_condition: e.target.value })}
-              className="w-full bg-slate-900 border border-slate-700 text-xs rounded-xl px-2.5 py-2 text-white focus:outline-none"
+              className="w-full bg-white border border-slate-200 text-xs rounded-xl px-2.5 py-2 text-white focus:outline-none"
             >
               <option value="Sunny (রোদ)">Sunny (রোদোজ্জ্বল)</option>
               <option value="Cloudy (মেঘলা)">Cloudy (মেঘলা)</option>
@@ -212,14 +212,14 @@ export default function WorkerInput({ ponds, onEntrySaved }) {
         </div>
 
         {/* Step 5: Quick Notes / Fish observation */}
-        <div className="bg-slate-800/80 p-3.5 rounded-2xl border border-slate-700 space-y-2">
+        <div className="bg-white p-3.5 rounded-2xl border border-slate-200 space-y-2">
           <label className="text-[11px] font-semibold text-slate-400 block">মাছের প্রতিক্রিয়া ও অন্যান্য নোট</label>
           <input
             type="text"
             value={formData.notes}
             onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
             placeholder="মাছের খাদক কেমন ছিল, কোন সমস্যা আছে কিনা..."
-            className="w-full bg-slate-900 border border-slate-700 text-xs rounded-xl px-3 py-2 text-white focus:outline-none focus:border-teal-500"
+            className="w-full bg-white border border-slate-200 text-xs rounded-xl px-3 py-2 text-white focus:outline-none focus:border-teal-500"
           />
           <div className="flex flex-wrap gap-1.5 pt-1">
             {[
@@ -232,7 +232,7 @@ export default function WorkerInput({ ponds, onEntrySaved }) {
                 type="button"
                 key={tag}
                 onClick={() => setFormData({ ...formData, notes: tag })}
-                className="text-[11px] px-2 py-0.5 rounded-lg bg-slate-900 hover:bg-slate-700 border border-slate-800 text-slate-300 transition"
+                className="text-[11px] px-2 py-0.5 rounded-lg bg-white hover:bg-slate-700 border border-slate-200 text-slate-300 transition"
               >
                 + {tag}
               </button>

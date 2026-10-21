@@ -211,6 +211,18 @@ def seed_database(force=False):
             supplier="Feed Distributor, Chittagong",
             invoice_no="BATCH-204-A",
             notes="13/10/2026: Batch 204 (100 bags @ 1775 tk/bag)"
+        ),
+        models.FeedInventory(
+            date="2026-10-21",
+            brand_name="Fish Feed (Batch #204)",
+            feed_type="Pellet Feed - Batch 204",
+            bag_count=120,
+            bag_weight_kg=25.0,
+            rate_per_bag=1775.0,
+            total_cost=120 * 1775.0, # 213,000 BDT
+            supplier="Feed Distributor, Chittagong",
+            invoice_no="BATCH-204-B",
+            notes="21/10/2026: Batch 204 (120 bags @ 1775 tk/bag)"
         )
     ]
     db.add_all(feed_batches)
