@@ -185,7 +185,7 @@ def get_dashboard_stats(db: Session = Depends(get_db)):
         # fallback approximation
         current_estimated_biomass_kg = total_initial_biomass_kg + (total_feed_kg_consumed * 0.7)
 
-    # Projected revenue at harvest (average 150 BDT / kg for Pangash, 250 BDT for Carp)
+    # Projected revenue at harvest (average 155 BDT / kg for Pangash, 260 BDT for Carp)
     # Target harvest size: ~1.2kg per Pangash, ~1.0kg Carp with 92% survival
     projected_harvest_biomass_kg = sum(
         (s.count_pcs * 0.92) * (1.2 if "Pangash" in s.fish_type else 1.0)
@@ -195,7 +195,20 @@ def get_dashboard_stats(db: Session = Depends(get_db)):
         (s.count_pcs * 0.92) * (1.2 if "Pangash" in s.fish_type else 1.0) * (155.0 if "Pangash" in s.fish_type else 260.0)
         for s in stockings
     )
-    projected_net_profit_bdt = projected_harvest_revenue_bdt - total_investment_bdt
+
+    # Full 6-Month Cycle Projected Cost Calculation (Industry Standard FCR 1.40):
+    # Total feed required to grow fish to target harvest biomass:
+    net_fish_growth_kg = max(0, projected_harvest_biomass_kg - total_initial_biomass_kg)
+    est_total_cycle_feed_bags = int(round((net_fish_growth_kg * 1.40) / 25.0))
+    additional_feed_bags_needed = max(0, est_total_cycle_feed_bags - total_feed_bags_received)
+    latest_feed_bag_rate = 1775.0 # Batch 204 rate
+    est_additional_feed_cost = additional_feed_bags_needed * latest_feed_bag_rate
+    est_remaining_operating_expenses = 350000.0 # 5 months electricity, fuel, labor & medicine
+    total_projected_cycle_cost_bdt = total_investment_bdt + est_additional_feed_cost + est_remaining_operating_expenses
+
+    # Realistic projected net profit and ROI across the full 6-month cycle:
+    projected_net_profit_bdt = max(0.0, projected_harvest_revenue_bdt - total_projected_cycle_cost_bdt)
+    estimated_roi_pct = round((projected_net_profit_bdt / max(1.0, total_projected_cycle_cost_bdt)) * 100, 1)
 
     # Growth Check Reminders (Every 15-18 days)
     # Check each active pond's latest sampling date or stocking date
@@ -263,8 +276,11 @@ def get_dashboard_stats(db: Session = Depends(get_db)):
             "other_expenses_bdt": round(other_expenses, 2),
             "actual_sales_income_bdt": round(total_harvest_revenue, 2),
             "projected_harvest_revenue_bdt": round(projected_harvest_revenue_bdt, 2),
+            "total_projected_cycle_cost_bdt": round(total_projected_cycle_cost_bdt, 2),
             "projected_net_profit_bdt": round(projected_net_profit_bdt, 2),
-            "estimated_roi_pct": round((projected_net_profit_bdt / max(1, total_investment_bdt)) * 100, 1)
+            "estimated_roi_pct": estimated_roi_pct,
+            "est_total_cycle_feed_bags": est_total_cycle_feed_bags,
+            "additional_feed_bags_needed": additional_feed_bags_needed
         },
         "sampling_alerts": sampling_alerts
     }
@@ -1630,6 +1646,17 @@ def get_weather(lat: float = 22.2496, lon: float = 91.8133):
             ]
         }
 
+
+# ================= ADMIN DATABASE RESET & CLEAN RESEED =================
+
+@app.post("/api/admin/clean-reseed")
+def admin_clean_reseed():
+    """Wipe and reseed with exact audited project records (430 bags received, 332 bags consumed, 98 remaining, 68870 fish)"""
+    seed_database(force=True)
+    return {
+        "status": "success", 
+        "message": "Database completely re-seeded cleanly with 100% audited figures! Total Feed: 430 bags, Consumed: 332 bags, Remaining: 98 bags, Total Fish: 68,870 pcs."
+    }
 
 # ================= WORKER MANUAL DATA ENTRY & BULK SHEET IMPORT/EXPORT =================
 

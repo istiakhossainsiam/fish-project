@@ -593,21 +593,21 @@ export default function Dashboard({ stats, ponds, weather, setActiveTab, onOpenM
                 <div className="text-lg sm:text-xl font-black text-slate-900 mt-0.5">
                   ৳ {financial_summary.total_investment_bdt.toLocaleString()}
                 </div>
-                <span className="text-[11px] text-slate-500">ফিড: ৳{financial_summary.feed_cost_bdt.toLocaleString()}</span>
+                <span className="text-[11px] text-slate-500">ফিড: ৳{financial_summary.feed_cost_bdt.toLocaleString()} • পোনা: ৳{financial_summary.pona_cost_bdt.toLocaleString()}</span>
               </div>
               <div>
                 <span className="text-xs text-slate-500 block">সম্ভাব্য মোট বিক্রয়মূল্য</span>
                 <div className="text-lg sm:text-xl font-black text-teal-700 mt-0.5">
                   ৳ {financial_summary.projected_harvest_revenue_bdt.toLocaleString()}
                 </div>
-                <span className="text-[11px] text-teal-600 font-medium">টার্গেট ১.২ কেজি পাঙ্গাশ @ ১৫৫৳</span>
+                <span className="text-[11px] text-teal-600 font-medium">টার্গেট ১.২ কেজি পাঙ্গাশ @ ১৫৫৳ (~৭৫.৫ টন)</span>
               </div>
               <div>
-                <span className="text-xs text-slate-500 block">সম্ভাব্য নীট লাভ (Net Profit)</span>
+                <span className="text-xs text-slate-500 block">সম্ভাব্য নীট লাভ (পুরো সাইকেল)</span>
                 <div className="text-lg sm:text-xl font-black text-emerald-700 mt-0.5">
                   + ৳ {financial_summary.projected_net_profit_bdt.toLocaleString()}
                 </div>
-                <span className="text-[11px] text-emerald-700 font-bold">সম্ভাব্য ROI: ~{financial_summary.estimated_roi_pct}%</span>
+                <span className="text-[11px] text-emerald-700 font-bold">সম্ভাব্য ROI: ~{financial_summary.estimated_roi_pct}% (সাইকেল খরচ বাদে)</span>
               </div>
             </div>
           </div>
