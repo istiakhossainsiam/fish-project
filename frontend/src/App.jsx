@@ -299,6 +299,7 @@ export default function App() {
         onClose={handleCloseModal}
         onSuccess={handleModalSuccess}
         ponds={ponds}
+        currentUser={currentUser}
       />
     </div>
   );

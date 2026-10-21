@@ -10,7 +10,7 @@ import {
   addVaatPrep 
 } from '../api';
 
-export default function Modals({ modalType, modalProps, onClose, onSuccess, ponds }) {
+export default function Modals({ modalType, modalProps, onClose, onSuccess, ponds, currentUser }) {
   if (!modalType) return null;
 
   return (
@@ -32,7 +32,14 @@ export default function Modals({ modalType, modalProps, onClose, onSuccess, pond
         )}
 
         {modalType === 'stocking' && (
-          <StockingModal ponds={ponds} initialPond={modalProps?.pond_id} editItem={modalProps?.editItem} onClose={onClose} onSuccess={onSuccess} />
+          <StockingModal 
+            ponds={ponds} 
+            initialPond={modalProps?.pond_id} 
+            editItem={modalProps?.editItem} 
+            currentUser={currentUser} 
+            onClose={onClose} 
+            onSuccess={onSuccess} 
+          />
         )}
 
         {modalType === 'feed_inventory' && (
@@ -221,21 +228,51 @@ function FeedModal({ ponds, initialPond, editItem, onClose, onSuccess }) {
 }
 
 // 2. Stocking Event Modal (With 3-Way Bi-directional Calculator: Weight, Count & Rate)
-function StockingModal({ ponds, initialPond, editItem, onClose, onSuccess }) {
+function StockingModal({ ponds = [], initialPond, editItem, currentUser, onClose, onSuccess }) {
   const isEdit = !!editItem;
+  const isSuperAdmin = currentUser?.role === 'superadmin';
 
   const [formData, setFormData] = useState({
-    pond_id: editItem?.pond_id || initialPond || 1,
+    pond_id: editItem?.pond_id || initialPond || (ponds[0]?.id || 1),
     date: editItem?.date || new Date().toISOString().slice(0, 10),
-    fish_type: editItem?.fish_type || 'Pangash (পাঙ্গাশ পোনা)',
-    count_pcs: editItem?.count_pcs || 14500,
-    pcs_per_kg: editItem?.pcs_per_kg || 23.0,
-    initial_weight_kg: editItem?.initial_weight_kg || 675.0,
-    cost_bdt: editItem?.cost_bdt || 40600,
-    supplier: editItem?.supplier || 'Hatchery Supplier',
-    notes: editItem?.notes || '৬৭৫ কেজি পোনা @ ২৩ পিস/কেজি = +-১৪,৫০০ পিস'
+    fish_type: editItem?.fish_type || 'পাঙ্গাশ (Pangash)',
+    count_pcs: editItem?.count_pcs || 10000,
+    pcs_per_kg: editItem?.pcs_per_kg || 20.0,
+    initial_weight_kg: editItem?.initial_weight_kg || 500.0,
+    cost_bdt: editItem?.cost_bdt || 0,
+    supplier: editItem?.supplier || '',
+    notes: editItem?.notes || ''
   });
   const [loading, setLoading] = useState(false);
+
+  // Sync state when editItem or initialPond changes
+  useEffect(() => {
+    if (editItem) {
+      setFormData({
+        pond_id: editItem.pond_id || initialPond || (ponds[0]?.id || 1),
+        date: editItem.date || new Date().toISOString().slice(0, 10),
+        fish_type: editItem.fish_type || 'পাঙ্গাশ (Pangash)',
+        count_pcs: editItem.count_pcs || 0,
+        pcs_per_kg: editItem.pcs_per_kg || 20.0,
+        initial_weight_kg: editItem.initial_weight_kg || 0,
+        cost_bdt: editItem.cost_bdt || 0,
+        supplier: editItem.supplier || '',
+        notes: editItem.notes || ''
+      });
+    } else {
+      setFormData({
+        pond_id: initialPond || (ponds[0]?.id || 1),
+        date: new Date().toISOString().slice(0, 10),
+        fish_type: 'পাঙ্গাশ (Pangash)',
+        count_pcs: 10000,
+        pcs_per_kg: 20.0,
+        initial_weight_kg: 500.0,
+        cost_bdt: 0,
+        supplier: '',
+        notes: ''
+      });
+    }
+  }, [editItem, initialPond, ponds]);
 
   // Bi-directional calculations:
   // 1. When Total Weight changes -> compute Count = Weight * Pcs/kg
@@ -273,6 +310,10 @@ function StockingModal({ ponds, initialPond, editItem, onClose, onSuccess }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!formData.pond_id) {
+      alert("অনুগ্রহ করে একটি পুকুর নির্বাচন করুন");
+      return;
+    }
     setLoading(true);
     try {
       if (isEdit) {
@@ -289,113 +330,205 @@ function StockingModal({ ponds, initialPond, editItem, onClose, onSuccess }) {
     }
   };
 
+  const avgWeightGrams = formData.pcs_per_kg > 0 ? (1000 / formData.pcs_per_kg).toFixed(1) : 0;
+  const costPerPc = formData.count_pcs > 0 && formData.cost_bdt > 0 ? (formData.cost_bdt / formData.count_pcs).toFixed(2) : null;
+  const costPerKg = formData.initial_weight_kg > 0 && formData.cost_bdt > 0 ? (formData.cost_bdt / formData.initial_weight_kg).toFixed(1) : null;
+
   return (
     <form onSubmit={handleSubmit} className="space-y-4 text-xs">
-      <div className="flex items-center gap-2 pb-2 border-b border-slate-100">
-        <Scale className="w-5 h-5 text-teal-600" />
-        <div>
-          <h3 className="text-base font-bold text-slate-900">
-            {isEdit ? 'পোনা মজুদের তথ্য সম্পাদনা (Edit Stock)' : 'পুকুরে পোনা ছাড়ার হিসাব (Stock Fish)'}
-          </h3>
-          <p className="text-[11px] text-teal-300">
-            💡 ওজন (৬৭৫ কেজি) এবং রেট (২৩ পিস/কেজি) দিলে সংখ্যা স্বয়ংক্রিয় হিসাব হয়
-          </p>
+      {/* Header */}
+      <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+        <div className="flex items-center gap-2">
+          <div className="p-2 rounded-xl bg-teal-50 text-teal-700 border border-teal-200">
+            <Scale className="w-5 h-5 text-teal-600" />
+          </div>
+          <div>
+            <h3 className="text-base font-bold text-slate-900">
+              {isEdit ? 'পোনা মজুদের তথ্য সম্পাদনা (Edit Stock)' : 'বিদ্যমান পুকুরে নতুন মাছ মজুত (Stock New Fish)'}
+            </h3>
+            <p className="text-[11px] text-slate-500">
+              মোট ওজন, কেজিতে পিস ও দর দিলে স্বয়ংক্রিয়ভাবে মোট মাছ হিসাব হবে
+            </p>
+          </div>
         </div>
+        {isEdit && (
+          <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200">
+            সুপারএডমিন এডিট মোড
+          </span>
+        )}
       </div>
 
+      {isEdit && (
+        <div className="p-3 rounded-xl bg-amber-50 border border-amber-200 text-[11px] text-amber-800 flex items-center gap-2">
+          <span>ℹ️ <strong>সুপারএডমিন পারমিশন:</strong> আপনি পূর্ববর্তী যেকোনো তারিখ, পুকুর বা পোনার ওজন/দর পরিবর্তন করে সেভ করতে পারেন।</span>
+        </div>
+      )}
+
+      {/* Date & Pond Selection */}
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="text-slate-700 font-semibold block mb-1">পোনা ছাড়ার তারিখ</label>
+          <label className="text-slate-700 font-semibold block mb-1">
+            পোনা ছাড়ার তারিখ (Date)
+          </label>
           <input
             type="date"
+            required
             value={formData.date}
             onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-            className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 shadow-sm focus:outline-none focus:border-teal-600"
+            className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 font-medium shadow-sm focus:outline-none focus:border-teal-600 cursor-pointer"
           />
         </div>
         <div>
-          <label className="text-slate-700 font-semibold block mb-1">পুকুর</label>
+          <label className="text-slate-700 font-semibold block mb-1">
+            পুকুর নির্বাচন (Select Pond)
+          </label>
           <select
             value={formData.pond_id}
             onChange={(e) => setFormData({ ...formData, pond_id: parseInt(e.target.value) })}
-            className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 shadow-sm focus:outline-none focus:border-teal-600 font-medium"
+            className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 shadow-sm focus:outline-none focus:border-teal-600 font-semibold cursor-pointer"
           >
             {ponds.map(p => (
-              <option key={p.id} value={p.id}>{p.name}</option>
+              <option key={p.id} value={p.id}>{p.name} {p.total_fish ? `(${p.total_fish.toLocaleString()} pcs বর্তমান)` : ''}</option>
             ))}
           </select>
         </div>
       </div>
 
+      {/* Fish Species / Type with fast pick chips */}
       <div>
-        <label className="text-slate-700 font-semibold block mb-1">মাছের জাত ও বিবরণ</label>
+        <label className="text-slate-700 font-semibold block mb-1">
+          মাছের জাত ও চালানের বিবরণ (Fish Type & Batch)
+        </label>
         <input
           type="text"
+          required
+          placeholder="যেমন: পাঙ্গাশ (পাঙ্গাশ পোনা - ১ম চালান)"
           value={formData.fish_type}
           onChange={(e) => setFormData({ ...formData, fish_type: e.target.value })}
-          className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 shadow-sm focus:outline-none focus:border-teal-600"
+          className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 shadow-sm focus:outline-none focus:border-teal-600 font-medium"
         />
-      </div>
-
-      {/* 3-WAY BI-DIRECTIONAL STOCKING CALCULATOR */}
-      <div className="p-3.5 rounded-2xl bg-teal-50/50 border border-teal-200 space-y-3">
-        <span className="text-[11px] font-bold text-teal-600 uppercase tracking-wider block">
-          পোনা পরিমাপ ক্যালকুলেটর (Weight & Count Auto-Sync):
-        </span>
-
-        <div className="grid grid-cols-3 gap-2">
-          <div>
-            <label className="text-[11px] text-slate-300 block mb-1">মোট ওজন (কেজি)</label>
-            <input
-              type="number"
-              step="0.1"
-              value={formData.initial_weight_kg}
-              onChange={(e) => handleWeightChange(parseFloat(e.target.value) || 0)}
-              className="w-full bg-white border border-slate-300 rounded-xl px-2.5 py-2 text-amber-700 font-bold text-sm focus:border-teal-600 shadow-sm"
-            />
-          </div>
-
-          <div>
-            <label className="text-[11px] text-slate-300 block mb-1">কেজিতে পিস (Rate)</label>
-            <input
-              type="number"
-              step="0.1"
-              value={formData.pcs_per_kg}
-              onChange={(e) => handleRateChange(parseFloat(e.target.value) || 1)}
-              className="w-full bg-white border border-slate-300 rounded-xl px-2.5 py-2 text-teal-700 font-bold text-sm focus:border-teal-600 shadow-sm"
-            />
-          </div>
-
-          <div>
-            <label className="text-[11px] text-slate-300 block mb-1">মোট পিস সংখ্যা</label>
-            <input
-              type="number"
-              value={formData.count_pcs}
-              onChange={(e) => handleCountChange(parseInt(e.target.value) || 0)}
-              className="w-full bg-white border border-slate-300 rounded-xl px-2.5 py-2 text-slate-900 shadow-sm focus:outline-none focus:border-teal-600 font-bold text-sm focus:border-teal-500"
-            />
-          </div>
-        </div>
-
-        <div className="text-[11px] text-slate-500 bg-slate-50 p-2 rounded-lg border border-slate-200">
-          হিসাব: <strong>{formData.initial_weight_kg} kg</strong> × <strong>{formData.pcs_per_kg} pcs/kg</strong> = <strong className="text-teal-300">{Number(formData.count_pcs).toLocaleString()} pcs</strong> মাছ
+        <div className="flex items-center gap-1.5 mt-1.5 flex-wrap">
+          <span className="text-[10px] text-slate-500 font-medium">দ্রুত নির্বাচন:</span>
+          {['পাঙ্গাশ (Pangash)', 'কার্প / কার্ফ মিশ্র (Carp Mix)', 'তেলাপিয়া (Tilapia)', 'শিং / মাগুর'].map(species => (
+            <button
+              type="button"
+              key={species}
+              onClick={() => setFormData({ ...formData, fish_type: species })}
+              className="px-2 py-0.5 rounded-lg bg-slate-100 hover:bg-teal-50 text-slate-700 hover:text-teal-800 text-[10px] border border-slate-200 transition cursor-pointer"
+            >
+              {species}
+            </button>
+          ))}
         </div>
       </div>
 
+      {/* 3-WAY BI-DIRECTIONAL STOCKING CALCULATOR (Total Weight, Pcs/Kg, Total Count) */}
+      <div className="p-4 rounded-2xl bg-teal-50/60 border border-teal-200 space-y-3">
+        <div className="flex justify-between items-center">
+          <span className="text-xs font-bold text-teal-800 uppercase tracking-wider block">
+            ⚖️ পোনা পরিমাপ ও গণনা (Weight & Count Auto-Sync):
+          </span>
+          <span className="text-[10px] text-teal-700 font-semibold bg-teal-100/70 px-2 py-0.5 rounded-full border border-teal-200">
+            গড় আকার: ~{avgWeightGrams} গ্রাম/পিস
+          </span>
+        </div>
+
+        <div className="grid grid-cols-3 gap-2.5">
+          <div>
+            <label className="text-[11px] text-slate-700 font-semibold block mb-1">
+              মোট ওজন (Total Weight Kg)
+            </label>
+            <div className="relative">
+              <input
+                type="number"
+                step="0.1"
+                min="0"
+                required
+                value={formData.initial_weight_kg}
+                onChange={(e) => handleWeightChange(parseFloat(e.target.value) || 0)}
+                className="w-full bg-white border border-slate-300 rounded-xl px-2.5 py-2 text-amber-700 font-black text-sm focus:border-teal-600 shadow-sm"
+              />
+              <span className="absolute right-2.5 top-2 text-[10px] font-bold text-slate-400">kg</span>
+            </div>
+          </div>
+
+          <div>
+            <label className="text-[11px] text-slate-700 font-semibold block mb-1">
+              কেজিতে পিস (Pcs / Kg)
+            </label>
+            <div className="relative">
+              <input
+                type="number"
+                step="0.1"
+                min="0.1"
+                required
+                value={formData.pcs_per_kg}
+                onChange={(e) => handleRateChange(parseFloat(e.target.value) || 1)}
+                className="w-full bg-white border border-slate-300 rounded-xl px-2.5 py-2 text-teal-700 font-black text-sm focus:border-teal-600 shadow-sm"
+              />
+              <span className="absolute right-2.5 top-2 text-[10px] font-bold text-slate-400">pcs/kg</span>
+            </div>
+          </div>
+
+          <div>
+            <label className="text-[11px] text-slate-700 font-semibold block mb-1">
+              মোট মাছের সংখ্যা (Pcs)
+            </label>
+            <div className="relative">
+              <input
+                type="number"
+                min="1"
+                required
+                value={formData.count_pcs}
+                onChange={(e) => handleCountChange(parseInt(e.target.value) || 0)}
+                className="w-full bg-white border border-slate-300 rounded-xl px-2.5 py-2 text-slate-900 shadow-sm focus:outline-none focus:border-teal-600 font-black text-sm"
+              />
+              <span className="absolute right-2.5 top-2 text-[10px] font-bold text-slate-400">pcs</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Real-time Calculation Summary Box */}
+        <div className="text-xs text-slate-700 bg-white p-2.5 rounded-xl border border-teal-200 shadow-sm flex items-center justify-between">
+          <span>
+            হিসাব: <strong>{formData.initial_weight_kg} কেজি</strong> × <strong>{formData.pcs_per_kg} পিস/কেজি</strong> = <strong className="text-teal-700 font-black">{Number(formData.count_pcs).toLocaleString()} পিস মাছ</strong>
+          </span>
+          <span className="text-slate-500 font-medium">
+            (~{Math.round(formData.initial_weight_kg / 40)} মণ)
+          </span>
+        </div>
+      </div>
+
+      {/* Cost & Supplier */}
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="text-slate-700 font-semibold block mb-1">পোনা ক্রয়মূল্য (BDT)</label>
-          <input
-            type="number"
-            value={formData.cost_bdt}
-            onChange={(e) => setFormData({ ...formData, cost_bdt: parseFloat(e.target.value) || 0 })}
-            className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 shadow-sm focus:outline-none focus:border-teal-600 font-bold"
-          />
+          <label className="text-slate-700 font-semibold block mb-1">
+            মোট ক্রয়মূল্য (Total Price BDT)
+          </label>
+          <div className="relative">
+            <input
+              type="number"
+              min="0"
+              placeholder="0"
+              value={formData.cost_bdt}
+              onChange={(e) => setFormData({ ...formData, cost_bdt: parseFloat(e.target.value) || 0 })}
+              className="w-full bg-white border border-slate-300 rounded-xl pl-6 pr-3 py-2 text-slate-900 shadow-sm focus:outline-none focus:border-teal-600 font-bold"
+            />
+            <span className="absolute left-2.5 top-2 text-xs font-bold text-slate-400">৳</span>
+          </div>
+          {costPerPc && (
+            <span className="text-[10px] text-emerald-700 font-semibold mt-1 block">
+              দর: ~৳ {costPerPc} /পিস (৳ {costPerKg} /কেজি)
+            </span>
+          )}
         </div>
         <div>
-          <label className="text-slate-700 font-semibold block mb-1">হ্যাচারি / সরবরাহকারী</label>
+          <label className="text-slate-700 font-semibold block mb-1">
+            হ্যাচারি / সরবরাহকারী (Supplier)
+          </label>
           <input
             type="text"
+            placeholder="হ্যাচারি বা নার্সারির নাম..."
             value={formData.supplier}
             onChange={(e) => setFormData({ ...formData, supplier: e.target.value })}
             className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 shadow-sm focus:outline-none focus:border-teal-600"
@@ -403,23 +536,37 @@ function StockingModal({ ponds, initialPond, editItem, onClose, onSuccess }) {
         </div>
       </div>
 
+      {/* Notes */}
       <div>
-        <label className="text-slate-700 font-semibold block mb-1">মন্তব্য / রেফারেন্স</label>
+        <label className="text-slate-700 font-semibold block mb-1">
+          মন্তব্য / চালানের নোট (Notes)
+        </label>
         <input
           type="text"
+          placeholder="যেমন: বড় সাইজের পোনা, ১ম চালান, সুস্থ ও সবল..."
           value={formData.notes}
           onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
           className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 shadow-sm focus:outline-none focus:border-teal-600"
         />
       </div>
 
-      <button
-        type="submit"
-        disabled={loading}
-        className="w-full py-3.5 rounded-xl bg-teal-600 hover:bg-teal-700 cursor-pointer text-white font-bold text-sm transition"
-      >
-        {loading ? 'সংরক্ষণ হচ্ছে...' : (isEdit ? 'আপডেট সম্পন্ন করুন' : 'পোনা মজুদের তথ্য সংরক্ষণ করুন')}
-      </button>
+      {/* Buttons */}
+      <div className="flex items-center gap-2 pt-2">
+        <button
+          type="button"
+          onClick={onClose}
+          className="flex-1 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs transition cursor-pointer border border-slate-200"
+        >
+          বাতিল করুন (Cancel)
+        </button>
+        <button
+          type="submit"
+          disabled={loading}
+          className="flex-2 py-3 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs shadow-sm transition cursor-pointer"
+        >
+          {loading ? 'সংরক্ষণ হচ্ছে...' : (isEdit ? '✓ আপডেট সম্পন্ন করুন (Save Changes)' : '+ পোনা মজুদের তথ্য সংরক্ষণ করুন')}
+        </button>
+      </div>
     </form>
   );
 }

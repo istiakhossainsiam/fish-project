@@ -187,9 +187,17 @@ export default function PondsView({ ponds, dailyFeedings = [], currentUser, onOp
                 <Calendar className="w-4 h-4 text-teal-600" />
                 এই পুকুরে ছাড়া মাছের চালানের হিসাব (Stocking Events)
               </h4>
-              <span className="text-[11px] text-teal-700 bg-teal-50 border border-teal-200 px-2.5 py-0.5 rounded-lg font-medium">
-                পদ্ধতি: মোট ওজন (কেজি) × কেজিতে পিস = মোট মাছের সংখ্যা
-              </span>
+              <div className="flex items-center gap-2">
+                <span className="text-[11px] text-teal-700 bg-teal-50 border border-teal-200 px-2.5 py-0.5 rounded-lg font-medium">
+                  পদ্ধতি: মোট ওজন (কেজি) × কেজিতে পিস = মোট মাছের সংখ্যা
+                </span>
+                <button
+                  onClick={() => onOpenModal('stocking', { pond_id: activePond.id })}
+                  className="px-3 py-1.5 rounded-lg bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs transition shadow-sm flex items-center gap-1.5 cursor-pointer"
+                >
+                  <Plus className="w-3.5 h-3.5" /> + নতুন মাছ যোগ
+                </button>
+              </div>
             </div>
             
             {activePond.stockings && activePond.stockings.length > 0 ? (

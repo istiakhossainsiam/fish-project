@@ -193,7 +193,13 @@ export default function Dashboard({ stats, ponds, weather, setActiveTab, onOpenM
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                onClick={() => onOpenModal('stocking')}
+                className="px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs transition shadow-sm flex items-center gap-1.5 cursor-pointer"
+              >
+                <Plus className="w-4 h-4 text-white" /> + নতুন মাছ মজুত (Stock)
+              </button>
               <button
                 onClick={() => onOpenModal('feed')}
                 className="px-3.5 py-2 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs transition shadow-sm flex items-center gap-1.5 cursor-pointer"
@@ -737,13 +743,19 @@ export default function Dashboard({ stats, ponds, weather, setActiveTab, onOpenM
                         onClick={() => onOpenModal('feed', { pond_id: pond.id })}
                         className="flex-1 py-1.5 rounded-lg bg-teal-50 text-teal-800 hover:bg-teal-100 text-xs font-bold border border-teal-200 transition text-center cursor-pointer"
                       >
-                        + খাবার যোগ
+                        + খাবার
+                      </button>
+                      <button
+                        onClick={() => onOpenModal('stocking', { pond_id: pond.id })}
+                        className="flex-1 py-1.5 rounded-lg bg-blue-50 text-blue-800 hover:bg-blue-100 text-xs font-bold border border-blue-200 transition text-center cursor-pointer"
+                      >
+                        + নতুন মাছ
                       </button>
                       <button
                         onClick={() => onOpenModal('sampling', { pond_id: pond.id })}
                         className="flex-1 py-1.5 rounded-lg bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-semibold border border-slate-200 transition text-center cursor-pointer"
                       >
-                        + বৃদ্ধি স্যাম্পলিং
+                        + স্যাম্পলিং
                       </button>
                     </div>
                   </div>

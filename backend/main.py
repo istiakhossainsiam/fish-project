@@ -375,22 +375,33 @@ def get_stocking_events(db: Session = Depends(get_db)):
 
 @app.post("/api/stocking")
 def add_stocking_event(payload: dict, db: Session = Depends(get_db)):
-    count = int(payload["count_pcs"])
     pcs_per_kg = float(payload.get("pcs_per_kg") or 1.0)
-    initial_weight = round(count / pcs_per_kg, 2) if pcs_per_kg > 0 else 0.0
+    initial_weight = float(payload.get("initial_weight_kg") or 0.0)
+    count = int(payload.get("count_pcs") or 0)
+    
+    if not count and initial_weight > 0 and pcs_per_kg > 0:
+        count = int(round(initial_weight * pcs_per_kg))
+    elif not initial_weight and count > 0 and pcs_per_kg > 0:
+        initial_weight = round(count / pcs_per_kg, 2)
 
     event = models.StockingEvent(
-        pond_id=payload["pond_id"],
+        pond_id=int(payload["pond_id"]),
         date=payload["date"],
         fish_type=payload["fish_type"],
         count_pcs=count,
         pcs_per_kg=pcs_per_kg,
         initial_weight_kg=initial_weight,
-        cost_bdt=float(payload.get("cost_bdt", 0.0)),
+        cost_bdt=float(payload.get("cost_bdt") or 0.0),
         supplier=payload.get("supplier"),
         notes=payload.get("notes")
     )
     db.add(event)
+    
+    # Auto activate pond if stocking fish into it
+    pond = db.query(models.Pond).filter(models.Pond.id == event.pond_id).first()
+    if pond and pond.status != "active":
+        pond.status = "active"
+
     db.commit()
     db.refresh(event)
     return event
@@ -407,14 +418,18 @@ def update_stocking_event(event_id: int, payload: dict, db: Session = Depends(ge
         event.date = payload["date"]
     if "fish_type" in payload:
         event.fish_type = payload["fish_type"]
-    if "count_pcs" in payload:
-        event.count_pcs = int(payload["count_pcs"])
     if "pcs_per_kg" in payload:
         event.pcs_per_kg = float(payload["pcs_per_kg"])
+    if "count_pcs" in payload:
+        event.count_pcs = int(payload["count_pcs"])
     if "initial_weight_kg" in payload:
         event.initial_weight_kg = float(payload["initial_weight_kg"])
     elif event.pcs_per_kg and event.pcs_per_kg > 0:
         event.initial_weight_kg = round(event.count_pcs / event.pcs_per_kg, 2)
+        
+    if event.count_pcs == 0 and event.initial_weight_kg > 0 and event.pcs_per_kg > 0:
+        event.count_pcs = int(round(event.initial_weight_kg * event.pcs_per_kg))
+
     if "cost_bdt" in payload:
         event.cost_bdt = float(payload["cost_bdt"])
     if "supplier" in payload:
