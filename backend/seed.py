@@ -40,7 +40,7 @@ def seed_database(force=False):
             db.commit()
 
         # 2. Sync Daily Feedings if missing
-        if db.query(models.DailyFeeding).count() < 86 and p1 and p2:
+        if db.query(models.DailyFeeding).count() < 92 and p1 and p2:
             existing_feedings = set((f.date, f.pond_id) for f in db.query(models.DailyFeeding).all())
             all_feedings = [
         models.DailyFeeding(date="2026-09-21", pond_id=1, commercial_feed_bags=1.0, commercial_feed_kg=25.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
@@ -129,6 +129,12 @@ def seed_database(force=False):
         models.DailyFeeding(date="2026-10-18", pond_id=1, commercial_feed_bags=6.0, commercial_feed_kg=150.0, vaat_kg=0.0, feeding_time="Both", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
         models.DailyFeeding(date="2026-10-18", pond_id=2, commercial_feed_bags=6.0, commercial_feed_kg=150.0, vaat_kg=0.0, feeding_time="Morning", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
         models.DailyFeeding(date="2026-10-18", pond_id=2, commercial_feed_bags=6.0, commercial_feed_kg=150.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-19", pond_id=1, commercial_feed_bags=3.0, commercial_feed_kg=75.0, vaat_kg=0.0, feeding_time="Both", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged (Both)"),
+        models.DailyFeeding(date="2026-10-19", pond_id=2, commercial_feed_bags=14.0, commercial_feed_kg=350.0, vaat_kg=0.0, feeding_time="Both", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged (Both)"),
+        models.DailyFeeding(date="2026-10-20", pond_id=1, commercial_feed_bags=6.0, commercial_feed_kg=150.0, vaat_kg=0.0, feeding_time="Both", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged (Both)"),
+        models.DailyFeeding(date="2026-10-20", pond_id=2, commercial_feed_bags=10.0, commercial_feed_kg=250.0, vaat_kg=0.0, feeding_time="Both", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged (Both)"),
+        models.DailyFeeding(date="2026-10-21", pond_id=1, commercial_feed_bags=6.0, commercial_feed_kg=150.0, vaat_kg=0.0, feeding_time="Both", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged (Both)"),
+        models.DailyFeeding(date="2026-10-21", pond_id=2, commercial_feed_bags=10.0, commercial_feed_kg=250.0, vaat_kg=0.0, feeding_time="Both", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged (Both)"),
             ]
             added = 0
             for df in all_feedings:
@@ -437,6 +443,12 @@ def seed_database(force=False):
         models.DailyFeeding(date="2026-10-18", pond_id=1, commercial_feed_bags=6.0, commercial_feed_kg=150.0, vaat_kg=0.0, feeding_time="Both", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
         models.DailyFeeding(date="2026-10-18", pond_id=2, commercial_feed_bags=6.0, commercial_feed_kg=150.0, vaat_kg=0.0, feeding_time="Morning", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
         models.DailyFeeding(date="2026-10-18", pond_id=2, commercial_feed_bags=6.0, commercial_feed_kg=150.0, vaat_kg=0.0, feeding_time="Afternoon", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged"),
+        models.DailyFeeding(date="2026-10-19", pond_id=1, commercial_feed_bags=3.0, commercial_feed_kg=75.0, vaat_kg=0.0, feeding_time="Both", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged (Both)"),
+        models.DailyFeeding(date="2026-10-19", pond_id=2, commercial_feed_bags=14.0, commercial_feed_kg=350.0, vaat_kg=0.0, feeding_time="Both", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged (Both)"),
+        models.DailyFeeding(date="2026-10-20", pond_id=1, commercial_feed_bags=6.0, commercial_feed_kg=150.0, vaat_kg=0.0, feeding_time="Both", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged (Both)"),
+        models.DailyFeeding(date="2026-10-20", pond_id=2, commercial_feed_bags=10.0, commercial_feed_kg=250.0, vaat_kg=0.0, feeding_time="Both", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged (Both)"),
+        models.DailyFeeding(date="2026-10-21", pond_id=1, commercial_feed_bags=6.0, commercial_feed_kg=150.0, vaat_kg=0.0, feeding_time="Both", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged (Both)"),
+        models.DailyFeeding(date="2026-10-21", pond_id=2, commercial_feed_bags=10.0, commercial_feed_kg=250.0, vaat_kg=0.0, feeding_time="Both", weather_condition="Sunny", logged_by="worker", notes="Feed bags logged (Both)"),
     ]
     db.add_all(daily_feedings)
     db.commit()
