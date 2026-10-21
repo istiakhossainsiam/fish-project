@@ -36,6 +36,15 @@ export default function FeedManagement({ ponds = [], feedInventory, dailyFeeding
 
   const isAdmin = currentUser?.role === 'superadmin' || currentUser?.role === 'manager';
 
+  // Overall Inventory & Feed Totals
+  const totalReceivedBags = feedInventory?.total_bags_received || batches.reduce((sum, b) => sum + (b.bag_count || 0), 0) || 430;
+  const totalConsumedBags = feedings.reduce((sum, f) => sum + (Number(f.commercial_feed_bags) || 0), 0);
+  const remainingFeedBags = Math.max(0, Math.round((totalReceivedBags - totalConsumedBags) * 10) / 10);
+  const remainingBagsDisplay = remainingFeedBags % 1 === 0 ? remainingFeedBags : remainingFeedBags.toFixed(1);
+  const totalConsumedKg = feedings.reduce((sum, f) => sum + (Number(f.commercial_feed_kg) || 0), 0);
+  const batch202Bags = batches.filter(b => b.brand_name?.includes('202') || b.feed_type?.includes('202')).reduce((sum, b) => sum + (b.bag_count || 0), 0) || 210;
+  const batch204Bags = batches.filter(b => b.brand_name?.includes('204') || b.feed_type?.includes('204')).reduce((sum, b) => sum + (b.bag_count || 0), 0) || 220;
+
   // Dynamically extract all unique months present in feedings data
   const availableMonths = useMemo(() => {
     const monthsSet = new Set(
@@ -143,17 +152,7 @@ export default function FeedManagement({ ponds = [], feedInventory, dailyFeeding
       </div>
 
       {/* Global Overview Cards */}
-      {(() => {
-        const totalReceivedBags = feedInventory?.total_bags_received || batches.reduce((sum, b) => sum + (b.bag_count || 0), 0) || 430;
-        const totalConsumedBags = feedings.reduce((sum, f) => sum + (Number(f.commercial_feed_bags) || 0), 0);
-        const remainingFeedBags = Math.max(0, Math.round((totalReceivedBags - totalConsumedBags) * 10) / 10);
-        const remainingBagsDisplay = remainingFeedBags % 1 === 0 ? remainingFeedBags : remainingFeedBags.toFixed(1);
-        const totalConsumedKg = feedings.reduce((sum, f) => sum + (Number(f.commercial_feed_kg) || 0), 0);
-        const batch202Bags = batches.filter(b => b.brand_name?.includes('202') || b.feed_type?.includes('202')).reduce((sum, b) => sum + (b.bag_count || 0), 0) || 210;
-        const batch204Bags = batches.filter(b => b.brand_name?.includes('204') || b.feed_type?.includes('204')).reduce((sum, b) => sum + (b.bag_count || 0), 0) || 220;
-
-        return (
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
             <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
               <span className="text-xs text-slate-500 font-semibold block">মোট ফিড এসেছে (Received)</span>
               <div className="text-xl font-black text-slate-900 mt-1">
@@ -196,8 +195,6 @@ export default function FeedManagement({ ponds = [], feedInventory, dailyFeeding
               </span>
             </div>
           </div>
-        );
-      })()}
 
       {/* Sub Tabs */}
       <div className="flex border-b border-slate-200 space-x-2 sm:space-x-4 overflow-x-auto pb-1">

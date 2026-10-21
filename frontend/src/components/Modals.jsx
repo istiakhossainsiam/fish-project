@@ -715,6 +715,22 @@ function FeedInventoryModal({ editItem, onClose, onSuccess }) {
   });
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    if (editItem) {
+      setFormData({
+        date: editItem.date || new Date().toISOString().slice(0, 10),
+        brand_name: editItem.brand_name || 'Fish Feed (Batch #202)',
+        feed_type: editItem.feed_type || 'Pellet Feed - Batch 202',
+        bag_count: editItem.bag_count || 100,
+        bag_weight_kg: editItem.bag_weight_kg || 25.0,
+        rate_per_bag: editItem.rate_per_bag || 1875,
+        supplier: editItem.supplier || 'Feed Distributor, Chittagong',
+        invoice_no: editItem.invoice_no || 'BATCH-202',
+        notes: editItem.notes || ''
+      });
+    }
+  }, [editItem]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
