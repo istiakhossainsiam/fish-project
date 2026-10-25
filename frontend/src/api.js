@@ -124,7 +124,10 @@ export async function recordDailyFeeding(data) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data)
   });
-  if (!res.ok) throw new Error("Failed to record feeding");
+  if (!res.ok) {
+    const errBody = await res.json().catch(() => ({}));
+    throw new Error(errBody.detail || "Failed to record feeding");
+  }
   return res.json();
 }
 
@@ -134,7 +137,10 @@ export async function updateDailyFeeding(id, data) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data)
   });
-  if (!res.ok) throw new Error("Failed to update feeding record");
+  if (!res.ok) {
+    const errBody = await res.json().catch(() => ({}));
+    throw new Error(errBody.detail || "Failed to update feeding record");
+  }
   return res.json();
 }
 
@@ -142,7 +148,10 @@ export async function deleteDailyFeeding(id) {
   const res = await fetch(`${API_BASE}/feed/daily/${id}`, {
     method: "DELETE"
   });
-  if (!res.ok) throw new Error("Failed to delete feeding record");
+  if (!res.ok) {
+    const errBody = await res.json().catch(() => ({}));
+    throw new Error(errBody.detail || "Failed to delete feeding record");
+  }
   return res.json();
 }
 
@@ -294,7 +303,10 @@ export async function workerQuickEntry(data) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data)
   });
-  if (!res.ok) throw new Error("Failed to submit worker entry");
+  if (!res.ok) {
+    const errBody = await res.json().catch(() => ({}));
+    throw new Error(errBody.detail || "Failed to submit worker entry");
+  }
   return res.json();
 }
 

@@ -3,10 +3,15 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from sqlalchemy import desc, func
 from typing import List, Optional
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import csv
 import io
 import requests
+
+BD_TZ = timezone(timedelta(hours=6))
+
+def get_bd_date_str():
+    return datetime.now(BD_TZ).strftime("%Y-%m-%d")
 
 from fastapi.staticfiles import StaticFiles
 import os
@@ -587,20 +592,43 @@ def get_daily_feedings(pond_id: Optional[int] = None, limit: int = 100, db: Sess
 
 @app.post("/api/feed/daily")
 def record_daily_feeding(payload: dict, db: Session = Depends(get_db)):
-    bags = float(payload.get("commercial_feed_bags") or 0.0)
-    kg = float(payload.get("commercial_feed_kg") or (bags * 25.0))
-    vaat = float(payload.get("vaat_kg") or 0.0)
+    try:
+        raw_pond_id = payload.get("pond_id")
+        if raw_pond_id is None:
+            raise ValueError()
+        pond_id = int(raw_pond_id)
+    except (TypeError, ValueError):
+        raise HTTPException(status_code=400, detail="সঠিক পুকুর নির্বাচন করুন (Valid pond_id required)")
+
+    try:
+        bags = float(payload.get("commercial_feed_bags") or 0.0)
+    except (TypeError, ValueError):
+        bags = 0.0
+
+    try:
+        kg = float(payload.get("commercial_feed_kg") or (bags * 25.0))
+    except (TypeError, ValueError):
+        kg = bags * 25.0
+
+    try:
+        vaat = float(payload.get("vaat_kg") or 0.0)
+    except (TypeError, ValueError):
+        vaat = 0.0
+
+    feed_date = str(payload.get("date") or "").strip()
+    if not feed_date:
+        feed_date = get_bd_date_str()
 
     feeding = models.DailyFeeding(
-        date=payload.get("date") or datetime.now().strftime("%Y-%m-%d"),
-        pond_id=int(payload["pond_id"]),
+        date=feed_date,
+        pond_id=pond_id,
         commercial_feed_bags=bags,
         commercial_feed_kg=kg,
         vaat_kg=vaat,
-        feeding_time=payload.get("feeding_time", "Morning"),
-        weather_condition=payload.get("weather_condition", "Normal"),
-        logged_by=payload.get("logged_by", "worker"),
-        notes=payload.get("notes", "")
+        feeding_time=payload.get("feeding_time") or "Morning",
+        weather_condition=payload.get("weather_condition") or "Normal",
+        logged_by=payload.get("logged_by") or "worker",
+        notes=payload.get("notes") or ""
     )
     db.add(feeding)
     db.commit()
@@ -613,23 +641,35 @@ def update_daily_feeding(feeding_id: int, payload: dict, db: Session = Depends(g
     if not feeding:
         raise HTTPException(status_code=404, detail="Feeding record not found")
     
-    if "date" in payload:
-        feeding.date = payload["date"]
-    if "pond_id" in payload:
-        feeding.pond_id = int(payload["pond_id"])
-    if "commercial_feed_bags" in payload:
-        feeding.commercial_feed_bags = float(payload["commercial_feed_bags"])
-        feeding.commercial_feed_kg = float(payload.get("commercial_feed_kg") or (feeding.commercial_feed_bags * 25.0))
-    if "commercial_feed_kg" in payload and "commercial_feed_bags" not in payload:
-        feeding.commercial_feed_kg = float(payload["commercial_feed_kg"])
-    if "vaat_kg" in payload:
-        feeding.vaat_kg = float(payload["vaat_kg"])
-    if "feeding_time" in payload:
-        feeding.feeding_time = payload["feeding_time"]
-    if "weather_condition" in payload:
-        feeding.weather_condition = payload["weather_condition"]
-    if "notes" in payload:
-        feeding.notes = payload["notes"]
+    if "date" in payload and payload["date"]:
+        feeding.date = str(payload["date"]).strip()
+    if "pond_id" in payload and payload["pond_id"] is not None:
+        try:
+            feeding.pond_id = int(payload["pond_id"])
+        except (TypeError, ValueError):
+            pass
+    if "commercial_feed_bags" in payload and payload["commercial_feed_bags"] is not None:
+        try:
+            feeding.commercial_feed_bags = float(payload["commercial_feed_bags"])
+            feeding.commercial_feed_kg = float(payload.get("commercial_feed_kg") or (feeding.commercial_feed_bags * 25.0))
+        except (TypeError, ValueError):
+            pass
+    elif "commercial_feed_kg" in payload and payload["commercial_feed_kg"] is not None:
+        try:
+            feeding.commercial_feed_kg = float(payload["commercial_feed_kg"])
+        except (TypeError, ValueError):
+            pass
+    if "vaat_kg" in payload and payload["vaat_kg"] is not None:
+        try:
+            feeding.vaat_kg = float(payload["vaat_kg"])
+        except (TypeError, ValueError):
+            pass
+    if "feeding_time" in payload and payload["feeding_time"]:
+        feeding.feeding_time = str(payload["feeding_time"])
+    if "weather_condition" in payload and payload["weather_condition"]:
+        feeding.weather_condition = str(payload["weather_condition"])
+    if "notes" in payload and payload["notes"] is not None:
+        feeding.notes = str(payload["notes"])
         
     db.commit()
     db.refresh(feeding)
@@ -1663,21 +1703,42 @@ def admin_clean_reseed():
 @app.post("/api/sync/worker-quick-entry")
 def worker_quick_entry(payload: dict, db: Session = Depends(get_db)):
     """Ultra-simplified single endpoint designed for field workers on mobile"""
-    pond_id = int(payload["pond_id"])
-    feed_bags = float(payload.get("commercial_feed_bags") or 0.0)
-    feed_kg = float(payload.get("commercial_feed_kg") or (feed_bags * 25.0))
-    vaat_kg = float(payload.get("vaat_kg") or 0.0)
-    notes = payload.get("notes", "")
+    try:
+        raw_pond_id = payload.get("pond_id")
+        pond_id = int(raw_pond_id) if raw_pond_id is not None else 1
+    except (TypeError, ValueError):
+        pond_id = 1
+
+    try:
+        feed_bags = float(payload.get("commercial_feed_bags") or 0.0)
+    except (TypeError, ValueError):
+        feed_bags = 0.0
+
+    try:
+        feed_kg = float(payload.get("commercial_feed_kg") or (feed_bags * 25.0))
+    except (TypeError, ValueError):
+        feed_kg = feed_bags * 25.0
+
+    try:
+        vaat_kg = float(payload.get("vaat_kg") or 0.0)
+    except (TypeError, ValueError):
+        vaat_kg = 0.0
+
+    notes = payload.get("notes") or ""
+
+    feed_date = str(payload.get("date") or "").strip()
+    if not feed_date:
+        feed_date = get_bd_date_str()
 
     feeding = models.DailyFeeding(
-        date=payload.get("date") or datetime.now().strftime("%Y-%m-%d"),
+        date=feed_date,
         pond_id=pond_id,
         commercial_feed_bags=feed_bags,
         commercial_feed_kg=feed_kg,
         vaat_kg=vaat_kg,
-        feeding_time=payload.get("feeding_time", "Morning"),
-        weather_condition=payload.get("weather_condition", "Clear"),
-        logged_by=payload.get("logged_by", "Worker Mobile Form"),
+        feeding_time=payload.get("feeding_time") or "Morning",
+        weather_condition=payload.get("weather_condition") or "Clear",
+        logged_by=payload.get("logged_by") or "Worker Mobile Form",
         notes=notes
     )
     db.add(feeding)
