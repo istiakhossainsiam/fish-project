@@ -2192,12 +2192,79 @@ def get_costing_report(
     cycle_est_revenue = round(cycle_projected_biomass_kg * 155.0, 2)
     cycle_est_net_profit = round(cycle_est_revenue - (cycle_est_feed_cost + total_feed_spent + total_other_expenses + 287355.0 - total_feed_spent), 2)
 
+    # 13. Pond-wise Feeding Summary
+    pond_totals = {}
+    for f in feedings:
+        pid = f.pond_id
+        if pid not in pond_totals:
+            pond_totals[pid] = {
+                "pond_id": pid,
+                "pond_name": f"পুকুর {pid}",
+                "feed_bags": 0.0,
+                "feed_kg": 0.0,
+                "feed_cost_bdt": 0.0,
+                "vaat_kg": 0.0,
+                "entries_count": 0
+            }
+        pond_totals[pid]["feed_bags"] += f.commercial_feed_bags
+        pond_totals[pid]["feed_kg"] += f.commercial_feed_kg
+        pond_totals[pid]["vaat_kg"] += f.vaat_kg
+        pond_totals[pid]["feed_cost_bdt"] += round(f.commercial_feed_bags * avg_feed_rate_per_bag, 2)
+        pond_totals[pid]["entries_count"] += 1
+    pond_summary = list(pond_totals.values())
+    pond_summary.sort(key=lambda x: x["pond_id"])
+
+    # 14. Day-by-Day Aggregated Matrix (Crucial for Weekly & Monthly overview)
+    daily_matrix = []
+    try:
+        cur_dt = datetime.strptime(s_date, "%Y-%m-%d").date()
+        end_boundary_dt = datetime.strptime(e_date, "%Y-%m-%d").date()
+        delta_days = (end_boundary_dt - cur_dt).days + 1
+        if delta_days <= 31:
+            bn_days = {
+                "Saturday": "শনিবার", "Sunday": "রবিবার", "Monday": "সোমবার",
+                "Tuesday": "মঙ্গলবার", "Wednesday": "বুধবার", "Thursday": "বৃহস্পতিবার", "Friday": "শুক্রবার"
+            }
+            while cur_dt <= end_boundary_dt:
+                d_str = cur_dt.strftime("%Y-%m-%d")
+                eng_day = cur_dt.strftime("%A")
+                d_feeds = [f for f in feedings if f.date == d_str]
+                d_exps = [e for e in expenses if e.date == d_str and e.category not in EXCLUDED_EXPENSES]
+                p1_bags = sum(f.commercial_feed_bags for f in d_feeds if f.pond_id == 1)
+                p2_bags = sum(f.commercial_feed_bags for f in d_feeds if f.pond_id == 2)
+                p3_bags = sum(f.commercial_feed_bags for f in d_feeds if f.pond_id == 3)
+                p4_bags = sum(f.commercial_feed_bags for f in d_feeds if f.pond_id == 4)
+                d_tot_bags = sum(f.commercial_feed_bags for f in d_feeds)
+                d_tot_kg = sum(f.commercial_feed_kg for f in d_feeds)
+                d_tot_vaat = sum(f.vaat_kg for f in d_feeds)
+                d_f_cost = round(d_tot_bags * avg_feed_rate_per_bag, 2)
+                d_other_cost = sum(e.amount_bdt for e in d_exps)
+                daily_matrix.append({
+                    "date": d_str,
+                    "day_name": bn_days.get(eng_day, eng_day),
+                    "pond1_bags": round(p1_bags, 1),
+                    "pond2_bags": round(p2_bags, 1),
+                    "pond3_bags": round(p3_bags, 1),
+                    "pond4_bags": round(p4_bags, 1),
+                    "total_bags": round(d_tot_bags, 1),
+                    "total_kg": round(d_tot_kg, 1),
+                    "total_vaat_kg": round(d_tot_vaat, 1),
+                    "feed_cost_bdt": d_f_cost,
+                    "other_cost_bdt": round(d_other_cost, 2),
+                    "total_cost_bdt": round(d_f_cost + d_other_cost, 2)
+                })
+                cur_dt += timedelta(days=1)
+    except Exception as err:
+        print("Daily matrix error:", err)
+
     return {
         "period": period,
         "period_label": period_label,
         "start_date": s_date,
         "end_date": e_date,
         "pond_id": pond_id,
+        "pond_summary": pond_summary,
+        "daily_matrix": daily_matrix,
         "summary": {
             "feed_bags_consumed": round(feed_bags_consumed, 1),
             "feed_kg_consumed": round(feed_kg_consumed, 1),
