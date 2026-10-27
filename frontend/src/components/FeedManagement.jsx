@@ -39,7 +39,8 @@ export default function FeedManagement({ ponds = [], feedInventory, dailyFeeding
   // Overall Inventory & Feed Totals
   const totalReceivedBags = feedInventory?.total_bags_received || batches.reduce((sum, b) => sum + (b.bag_count || 0), 0) || 430;
   const totalConsumedBags = feedings.reduce((sum, f) => sum + (Number(f.commercial_feed_bags) || 0), 0);
-  const remainingFeedBags = Math.max(0, Math.round((totalReceivedBags - totalConsumedBags) * 10) / 10);
+  const totalAdjustedBags = feedInventory?.total_bags_adjusted || (feedInventory?.adjustments?.reduce((s, a) => s + (a.bag_count || 0), 0)) || 0;
+  const remainingFeedBags = Math.max(0, Math.round((totalReceivedBags - totalConsumedBags - totalAdjustedBags) * 10) / 10);
   const remainingBagsDisplay = remainingFeedBags % 1 === 0 ? remainingFeedBags : remainingFeedBags.toFixed(1);
   const totalConsumedKg = feedings.reduce((sum, f) => sum + (Number(f.commercial_feed_kg) || 0), 0);
   const batch202Bags = batches.filter(b => b.brand_name?.includes('202') || b.feed_type?.includes('202')).reduce((sum, b) => sum + (b.bag_count || 0), 0) || 210;

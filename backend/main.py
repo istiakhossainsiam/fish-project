@@ -162,7 +162,8 @@ def get_dashboard_stats(db: Session = Depends(get_db)):
     # Feed calculations
     total_feed_bags_received = sum(b.bag_count for b in feed_inventory)
     total_feed_bags_consumed = sum(f.commercial_feed_bags for f in feedings)
-    remaining_feed_bags = max(0, total_feed_bags_received - total_feed_bags_consumed)
+    total_feed_adjustments = sum(a.bag_count for a in db.query(models.FeedStockAdjustment).all())
+    remaining_feed_bags = max(0.0, round(total_feed_bags_received - total_feed_bags_consumed - total_feed_adjustments, 1))
     total_feed_kg_consumed = sum(f.commercial_feed_kg for f in feedings)
     total_vaat_kg_consumed = sum(f.vaat_kg for f in feedings)
 
@@ -173,7 +174,7 @@ def get_dashboard_stats(db: Session = Depends(get_db)):
     total_feed_purchase_cost = sum(b.total_cost for b in feed_inventory)
     total_pona_purchase_cost = sum(s.cost_bdt for s in stockings)
     total_vaat_cost = sum((v.rice_cost_bdt + v.cooking_fuel_cost_bdt) for v in vaat_records)
-    other_expenses = sum(e.amount_bdt for e in expenses if e.category != "Feed Purchase")
+    other_expenses = sum(e.amount_bdt for e in expenses if e.category not in ["Feed Purchase", "Pona / Stocking", "Rice / Vaat"])
     total_investment_bdt = total_feed_purchase_cost + total_pona_purchase_cost + total_vaat_cost + other_expenses
 
     total_harvest_revenue = sum(h.total_income_bdt for h in harvests)
@@ -267,6 +268,7 @@ def get_dashboard_stats(db: Session = Depends(get_db)):
         "feed_summary": {
             "total_feed_bags_received": total_feed_bags_received,
             "total_feed_bags_consumed": round(total_feed_bags_consumed, 1),
+            "total_feed_adjustments": round(total_feed_adjustments, 1),
             "remaining_feed_bags": round(remaining_feed_bags, 1),
             "total_feed_kg_consumed": round(total_feed_kg_consumed, 1),
             "total_vaat_kg_consumed": round(total_vaat_kg_consumed, 1),
@@ -481,14 +483,117 @@ def get_feed_inventory(db: Session = Depends(get_db)):
     total_spent = sum(b.total_cost for b in batches)
     avg_price = total_spent / max(1, total_bags)
     total_consumed = db.query(func.sum(models.DailyFeeding.commercial_feed_bags)).scalar() or 0.0
-    remaining_bags = max(0.0, total_bags - total_consumed)
+    total_adjusted = db.query(func.sum(models.FeedStockAdjustment.bag_count)).scalar() or 0.0
+    remaining_bags = max(0.0, total_bags - total_consumed - total_adjusted)
+    adjustments = db.query(models.FeedStockAdjustment).order_by(desc(models.FeedStockAdjustment.date)).all()
     return {
         "batches": batches,
         "total_bags_received": total_bags,
         "total_feed_spent_bdt": round(total_spent, 2),
         "avg_cost_per_bag": round(avg_price, 2),
         "total_bags_consumed": round(total_consumed, 1),
-        "remaining_bags": round(remaining_bags, 1)
+        "total_bags_adjusted": round(total_adjusted, 1),
+        "remaining_bags": round(remaining_bags, 1),
+        "adjustments": adjustments
+    }
+
+# ================= FEED STOCK ADJUSTMENTS & AUDIT RECONCILIATION =================
+
+@app.get("/api/feed/adjustments")
+def get_feed_adjustments(db: Session = Depends(get_db)):
+    items = db.query(models.FeedStockAdjustment).order_by(desc(models.FeedStockAdjustment.date)).all()
+    total_bags = sum(i.bag_count for i in items)
+    return {
+        "adjustments": items,
+        "total_adjusted_bags": round(total_bags, 1)
+    }
+
+@app.post("/api/feed/adjustments")
+def add_feed_adjustment(payload: dict, db: Session = Depends(get_db)):
+    try:
+        bag_count = float(payload.get("bag_count") or 0.0)
+    except (TypeError, ValueError):
+        raise HTTPException(status_code=400, detail="সঠিক ব্যাগের সংখ্যা প্রদান করুন")
+
+    adj_date = str(payload.get("date") or "").strip() or get_bd_date_str()
+    reason = str(payload.get("reason") or "শারীরিক খাতা ও গুদাম নিরীক্ষা সমন্বয়").strip()
+
+    adj = models.FeedStockAdjustment(
+        date=adj_date,
+        bag_count=bag_count,
+        adjustment_type=payload.get("adjustment_type") or "audit_deduction",
+        reason=reason,
+        adjusted_by=payload.get("adjusted_by") or "Manager",
+        notes=payload.get("notes") or ""
+    )
+    db.add(adj)
+    db.commit()
+    db.refresh(adj)
+    return adj
+
+@app.delete("/api/feed/adjustments/{adj_id}")
+def delete_feed_adjustment(adj_id: int, db: Session = Depends(get_db)):
+    item = db.query(models.FeedStockAdjustment).filter(models.FeedStockAdjustment.id == adj_id).first()
+    if not item:
+        raise HTTPException(status_code=404, detail="Adjustment record not found")
+    db.delete(item)
+    db.commit()
+    return {"status": "success", "message": "Adjustment record removed"}
+
+@app.post("/api/feed/reconcile-audit")
+def reconcile_physical_stock(payload: dict, db: Session = Depends(get_db)):
+    """
+    Dedicated audit reconciliation endpoint.
+    Example: On 2026-10-26, user notes physical count was 5 bags different from software.
+    """
+    audit_date = str(payload.get("date") or "2026-10-26").strip()
+    physical_count = payload.get("physical_count")
+    variance_bags = payload.get("variance_bags")
+    
+    total_received = sum(b.bag_count for b in db.query(models.FeedInventory).all())
+    total_consumed = db.query(func.sum(models.DailyFeeding.commercial_feed_bags)).scalar() or 0.0
+    book_stock = total_received - total_consumed # e.g. 98.0 bags
+
+    if variance_bags is not None:
+        diff = float(variance_bags)
+    elif physical_count is not None:
+        diff = book_stock - float(physical_count)
+    else:
+        diff = 5.0 # default to 5.0 bags as reported by user
+
+    # Check if an adjustment already exists for this date and variance
+    existing = db.query(models.FeedStockAdjustment).filter(
+        models.FeedStockAdjustment.date == audit_date,
+        models.FeedStockAdjustment.bag_count == diff
+    ).first()
+
+    if not existing and diff != 0:
+        adj = models.FeedStockAdjustment(
+            date=audit_date,
+            bag_count=diff,
+            adjustment_type="audit_deduction" if diff > 0 else "audit_addition",
+            reason=payload.get("reason") or f"শারীরিক খাতার স্টক নিরীক্ষা সমন্বয় (বইয়ে {book_stock} ব্যাগ, শারীরিক খাতায় {book_stock - diff} ব্যাগ)",
+            adjusted_by=payload.get("adjusted_by") or "Internal Auditor",
+            notes=payload.get("notes") or f"Reconciled 5 bags difference on {audit_date}"
+        )
+        db.add(adj)
+        db.commit()
+        db.refresh(adj)
+        return {
+            "status": "success",
+            "message": f"{audit_date} তারিখে {diff} ব্যাগ ফিড সফলভাবে সমন্বয় করা হয়েছে।",
+            "book_stock": book_stock,
+            "physical_stock": book_stock - diff,
+            "variance": diff,
+            "adjustment": adj
+        }
+
+    return {
+        "status": "already_exists",
+        "message": f"{audit_date} তারিখের জন্য ইতিমধ্যে স্টক সমন্বয় রেকর্ড রয়েছে।",
+        "book_stock": book_stock,
+        "physical_stock": book_stock - diff,
+        "variance": diff
     }
 
 @app.post("/api/feed/inventory")
@@ -1806,6 +1911,8 @@ def get_printable_sheet_template():
 
 # ================= COMPREHENSIVE COSTING REPORT (DAILY, WEEKLY, MONTHLY, 6-MONTH CYCLE) =================
 
+import calendar
+
 @app.get("/api/reports/costing")
 def get_costing_report(
     period: str = "cycle", # "daily", "weekly", "monthly", "cycle", "custom"
@@ -1815,45 +1922,73 @@ def get_costing_report(
     pond_id: Optional[int] = None,
     db: Session = Depends(get_db)
 ):
-    today_dt = datetime.now().date()
+    today_dt = datetime.now(BD_TZ).date()
     if target_date:
         try:
-            ref_dt = datetime.strptime(target_date, "%Y-%m-%d").date()
+            ref_dt = datetime.strptime(target_date[:10], "%Y-%m-%d").date()
         except Exception:
             ref_dt = today_dt
     else:
         ref_dt = today_dt
 
+    bn_months = {
+        1: "জানুয়ারি", 2: "ফেব্রুয়ারি", 3: "মার্চ", 4: "এপ্রিল",
+        5: "মে", 6: "জুন", 7: "জুলাই", 8: "আগস্ট",
+        9: "সেপ্টেম্বর", 10: "অক্টোবর", 11: "নভেম্বর", 12: "ডিসেম্বর"
+    }
+
     if period == "daily":
-        s_date = ref_dt.strftime("%Y-%m-%d")
+        s_date = target_date[:10] if target_date else ref_dt.strftime("%Y-%m-%d")
         e_date = s_date
-        period_label = f"দৈনিক খরচ ও খাদ্য রিপোর্ট ({s_date})"
+        period_label = f"দৈনিক খরচ ও খাদ্য নিরীক্ষা রিপোর্ট ({s_date})"
     elif period == "weekly":
-        start_dt = ref_dt - timedelta(days=6)
-        s_date = start_dt.strftime("%Y-%m-%d")
-        e_date = ref_dt.strftime("%Y-%m-%d")
-        period_label = f"সাপ্তাহিক রিপোর্ট ({s_date} হতে {e_date})"
+        if start_date and end_date:
+            s_date = start_date
+            e_date = end_date
+        elif target_date:
+            end_dt = ref_dt
+            start_dt = end_dt - timedelta(days=6)
+            s_date = start_dt.strftime("%Y-%m-%d")
+            e_date = end_dt.strftime("%Y-%m-%d")
+        else:
+            end_dt = ref_dt
+            start_dt = end_dt - timedelta(days=6)
+            s_date = start_dt.strftime("%Y-%m-%d")
+            e_date = end_dt.strftime("%Y-%m-%d")
+        period_label = f"সাপ্তাহিক খরচ ও খাদ্য নিরীক্ষা রিপোর্ট ({s_date} হতে {e_date})"
     elif period == "monthly":
-        start_dt = ref_dt.replace(day=1)
-        next_month = ref_dt.replace(day=28) + timedelta(days=4)
-        end_dt = next_month - timedelta(days=next_month.day)
+        if target_date:
+            try:
+                parts = target_date.split("-")
+                yr = int(parts[0])
+                mo = int(parts[1])
+            except Exception:
+                yr = ref_dt.year
+                mo = ref_dt.month
+        else:
+            yr = ref_dt.year
+            mo = ref_dt.month
+        _, last_day = calendar.monthrange(yr, mo)
+        start_dt = datetime(yr, mo, 1).date()
+        end_dt = datetime(yr, mo, last_day).date()
         s_date = start_dt.strftime("%Y-%m-%d")
         e_date = end_dt.strftime("%Y-%m-%d")
-        period_label = f"মাসিক রিপোর্ট ({ref_dt.strftime('%B %Y')})"
+        m_name = f"{bn_months.get(mo, str(mo))} {yr}"
+        period_label = f"মাসিক খরচ ও খাদ্য নিরীক্ষা রিপোর্ট ({m_name}: {s_date} হতে {e_date})"
     elif period == "cycle":
         s_date = "2026-09-18"
         e_date = "2027-03-18"
-        period_label = "সম্পূর্ণ ৬ মাসের কালচার সাইকেল (Full 6-Month Culture Cycle: ১৮/০৯/২০২৬ - ১৮/০৩/২০২৭)"
+        period_label = "সম্পূর্ণ ৬ মাসের কালচার সাইকেল নিরীক্ষা রিপোর্ট (১৮/০৯/২০২৬ - ১৮/০৩/২০২৭)"
     elif period == "custom":
         s_date = start_date or "2026-09-18"
         e_date = end_date or today_dt.strftime("%Y-%m-%d")
-        period_label = f"কাস্টম তারিখ রিপোর্ট ({s_date} হতে {e_date})"
+        period_label = f"কাস্টম তারিখ নিরীক্ষা রিপোর্ট ({s_date} হতে {e_date})"
     else:
         s_date = "2026-09-18"
         e_date = today_dt.strftime("%Y-%m-%d")
-        period_label = f"রিপোর্ট ({s_date} হতে {e_date})"
+        period_label = f"খরচ ও খাদ্য রিপোর্ট ({s_date} হতে {e_date})"
 
-    # 1. Average feed cost per bag from inventory
+    # 1. Average feed cost per bag from inventory (Weighted Average)
     inventory = db.query(models.FeedInventory).all()
     total_feed_bags_bought = sum(b.bag_count for b in inventory)
     total_feed_spent = sum(b.total_cost for b in inventory)
@@ -1866,7 +2001,7 @@ def get_costing_report(
     )
     if pond_id:
         feeding_q = feeding_q.filter(models.DailyFeeding.pond_id == pond_id)
-    feedings = feeding_q.order_by(models.DailyFeeding.date.desc()).all()
+    feedings = feeding_q.order_by(models.DailyFeeding.date.desc(), models.DailyFeeding.pond_id.asc()).all()
 
     feed_bags_consumed = sum(f.commercial_feed_bags for f in feedings)
     feed_kg_consumed = sum(f.commercial_feed_kg for f in feedings)
@@ -1882,7 +2017,7 @@ def get_costing_report(
     vaat_raw_rice_kg = sum(v.raw_rice_kg for v in vaat_records)
     vaat_cost_bdt = sum((v.rice_cost_bdt + v.cooking_fuel_cost_bdt) for v in vaat_records)
 
-    # 4. Other Expenses in range
+    # 4. Other Expenses in range (Strictly exclude categories tracked separately to prevent double counting)
     exp_q = db.query(models.Expense).filter(
         models.Expense.date >= s_date,
         models.Expense.date <= e_date
@@ -1891,6 +2026,7 @@ def get_costing_report(
         exp_q = exp_q.filter((models.Expense.pond_id == pond_id) | (models.Expense.pond_id == None))
     expenses = exp_q.order_by(models.Expense.date.desc()).all()
 
+    EXCLUDED_EXPENSES = {"Feed Purchase", "Pona / Stocking", "Rice / Vaat"}
     cost_categories = {
         "Medicine & Lime": 0.0,
         "Electricity & Fuel": 0.0,
@@ -1899,6 +2035,8 @@ def get_costing_report(
         "Misc": 0.0
     }
     for e in expenses:
+        if e.category in EXCLUDED_EXPENSES:
+            continue
         cat = e.category
         if cat in cost_categories:
             cost_categories[cat] += e.amount_bdt
@@ -1924,7 +2062,27 @@ def get_costing_report(
     feed_purchased_bags = sum(b.bag_count for b in inv_batches)
     feed_purchased_cost_bdt = sum(b.total_cost for b in inv_batches)
 
-    # 7. Harvest / Sales in range
+    # 7. Feed Stock Adjustments & Reconciliation in range
+    adj_q = db.query(models.FeedStockAdjustment).filter(
+        models.FeedStockAdjustment.date >= s_date,
+        models.FeedStockAdjustment.date <= e_date
+    )
+    adjustments_in_range = adj_q.order_by(models.FeedStockAdjustment.date.desc()).all()
+    feed_adjusted_bags = sum(a.bag_count for a in adjustments_in_range)
+
+    # 8. Exact Stock Balance as of Period End Date (e_date)
+    feed_received_to_date = sum(b.bag_count for b in db.query(models.FeedInventory).filter(models.FeedInventory.date <= e_date).all())
+    feed_consumed_to_date = db.query(func.sum(models.DailyFeeding.commercial_feed_bags)).filter(models.DailyFeeding.date <= e_date).scalar() or 0.0
+    feed_adjusted_to_date = db.query(func.sum(models.FeedStockAdjustment.bag_count)).filter(models.FeedStockAdjustment.date <= e_date).scalar() or 0.0
+    feed_closing_stock_bags = round(max(0.0, feed_received_to_date - feed_consumed_to_date - feed_adjusted_to_date), 1)
+
+    # Prior to s_date (Opening Stock)
+    feed_received_prior = sum(b.bag_count for b in db.query(models.FeedInventory).filter(models.FeedInventory.date < s_date).all())
+    feed_consumed_prior = db.query(func.sum(models.DailyFeeding.commercial_feed_bags)).filter(models.DailyFeeding.date < s_date).scalar() or 0.0
+    feed_adjusted_prior = db.query(func.sum(models.FeedStockAdjustment.bag_count)).filter(models.FeedStockAdjustment.date < s_date).scalar() or 0.0
+    feed_opening_stock_bags = round(max(0.0, feed_received_prior - feed_consumed_prior - feed_adjusted_prior), 1)
+
+    # 9. Harvest / Sales in range
     harv_q = db.query(models.HarvestSale).filter(
         models.HarvestSale.date >= s_date,
         models.HarvestSale.date <= e_date
@@ -1935,24 +2093,25 @@ def get_costing_report(
     harvest_revenue_bdt = sum(h.total_income_bdt for h in harvests)
     harvest_weight_kg = sum(h.total_weight_kg for h in harvests)
 
-    # 8. Total Costing Summary for Period
+    # 10. Total Operational Costing Summary for Period
     total_other_expenses = sum(cost_categories.values())
     total_period_cost_bdt = round(
         feed_consumed_cost_bdt + vaat_cost_bdt + total_other_expenses + pona_stocking_cost,
         2
     )
 
-    # 9. Itemized Chronological Ledger
+    # 11. Itemized Chronological Ledger
     ledger = []
     # Feedings
     for f in feedings:
         pond_label = f"পুকুর {f.pond_id}"
         f_cost = round(f.commercial_feed_bags * avg_feed_rate_per_bag, 2)
+        time_bn = "সকাল" if f.feeding_time == "Morning" else "বিকাল" if f.feeding_time == "Afternoon" else "উভয় বেলা (সকাল ও বিকাল)" if f.feeding_time == "Both" else f.feeding_time
         ledger.append({
             "date": f.date,
-            "type": "খাবার প্রদান (Commercial Feed)",
+            "type": "বাণিজ্যিক ফিড প্রদান (Feed)",
             "pond": pond_label,
-            "description": f"{f.commercial_feed_bags} ব্যাগ ({f.commercial_feed_kg} কেজি) • সময়: {f.feeding_time}",
+            "description": f"{f.commercial_feed_bags} ব্যাগ ({f.commercial_feed_kg} কেজি) • সময়: {time_bn} • আবহাওয়া: {f.weather_condition or 'স্বাভাবিক'}",
             "quantity": f"{f.commercial_feed_bags} ব্যাগ",
             "amount_bdt": f_cost,
             "badge_color": "cyan"
@@ -1960,16 +2119,44 @@ def get_costing_report(
         if f.vaat_kg > 0:
             ledger.append({
                 "date": f.date,
-                "type": "ভাত প্রদান (Cooked Vaat)",
+                "type": "সিদ্ধ ভাত প্রদান (Vaat)",
                 "pond": pond_label,
-                "description": f"{f.vaat_kg} কেজি সিদ্ধ ভাত সরবরাহ",
+                "description": f"{f.vaat_kg} কেজি ভাত পুকুরে প্রয়োগ",
                 "quantity": f"{f.vaat_kg} কেজি",
                 "amount_bdt": 0.0,
                 "badge_color": "amber"
             })
 
+    # Vaat Preparations (Bulk cooking costs)
+    for v in vaat_records:
+        v_cost = v.rice_cost_bdt + v.cooking_fuel_cost_bdt
+        ledger.append({
+            "date": v.date,
+            "type": "ভাত প্রস্তুতি ও জ্বালানি (Rice & Fuel)",
+            "pond": "সমগ্র খামার",
+            "description": f"চাল {v.raw_rice_kg} কেজি (৳{v.rice_cost_bdt}) + জ্বালানি ৳{v.cooking_fuel_cost_bdt} • তৈরি ভাত {v.total_cooked_vaat_kg} কেজি",
+            "quantity": f"{v.raw_rice_kg} কেজি চাল",
+            "amount_bdt": round(v_cost, 2),
+            "badge_color": "amber"
+        })
+
+    # Feed Stock Adjustments in range
+    for a in adjustments_in_range:
+        a_cost = round(a.bag_count * avg_feed_rate_per_bag, 2)
+        ledger.append({
+            "date": a.date,
+            "type": "স্টক নিরীক্ষা ও সমন্বয় (Audit Variance)",
+            "pond": "কেন্দ্রীয় গুদাম",
+            "description": f"{a.reason} • নিরীক্ষক: {a.adjusted_by} {f'({a.notes})' if a.notes else ''}",
+            "quantity": f"{a.bag_count} ব্যাগ",
+            "amount_bdt": a_cost,
+            "badge_color": "rose"
+        })
+
     # Expenses
     for e in expenses:
+        if e.category in EXCLUDED_EXPENSES:
+            continue
         pond_label = f"পুকুর {e.pond_id}" if e.pond_id else "সমগ্র খামার"
         ledger.append({
             "date": e.date,
@@ -1997,7 +2184,7 @@ def get_costing_report(
     # Sort ledger by date descending
     ledger.sort(key=lambda x: x["date"], reverse=True)
 
-    # 10. 6-Month Full Cycle Projections
+    # 12. 6-Month Full Cycle Projections
     cycle_total_fish = sum(s.count_pcs for s in db.query(models.StockingEvent).all())
     cycle_projected_biomass_kg = 75480.0
     cycle_est_feed_bags = round((cycle_projected_biomass_kg * 1.35) / 25.0, 0)
@@ -2030,7 +2217,20 @@ def get_costing_report(
             "feed_purchased_cost_bdt": feed_purchased_cost_bdt,
             "harvest_revenue_bdt": round(harvest_revenue_bdt, 2),
             "harvest_weight_kg": round(harvest_weight_kg, 2),
-            "net_cashflow_bdt": round(harvest_revenue_bdt - total_period_cost_bdt, 2)
+            "net_cashflow_bdt": round(harvest_revenue_bdt - total_period_cost_bdt, 2),
+            # Precise stock reconciliation metrics
+            "stock_audit": {
+                "opening_stock_bags": feed_opening_stock_bags,
+                "purchased_in_period_bags": feed_purchased_bags,
+                "consumed_in_period_bags": round(feed_bags_consumed, 1),
+                "adjusted_in_period_bags": round(feed_adjusted_bags, 1),
+                "closing_stock_bags": feed_closing_stock_bags,
+                "total_received_to_date": feed_received_to_date,
+                "total_consumed_to_date": round(feed_consumed_to_date, 1),
+                "total_adjusted_to_date": round(feed_adjusted_to_date, 1),
+                "unadjusted_book_stock": round(feed_received_to_date - feed_consumed_to_date, 1),
+                "as_of_date": e_date
+            }
         },
         "by_category": {
             "বাণিজ্যিক ফিড খরচ (Commercial Feed)": feed_consumed_cost_bdt,

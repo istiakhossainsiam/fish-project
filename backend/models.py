@@ -229,3 +229,21 @@ class Investment(Base):
 
     investor = relationship("Investor", back_populates="investments")
     cycle = relationship("PondCycle", back_populates="investments")
+
+
+class FeedStockAdjustment(Base):
+    """
+    Physical feed warehouse audit & stock reconciliation adjustments.
+    Used when physical count differs from software book stock (e.g. 5 bags difference on 26/10/2026).
+    """
+    __tablename__ = "feed_stock_adjustments"
+
+    id = Column(Integer, primary_key=True, index=True)
+    date = Column(String(20), nullable=False) # e.g. "2026-10-26"
+    bag_count = Column(Float, nullable=False) # e.g. 5.0 (variance deduction or addition)
+    adjustment_type = Column(String(30), default="audit_deduction") # "audit_deduction", "damage_spoilage", "audit_addition"
+    reason = Column(String(255), nullable=False) # e.g. "শারীরিক খাতা ও গুদাম নিরীক্ষা তফাত"
+    adjusted_by = Column(String(50), default="Manager")
+    notes = Column(Text, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+

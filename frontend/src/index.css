@@ -294,16 +294,96 @@ table td {
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1) !important;
 }
 
-/* Print Optimization */
+/* Print Optimization for Official A4 Audit Reports */
+@page {
+  size: A4 portrait;
+  margin: 10mm 10mm 12mm 10mm;
+}
+
 @media print {
-  body {
+  html, body, #root, .min-h-screen {
     background: #ffffff !important;
+    background-color: #ffffff !important;
     color: #0f172a !important;
+    font-size: 11pt !important;
+    line-height: 1.35 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
   }
-  header, nav, .no-print, button, select {
+
+  /* Hide navigation, action buttons, filters and web chrome */
+  header, nav, .no-print, button, input, select, textarea,
+  .overflow-x-auto {
+    overflow: visible !important;
+  }
+
+  header, nav, .no-print, button, select, input[type="text"], input[type="date"] {
     display: none !important;
   }
+
   .print-only {
     display: block !important;
+  }
+
+  /* Main report container reset for print */
+  .printable-report {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    background: #ffffff !important;
+  }
+
+  /* Prevent page breaks inside cards and table rows */
+  .printable-card, .break-inside-avoid, .signature-block {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  tr {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  thead {
+    display: table-header-group !important;
+  }
+
+  tfoot {
+    display: table-footer-group !important;
+  }
+
+  /* Crisp borders and ink-efficient table colors */
+  table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    font-size: 9.5pt !important;
+  }
+
+  th {
+    background-color: #f1f5f9 !important;
+    color: #0f172a !important;
+    border: 1px solid #94a3b8 !important;
+    padding: 6px 8px !important;
+    font-weight: 700 !important;
+  }
+
+  td {
+    border: 1px solid #cbd5e1 !important;
+    padding: 5px 8px !important;
+    color: #1e293b !important;
+  }
+
+  /* Metric cards printing */
+  .print-metric-box {
+    border: 1px solid #cbd5e1 !important;
+    background-color: #f8fafc !important;
+    padding: 8px 10px !important;
+    border-radius: 6px !important;
   }
 }

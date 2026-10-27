@@ -110,6 +110,47 @@ export async function deleteFeedBatch(id) {
   return res.json();
 }
 
+// ================= FEED STOCK ADJUSTMENTS & RECONCILIATION =================
+export async function fetchFeedAdjustments() {
+  const res = await fetch(`${API_BASE}/feed/adjustments`);
+  if (!res.ok) throw new Error("Failed to fetch feed adjustments");
+  return res.json();
+}
+
+export async function addFeedAdjustment(data) {
+  const res = await fetch(`${API_BASE}/feed/adjustments`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data)
+  });
+  if (!res.ok) {
+    const errBody = await res.json().catch(() => ({}));
+    throw new Error(errBody.detail || "Failed to add feed adjustment");
+  }
+  return res.json();
+}
+
+export async function deleteFeedAdjustment(id) {
+  const res = await fetch(`${API_BASE}/feed/adjustments/${id}`, {
+    method: "DELETE"
+  });
+  if (!res.ok) throw new Error("Failed to delete feed adjustment");
+  return res.json();
+}
+
+export async function reconcilePhysicalStock(data) {
+  const res = await fetch(`${API_BASE}/feed/reconcile-audit`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data)
+  });
+  if (!res.ok) {
+    const errBody = await res.json().catch(() => ({}));
+    throw new Error(errBody.detail || "Failed to reconcile stock");
+  }
+  return res.json();
+}
+
 // ================= DAILY FEEDING =================
 export async function fetchDailyFeedings(pondId = null) {
   const url = pondId ? `${API_BASE}/feed/daily?pond_id=${pondId}` : `${API_BASE}/feed/daily`;
