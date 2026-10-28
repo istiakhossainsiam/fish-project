@@ -248,6 +248,18 @@ button.bg-teal-600, button.bg-teal-700, button.bg-emerald-600, button.bg-amber-6
     display: none !important;
   }
 
+  /* Filter out browser extension injected toolbars (RANKSEO, SEO bars, floating panels) */
+  [id*="rankseo" i], [class*="rankseo" i], [id*="seo" i], [class*="seo" i],
+  [id*="extension" i], [class*="extension" i],
+  div[style*="z-index: 2147483647"], div[style*="z-index: 9999999"],
+  div[style*="position: fixed; bottom: 0"], div[style*="position: fixed; top: 0"] {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    height: 0 !important;
+    pointer-events: none !important;
+  }
+
   html, body {
     width: 100% !important;
     min-width: 100% !important;

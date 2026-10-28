@@ -52,7 +52,161 @@ export default function Reports({ stats, ponds = [], feedInventory, expensesData
   }, [period, targetDate, selectedMonth, selectedWeek, startDate, endDate, pondId]);
 
   const handlePrint = () => {
-    window.print();
+    const reportElem = document.getElementById('printable-audit-sheet');
+    if (!reportElem) {
+      window.print();
+      return;
+    }
+
+    // Open a dedicated clean print window completely free of browser extensions (RANKSEO etc.)
+    const printWin = window.open('', '_blank', 'width=1280,height=900');
+    if (!printWin) {
+      // Fallback to standard print if popup blocked
+      window.print();
+      return;
+    }
+
+    const htmlContent = `<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <title>শাহ আমানত ফিশারি - অডিট নিরীক্ষা বিবরণী (A4 Landscape)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    @page {
+      size: A4 landscape !important;
+      margin: 10mm 10mm 10mm 10mm !important;
+    }
+    * {
+      box-sizing: border-box;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+    html, body {
+      margin: 0 !important;
+      padding: 0 !important;
+      background: #ffffff !important;
+      color: #0f172a !important;
+      font-family: 'Hind Siliguri', 'Manrope', -apple-system, sans-serif;
+      font-size: 8pt;
+      line-height: 1.2;
+      width: 100%;
+    }
+    .font-mono, td, th {
+      font-family: 'JetBrains Mono', 'Hind Siliguri', monospace;
+      font-variant-numeric: tabular-nums;
+    }
+    .print-master-table {
+      width: 100% !important;
+      border: none !important;
+      border-collapse: collapse !important;
+      page-break-inside: auto !important;
+    }
+    .print-master-header {
+      display: table-header-group !important;
+    }
+    .print-master-footer {
+      display: table-footer-group !important;
+    }
+    .print-letterhead {
+      width: 100% !important;
+      border-bottom: 2px solid #0f172a !important;
+      padding-bottom: 8px !important;
+      margin-bottom: 10px !important;
+      background: #ffffff !important;
+    }
+    table:not(.print-master-table) {
+      width: 100% !important;
+      border-collapse: collapse !important;
+      font-size: 7.5pt !important;
+      line-height: 1.15 !important;
+      margin-top: 3px !important;
+      margin-bottom: 6px !important;
+      page-break-inside: auto !important;
+    }
+    thead {
+      display: table-header-group !important;
+    }
+    tfoot {
+      display: table-footer-group !important;
+    }
+    tr {
+      break-inside: avoid !important;
+      page-break-inside: avoid !important;
+    }
+    th {
+      background-color: #f1f5f9 !important;
+      color: #0f172a !important;
+      border: 1px solid #475569 !important;
+      padding: 2.5px 5px !important;
+      font-weight: 700 !important;
+      text-align: left;
+      font-size: 7.5pt !important;
+    }
+    td {
+      border: 1px solid #94a3b8 !important;
+      padding: 2px 5px !important;
+      color: #0f172a !important;
+      font-size: 7.5pt !important;
+    }
+    .text-center { text-align: center !important; }
+    .text-right { text-align: right !important; }
+    .text-left { text-align: left !important; }
+    .font-bold { font-weight: 700 !important; }
+    .font-black { font-weight: 900 !important; }
+    .font-medium { font-weight: 500 !important; }
+    .bg-slate-50 { background-color: #f8fafc !important; }
+    .bg-slate-100 { background-color: #f1f5f9 !important; }
+    .bg-teal-50 { background-color: #f0fdfa !important; }
+    .text-teal-800 { color: #115e59 !important; }
+    .text-teal-900 { color: #134e4a !important; }
+    .text-teal-950 { color: #042f2e !important; }
+    .text-rose-800 { color: #9f1239 !important; }
+    .text-amber-800 { color: #92400e !important; }
+    .text-slate-600 { color: #475569 !important; }
+    .text-slate-700 { color: #334155 !important; }
+    .text-slate-900 { color: #0f172a !important; }
+    .text-slate-950 { color: #020617 !important; }
+    .border-b-2 { border-bottom: 2px solid !important; }
+    .border-2 { border: 2px solid !important; }
+    .border-slate-800 { border-color: #1e293b !important; }
+    .border-slate-400 { border-color: #94a3b8 !important; }
+    .border-slate-300 { border-color: #cbd5e1 !important; }
+    .border-dashed { border-style: dashed !important; }
+    .signature-block {
+      margin-top: 14px;
+      padding-top: 8px;
+      break-inside: avoid !important;
+      page-break-inside: avoid !important;
+    }
+    .flex { display: flex; }
+    .justify-between { justify-content: space-between; }
+    .items-center { align-items: center; }
+    .gap-2 { gap: 8px; }
+    .gap-3 { gap: 12px; }
+    .gap-6 { gap: 24px; }
+    .grid { display: grid; }
+    .grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  </style>
+</head>
+<body>
+  ${reportElem.innerHTML}
+  <script>
+    window.onload = function() {
+      setTimeout(function() {
+        window.focus();
+        window.print();
+      }, 350);
+    };
+  <\/script>
+</body>
+</html>`;
+
+    printWin.document.open();
+    printWin.document.write(htmlContent);
+    printWin.document.close();
   };
 
   // Reconcile 5 bags difference on 26/10/2026
@@ -309,7 +463,7 @@ export default function Reports({ stats, ponds = [], feedInventory, expensesData
       {/* ========================================================================= */}
       {/* 2. AUTHENTIC FORMAL FARM STATEMENT SHEET (Landscape Print Optimized)     */}
       {/* ========================================================================= */}
-      <div className="printable-report bg-white text-slate-900 border border-slate-300 p-4 sm:p-6 rounded-none shadow-none">
+      <div id="printable-audit-sheet" className="printable-report bg-white text-slate-900 border border-slate-300 p-4 sm:p-6 rounded-none shadow-none">
         
         {/* Master Document Table: Guarantees Letterhead Repeats on Every Page */}
         <table className="print-master-table w-full border-none">

@@ -10,6 +10,25 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
     <title>AquaFarm Cloud • শাহ আমানত ফিশারি ও এগ্রো প্রকল্প</title>
+    <style>
+      @page {
+        size: A4 landscape !important;
+        margin: 10mm 10mm 10mm 10mm !important;
+      }
+      @media print {
+        /* Filter out browser extension injected toolbars (RANKSEO, SEO bars, etc.) */
+        [id*="rankseo" i], [class*="rankseo" i], [id*="seo" i], [class*="seo" i],
+        [id*="extension" i], [class*="extension" i],
+        div[style*="z-index: 2147483647"], div[style*="z-index: 9999999"],
+        div[style*="position: fixed; bottom: 0"], div[style*="position: fixed; top: 0"] {
+          display: none !important;
+          visibility: hidden !important;
+          opacity: 0 !important;
+          height: 0 !important;
+          pointer-events: none !important;
+        }
+      }
+    </style>
   </head>
   <body class="bg-slate-50 text-slate-900 font-sans antialiased selection:bg-teal-500 selection:text-white">
     <div id="root"></div>
