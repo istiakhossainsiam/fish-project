@@ -4,7 +4,7 @@ import {
   TrendingDown, Check, Edit3, Trash2, Waves, Search, Filter, 
   ChevronRight, ArrowRight, CheckCircle2, CloudSun, CalendarDays, X
 } from 'lucide-react';
-import { deleteDailyFeeding, deleteFeedBatch } from '../api';
+import { deleteDailyFeeding, deleteFeedBatch, bulkDeleteDailyFeedings, bulkDeleteFeedBatches } from '../api';
 
 const monthNamesBengali = {
   '01': 'জানুয়ারি', '02': 'ফেব্রুয়ারি', '03': 'মার্চ', '04': 'এপ্রিল',
@@ -29,6 +29,11 @@ export default function FeedManagement({ ponds = [], feedInventory, dailyFeeding
   const [selectedMonth, setSelectedMonth] = useState('all'); // 'all' or 'YYYY-MM'
   const [searchTerm, setSearchTerm] = useState('');
   const [timeFilter, setTimeFilter] = useState('all');
+
+  // Bulk Selection States
+  const [selectedFeedingIds, setSelectedFeedingIds] = useState([]);
+  const [selectedBatchIds, setSelectedBatchIds] = useState([]);
+  const [isBulkDeleting, setIsBulkDeleting] = useState(false);
 
   const batches = feedInventory?.batches || [];
   const feedings = dailyFeedings || [];
@@ -117,6 +122,74 @@ export default function FeedManagement({ ponds = [], feedInventory, dailyFeeding
     }
   };
 
+  // Toggle & Bulk delete for Daily Feedings
+  const handleToggleFeeding = (id) => {
+    setSelectedFeedingIds(prev => 
+      prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
+    );
+  };
+
+  const handleSelectAllFeedings = (list) => {
+    if (!list || list.length === 0) return;
+    const allSelected = list.every(item => selectedFeedingIds.includes(item.id));
+    if (allSelected) {
+      const listIds = list.map(item => item.id);
+      setSelectedFeedingIds(prev => prev.filter(id => !listIds.includes(id)));
+    } else {
+      const newIds = new Set([...selectedFeedingIds, ...list.map(item => item.id)]);
+      setSelectedFeedingIds(Array.from(newIds));
+    }
+  };
+
+  const handleBulkDeleteFeedings = async () => {
+    if (selectedFeedingIds.length === 0) return;
+    if (window.confirm(`⚠️ আপনি কি নিশ্চিতভাবে নির্বাচিত ${selectedFeedingIds.length} টি খাবার রেকর্ড মুছে ফেলতে চান? এটি ডাটাবেজ থেকে স্থায়ীভাবে মুছে যাবে।`)) {
+      try {
+        setIsBulkDeleting(true);
+        await bulkDeleteDailyFeedings(selectedFeedingIds);
+        setSelectedFeedingIds([]);
+        if (onRefresh) onRefresh();
+      } catch (err) {
+        alert("বাল্ক ডিলিট ব্যর্থ হয়েছে: " + err.message);
+      } finally {
+        setIsBulkDeleting(false);
+      }
+    }
+  };
+
+  // Toggle & Bulk delete for Feed Batches
+  const handleToggleBatch = (id) => {
+    setSelectedBatchIds(prev => 
+      prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
+    );
+  };
+
+  const handleSelectAllBatches = () => {
+    if (!batches || batches.length === 0) return;
+    const allSelected = batches.every(b => selectedBatchIds.includes(b.id));
+    if (allSelected) {
+      setSelectedBatchIds([]);
+    } else {
+      setSelectedBatchIds(batches.map(b => b.id));
+    }
+  };
+
+  const handleBulkDeleteBatches = async () => {
+    if (selectedBatchIds.length === 0) return;
+    if (window.confirm(`⚠️ আপনি কি নিশ্চিতভাবে নির্বাচিত ${selectedBatchIds.length} টি ফিড চালান মুছে ফেলতে চান?`)) {
+      try {
+        setIsBulkDeleting(true);
+        await bulkDeleteFeedBatches(selectedBatchIds);
+        setSelectedBatchIds([]);
+        if (onRefresh) onRefresh();
+      } catch (err) {
+        alert("বাল্ক ডিলিট ব্যর্থ হয়েছে: " + err.message);
+      } finally {
+        setIsBulkDeleting(false);
+      }
+    }
+  };
+
   return (
     <div className="space-y-6 pb-20 md:pb-8">
       {/* Header */}
@@ -131,6 +204,12 @@ export default function FeedManagement({ ponds = [], feedInventory, dailyFeeding
           </p>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
+          <button
+            onClick={() => onOpenModal('bulk_feed', { pond_id: selectedPondId })}
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-teal-700 hover:bg-teal-800 text-white text-xs font-bold shadow-sm transition cursor-pointer"
+          >
+            <Plus className="w-4 h-4" /> + বাল্ক খাবার এন্ট্রি
+          </button>
           <button
             onClick={() => onOpenModal('feed', { pond_id: selectedPondId })}
             className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-teal-600 hover:bg-teal-700 text-white text-xs font-semibold shadow-sm transition cursor-pointer"
@@ -530,12 +609,53 @@ export default function FeedManagement({ ponds = [], feedInventory, dailyFeeding
               </div>
             </div>
 
+            {/* Bulk Selection Action Bar for Feedings */}
+            {selectedFeedingIds.length > 0 && (
+              <div className="p-3 bg-rose-50 border border-rose-200 rounded-2xl flex items-center justify-between gap-3 text-xs animate-in fade-in">
+                <div className="flex items-center gap-2 text-rose-800 font-bold">
+                  <span className="w-6 h-6 rounded-lg bg-rose-600 text-white flex items-center justify-center text-xs">
+                    {selectedFeedingIds.length}
+                  </span>
+                  <span>টি খাবার রেকর্ড নির্বাচিত হয়েছে</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setSelectedFeedingIds([])}
+                    className="px-3 py-1.5 rounded-xl bg-white border border-slate-300 text-slate-700 hover:bg-slate-100 font-semibold cursor-pointer"
+                  >
+                    নির্বাচন বাতিল
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleBulkDeleteFeedings}
+                    disabled={isBulkDeleting}
+                    className="px-3.5 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold flex items-center gap-1.5 shadow-sm cursor-pointer disabled:opacity-50"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                    {isBulkDeleting ? 'মুছে ফেলা হচ্ছে...' : `নির্বাচিত ${selectedFeedingIds.length} টি ডিলিট করুন`}
+                  </button>
+                </div>
+              </div>
+            )}
+
             {/* Feeding Table for this Pond */}
             {filteredPondFeedings.length > 0 ? (
               <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
                 <table className="w-full text-left text-xs text-slate-700">
                   <thead className="bg-slate-50 text-slate-600 font-semibold uppercase text-[11px] border-b border-slate-200">
                     <tr>
+                      {isAdmin && (
+                        <th className="p-3.5 w-10 text-center">
+                          <input
+                            type="checkbox"
+                            checked={filteredPondFeedings.length > 0 && filteredPondFeedings.every(f => selectedFeedingIds.includes(f.id))}
+                            onChange={() => handleSelectAllFeedings(filteredPondFeedings)}
+                            className="w-4 h-4 rounded text-teal-600 focus:ring-teal-500 cursor-pointer"
+                            title="সব নির্বাচন করুন"
+                          />
+                        </th>
+                      )}
                       <th className="p-3.5">তারিখ</th>
                       <th className="p-3.5">খাবারের সময়</th>
                       <th className="p-3.5">বাণিজ্যিক ফিড ব্যাগ</th>
@@ -548,8 +668,20 @@ export default function FeedManagement({ ponds = [], feedInventory, dailyFeeding
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100">
-                    {filteredPondFeedings.map((f) => (
-                      <tr key={f.id} className="hover:bg-slate-50/80 transition">
+                    {filteredPondFeedings.map((f) => {
+                      const isSelected = selectedFeedingIds.includes(f.id);
+                      return (
+                      <tr key={f.id} className={`transition ${isSelected ? 'bg-teal-50/80 border-l-4 border-l-teal-600' : 'hover:bg-slate-50/80'}`}>
+                        {isAdmin && (
+                          <td className="p-3.5 text-center">
+                            <input
+                              type="checkbox"
+                              checked={isSelected}
+                              onChange={() => handleToggleFeeding(f.id)}
+                              className="w-4 h-4 rounded text-teal-600 focus:ring-teal-500 cursor-pointer"
+                            />
+                          </td>
+                        )}
                         <td className="p-3.5 font-bold text-slate-900 whitespace-nowrap">
                           {f.date}
                         </td>
@@ -612,7 +744,8 @@ export default function FeedManagement({ ponds = [], feedInventory, dailyFeeding
                           </td>
                         )}
                       </tr>
-                    ))}
+                    );
+                  })}
                   </tbody>
                 </table>
               </div>
@@ -694,10 +827,51 @@ export default function FeedManagement({ ponds = [], feedInventory, dailyFeeding
             </button>
           </div>
 
+          {/* Bulk Selection Action Bar for Daily Feedings */}
+          {selectedFeedingIds.length > 0 && (
+            <div className="p-3 bg-rose-50 border border-rose-200 rounded-2xl flex items-center justify-between gap-3 text-xs animate-in fade-in">
+              <div className="flex items-center gap-2 text-rose-800 font-bold">
+                <span className="w-6 h-6 rounded-lg bg-rose-600 text-white flex items-center justify-center text-xs">
+                  {selectedFeedingIds.length}
+                </span>
+                <span>টি খাবার রেকর্ড নির্বাচিত হয়েছে</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setSelectedFeedingIds([])}
+                  className="px-3 py-1.5 rounded-xl bg-white border border-slate-300 text-slate-700 hover:bg-slate-100 font-semibold cursor-pointer"
+                >
+                  নির্বাচন বাতিল
+                </button>
+                <button
+                  type="button"
+                  onClick={handleBulkDeleteFeedings}
+                  disabled={isBulkDeleting}
+                  className="px-3.5 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold flex items-center gap-1.5 shadow-sm cursor-pointer disabled:opacity-50"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                  {isBulkDeleting ? 'মুছে ফেলা হচ্ছে...' : `নির্বাচিত ${selectedFeedingIds.length} টি ডিলিট করুন`}
+                </button>
+              </div>
+            </div>
+          )}
+
           <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
             <table className="w-full text-left text-xs text-slate-700">
               <thead className="bg-slate-50 text-slate-600 font-semibold uppercase text-[11px] border-b border-slate-200">
                 <tr>
+                  {isAdmin && (
+                    <th className="p-3.5 w-10 text-center">
+                      <input
+                        type="checkbox"
+                        checked={filteredFeedings.length > 0 && filteredFeedings.every(f => selectedFeedingIds.includes(f.id))}
+                        onChange={() => handleSelectAllFeedings(filteredFeedings)}
+                        className="w-4 h-4 rounded text-teal-600 focus:ring-teal-500 cursor-pointer"
+                        title="সব নির্বাচন করুন"
+                      />
+                    </th>
+                  )}
                   <th className="p-3.5">তারিখ</th>
                   <th className="p-3.5">পুকুর</th>
                   <th className="p-3.5">বাণিজ্যিক ফিড ব্যাগ</th>
@@ -709,8 +883,20 @@ export default function FeedManagement({ ponds = [], feedInventory, dailyFeeding
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
-                {filteredFeedings.map((f) => (
-                  <tr key={f.id} className="hover:bg-slate-50/80 transition">
+                {filteredFeedings.map((f) => {
+                  const isSelected = selectedFeedingIds.includes(f.id);
+                  return (
+                  <tr key={f.id} className={`transition ${isSelected ? 'bg-teal-50/80 border-l-4 border-l-teal-600' : 'hover:bg-slate-50/80'}`}>
+                    {isAdmin && (
+                      <td className="p-3.5 text-center">
+                        <input
+                          type="checkbox"
+                          checked={isSelected}
+                          onChange={() => handleToggleFeeding(f.id)}
+                          className="w-4 h-4 rounded text-teal-600 focus:ring-teal-500 cursor-pointer"
+                        />
+                      </td>
+                    )}
                     <td className="p-3.5 font-bold text-slate-900">{f.date}</td>
                     <td className="p-3.5 font-bold text-teal-700">{f.pond_name}</td>
                     <td className="p-3.5 font-bold text-slate-900 text-sm">
@@ -754,7 +940,8 @@ export default function FeedManagement({ ponds = [], feedInventory, dailyFeeding
                       </td>
                     )}
                   </tr>
-                ))}
+                );
+              })}
               </tbody>
             </table>
           </div>
@@ -778,10 +965,51 @@ export default function FeedManagement({ ponds = [], feedInventory, dailyFeeding
             </button>
           </div>
 
+          {/* Bulk Selection Action Bar for Batches */}
+          {selectedBatchIds.length > 0 && (
+            <div className="p-3 bg-rose-50 border border-rose-200 rounded-2xl flex items-center justify-between gap-3 text-xs animate-in fade-in">
+              <div className="flex items-center gap-2 text-rose-800 font-bold">
+                <span className="w-6 h-6 rounded-lg bg-rose-600 text-white flex items-center justify-center text-xs">
+                  {selectedBatchIds.length}
+                </span>
+                <span>টি ফিড চালান নির্বাচিত হয়েছে</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setSelectedBatchIds([])}
+                  className="px-3 py-1.5 rounded-xl bg-white border border-slate-300 text-slate-700 hover:bg-slate-100 font-semibold cursor-pointer"
+                >
+                  নির্বাচন বাতিল
+                </button>
+                <button
+                  type="button"
+                  onClick={handleBulkDeleteBatches}
+                  disabled={isBulkDeleting}
+                  className="px-3.5 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold flex items-center gap-1.5 shadow-sm cursor-pointer disabled:opacity-50"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                  {isBulkDeleting ? 'মুছে ফেলা হচ্ছে...' : `নির্বাচিত ${selectedBatchIds.length} টি চালান ডিলিট`}
+                </button>
+              </div>
+            </div>
+          )}
+
           <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
             <table className="w-full text-left text-xs text-slate-700">
               <thead className="bg-slate-50 text-slate-600 font-semibold uppercase text-[11px] border-b border-slate-200">
                 <tr>
+                  {isAdmin && (
+                    <th className="p-3.5 w-10 text-center">
+                      <input
+                        type="checkbox"
+                        checked={batches.length > 0 && batches.every(b => selectedBatchIds.includes(b.id))}
+                        onChange={handleSelectAllBatches}
+                        className="w-4 h-4 rounded text-teal-600 focus:ring-teal-500 cursor-pointer"
+                        title="সব চালান নির্বাচন করুন"
+                      />
+                    </th>
+                  )}
                   <th className="p-3.5">চালান তারিখ</th>
                   <th className="p-3.5">ফিড ব্র্যান্ড ও ব্যাচ নং</th>
                   <th className="p-3.5">ব্যাগের সংখ্যা</th>
@@ -793,8 +1021,20 @@ export default function FeedManagement({ ponds = [], feedInventory, dailyFeeding
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
-                {batches.map((b) => (
-                  <tr key={b.id} className="hover:bg-slate-50/80 transition">
+                {batches.map((b) => {
+                  const isSelected = selectedBatchIds.includes(b.id);
+                  return (
+                  <tr key={b.id} className={`transition ${isSelected ? 'bg-teal-50/80 border-l-4 border-l-teal-600' : 'hover:bg-slate-50/80'}`}>
+                    {isAdmin && (
+                      <td className="p-3.5 text-center">
+                        <input
+                          type="checkbox"
+                          checked={isSelected}
+                          onChange={() => handleToggleBatch(b.id)}
+                          className="w-4 h-4 rounded text-teal-600 focus:ring-teal-500 cursor-pointer"
+                        />
+                      </td>
+                    )}
                     <td className="p-3.5 font-bold text-slate-900">{b.date}</td>
                     <td className="p-3.5">
                       <div className="font-bold text-teal-700">{b.brand_name}</div>
@@ -830,7 +1070,8 @@ export default function FeedManagement({ ponds = [], feedInventory, dailyFeeding
                       </td>
                     )}
                   </tr>
-                ))}
+                );
+              })}
               </tbody>
             </table>
           </div>

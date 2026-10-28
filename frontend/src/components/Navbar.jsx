@@ -21,17 +21,20 @@ export default function Navbar({ activeTab, setActiveTab, currentUser, setCurren
   const CurrentIcon = getRoleIcon(currentUser.role);
 
   return (
-    <header className="sticky top-0 z-40 bg-white border-b border-slate-200 shadow-sm">
+    <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-[0_1px_4px_rgba(15,23,42,0.03)]">
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo & Farm Title */}
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-teal-600 flex items-center justify-center shadow-md shadow-teal-600/20 cursor-pointer" onClick={() => setActiveTab('dashboard')}>
-              <Waves className="w-6 h-6 text-white font-bold" />
+            <div 
+              className="w-10 h-10 rounded-2xl bg-gradient-to-br from-teal-600 to-teal-700 flex items-center justify-center shadow-md shadow-teal-700/20 cursor-pointer active:scale-95 transition" 
+              onClick={() => setActiveTab('dashboard')}
+            >
+              <Waves className="w-5 h-5 text-white" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-bold text-base sm:text-lg text-slate-900 tracking-tight cursor-pointer hover:text-teal-700 transition" onClick={() => setActiveTab('dashboard')}>
+                <span className="font-extrabold text-base sm:text-lg text-slate-900 tracking-tight cursor-pointer hover:text-teal-700 transition" onClick={() => setActiveTab('dashboard')}>
                   Shah Amanat Fishery & Agro
                 </span>
                 <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded-full bg-teal-50 text-teal-700 border border-teal-200 hidden sm:inline-block">
@@ -208,31 +211,31 @@ export default function Navbar({ activeTab, setActiveTab, currentUser, setCurren
       </div>
 
       {/* Navigation Tabs (Desktop & Tablet) */}
-      <div className="hidden md:block bg-slate-50/80 border-t border-slate-200 px-4">
-        <div className="max-w-7xl mx-auto flex space-x-1.5 overflow-x-auto py-2">
+      <div className="hidden md:block bg-slate-50/90 border-t border-slate-200/80 px-4">
+        <div className="max-w-7xl mx-auto flex items-center space-x-1.5 overflow-x-auto py-2">
           {[
-            { id: 'dashboard', label: '📊 ড্যাশবোর্ড (Dashboard)' },
-            { id: 'cycles', label: '🔄 ৬ মাসের সাইকেল (6-Month Cycles)' },
-            { id: 'investors', label: '🤝 ইনভেস্টর ও মুনাফা (Investors & Profit)' },
-            { id: 'ponds', label: '🌊 পুকুর ও স্টক (4 Ponds)' },
-            { id: 'feed', label: '🍲 খাবার ও স্টক (Feed & Vaat)' },
-            { id: 'growth', label: '⚖️ ১৫-১৮ দিনের বৃদ্ধি (Growth Check)' },
-            { id: 'financials', label: '💰 খরচ ও লাভ (Cost & Profit)' },
-            { id: 'weather', label: '⛅ আবহাওয়া ও অক্সিজেন (Weather)' },
-            { id: 'worker', label: '📱 কর্মী ইনপুট (Worker Form)' },
-            { id: 'users', label: '👥 ইউজার তৈরি (Users)', highlight: true },
-            { id: 'sync', label: '📝 শিট সিঙ্ক (Sheet Sync)' },
-            { id: 'reports', label: '📑 রিপোর্ট (Reports)' },
+            { id: 'dashboard', label: '📊 ড্যাশবোর্ড' },
+            { id: 'cycles', label: '🔄 ৬ মাসের সাইকেল' },
+            { id: 'investors', label: '🤝 ইনভেস্টর ও মুনাফা' },
+            { id: 'ponds', label: '🌊 পুকুর ও মাছ' },
+            { id: 'feed', label: '🍲 খাবার ও স্টক' },
+            { id: 'growth', label: '⚖️ বৃদ্ধি মনিটরিং' },
+            { id: 'financials', label: '💰 খরচ ও লাভ' },
+            { id: 'weather', label: '⛅ আবহাওয়া' },
+            { id: 'worker', label: '📱 কর্মী ইনপুট' },
+            { id: 'users', label: '👥 ইউজার তৈরি', highlight: true },
+            { id: 'sync', label: '📝 শিট সিঙ্ক' },
+            { id: 'reports', label: '📑 রিপোর্ট' },
           ].map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition ${
+              className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition cursor-pointer ${
                 activeTab === tab.id
-                  ? 'bg-teal-600 text-white shadow-sm'
+                  ? 'bg-teal-700 text-white shadow-sm ring-1 ring-teal-700 font-bold'
                   : tab.highlight
-                    ? 'text-teal-700 hover:text-teal-800 hover:bg-teal-50 border border-teal-200/50'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                    ? 'text-teal-800 bg-teal-50 hover:bg-teal-100/80 border border-teal-200/80 font-bold'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-white'
               }`}
             >
               {tab.label}

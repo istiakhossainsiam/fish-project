@@ -102,7 +102,7 @@ export default function CyclesManagement({ ponds, currentUser, onRefreshParent }
             <RotateCcw className="w-5 h-5 text-teal-600" />
             ৬ মাসের মাছ চাষ সাইকেল ব্যবস্থাপনা (Aquaculture Cycle Engine)
           </h2>
-          <p className="text-xs text-slate-400 mt-0.5">
+          <p className="text-xs text-slate-500 mt-0.5">
             মাছ ছাড়া থেকে শুরু করে বড় হওয়া এবং হার্ভেস্ট পর্যন্ত প্রতি ৬ মাসের সাইকেল নিয়ন্ত্রণ ও নতুন সাইকেল চালুকরণ
           </p>
         </div>
@@ -136,41 +136,41 @@ export default function CyclesManagement({ ponds, currentUser, onRefreshParent }
       {/* OVERVIEW STATS BANNER */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
         <div className="p-4 rounded-2xl bg-white border border-slate-200">
-          <span className="text-slate-400 block font-medium">সক্রিয় সাইকেল (Active)</span>
-          <div className="text-xl font-bold text-teal-300 mt-1">
+          <span className="text-slate-500 block font-medium">সক্রিয় সাইকেল (Active)</span>
+          <div className="text-xl font-bold text-teal-700 mt-1">
             {activeCycles.length} টি পুকুর
           </div>
-          <span className="text-[11px] text-slate-400 mt-0.5 block">
+          <span className="text-[11px] text-slate-500 mt-0.5 block">
             পুকুর ১ ও পুকুর ২ বর্তমানে চলমান
           </span>
         </div>
 
         <div className="p-4 rounded-2xl bg-white border border-slate-200">
-          <span className="text-slate-400 block font-medium">গড় সাইকেল সময়কাল</span>
+          <span className="text-slate-500 block font-medium">গড় সাইকেল সময়কাল</span>
           <div className="text-xl font-bold text-slate-900 mt-1">
-            ~৬ মাস <span className="text-xs font-normal text-slate-400">(১৮০ দিন)</span>
+            ~৬ মাস <span className="text-xs font-normal text-slate-500">(১৮০ দিন)</span>
           </div>
-          <span className="text-[11px] text-slate-400 mt-0.5 block">
+          <span className="text-[11px] text-slate-500 mt-0.5 block">
             প্রতি ৬ মাস অন্তর মাছ হার্ভেস্ট ও নতুন ব্যাচ
           </span>
         </div>
 
         <div className="p-4 rounded-2xl bg-white border border-slate-200">
-          <span className="text-slate-400 block font-medium">মোট যুক্ত ইনভেস্টর</span>
-          <div className="text-xl font-bold text-amber-300 mt-1">
+          <span className="text-slate-500 block font-medium">মোট যুক্ত ইনভেস্টর</span>
+          <div className="text-xl font-bold text-amber-700 mt-1">
             {cycles.reduce((acc, c) => acc + (c.total_investors_count || 0), 0)} জন পার্টনার
           </div>
-          <span className="text-[11px] text-slate-400 mt-0.5 block">
+          <span className="text-[11px] text-slate-500 mt-0.5 block">
             বিনিয়োগ: ৳ {cycles.reduce((acc, c) => acc + (c.total_external_investment_bdt || 0), 0).toLocaleString()}
           </span>
         </div>
 
-        <div className="p-4 rounded-2xl bg-gradient-to-br from-emerald-950/40 to-slate-850 border border-emerald-500/40">
-          <span className="text-emerald-300 block font-medium">প্রজেক্টেড মোট সাইকেল লাভ</span>
+        <div className="p-4 rounded-2xl card-surface bg-emerald-50/40 border-emerald-200/80">
+          <span className="text-emerald-800 block font-medium">প্রজেক্টেড মোট সাইকেল লাভ</span>
           <div className="text-xl font-black text-emerald-600 mt-1">
             ৳ {activeCycles.reduce((acc, c) => acc + (c.projected_net_profit_bdt || 0), 0).toLocaleString()}
           </div>
-          <span className="text-[10px] text-emerald-300/80 mt-0.5 block">
+          <span className="text-[10px] text-emerald-700 mt-0.5 block">
             মাছ বিক্রয়ের পর ইনভেস্টরদের লভ্যাংশ বণ্টনযোগ্য
           </span>
         </div>
@@ -182,8 +182,8 @@ export default function CyclesManagement({ ponds, currentUser, onRefreshParent }
           onClick={() => setActiveTab('active')}
           className={`px-3.5 py-1.5 rounded-xl font-bold transition flex items-center gap-1.5 ${
             activeTab === 'active' 
-              ? 'bg-teal-500/20 text-teal-300 border border-teal-500/40' 
-              : 'text-slate-400 hover:text-slate-200'
+              ? 'bg-teal-50 text-teal-800 border border-teal-200/80 shadow-xs' 
+              : 'text-slate-600 hover:text-slate-900'
           }`}
         >
           <Clock className="w-4 h-4" /> চলমান সাইকেল ({activeCycles.length})
@@ -192,8 +192,8 @@ export default function CyclesManagement({ ponds, currentUser, onRefreshParent }
           onClick={() => setActiveTab('completed')}
           className={`px-3.5 py-1.5 rounded-xl font-bold transition flex items-center gap-1.5 ${
             activeTab === 'completed' 
-              ? 'bg-teal-500/20 text-teal-300 border border-teal-500/40' 
-              : 'text-slate-400 hover:text-slate-200'
+              ? 'bg-teal-50 text-teal-800 border border-teal-200/80 shadow-xs' 
+              : 'text-slate-600 hover:text-slate-900'
           }`}
         >
           <CheckCircle className="w-4 h-4" /> সমাপ্ত ও হার্ভেস্টকৃত সাইকেল ইতিহাস ({completedCycles.length})
@@ -211,7 +211,7 @@ export default function CyclesManagement({ ponds, currentUser, onRefreshParent }
             activeCycles.map((c) => (
               <div 
                 key={c.id}
-                className="p-5 sm:p-6 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-4 hover:border-slate-300 transition"
+                className="card-surface p-5 sm:p-6 rounded-3xl space-y-4 hover:border-slate-300 transition-all"
               >
                 {/* Card Top Header */}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-100">
@@ -222,11 +222,11 @@ export default function CyclesManagement({ ponds, currentUser, onRefreshParent }
                     <div>
                       <div className="flex items-center gap-2">
                         <h3 className="font-bold text-slate-900 text-base">{c.cycle_name}</h3>
-                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 animate-pulse">
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200/80 animate-pulse">
                           চলমান সাইকেল (Active)
                         </span>
                       </div>
-                      <p className="text-xs text-slate-400">
+                      <p className="text-xs text-slate-500">
                         {c.pond_name} • শুরু: {c.start_date} • সম্ভাব্য সমাপনী: {c.expected_end_date || '~১৮০ দিন পর'}
                       </p>
                     </div>
@@ -263,10 +263,10 @@ export default function CyclesManagement({ ponds, currentUser, onRefreshParent }
                 {/* Progress bar (180 Days Timeline) */}
                 <div className="space-y-1.5 bg-slate-50 p-3.5 rounded-2xl border border-slate-200">
                   <div className="flex justify-between text-xs">
-                    <span className="text-slate-400">
+                    <span className="text-slate-500">
                       সাইকেল অতিক্রান্ত সময়: <strong className="text-slate-900">{c.days_elapsed} দিন</strong> / আনুমানিক ১৮০ দিন
                     </span>
-                    <span className="font-bold text-teal-300">
+                    <span className="font-bold text-teal-700">
                       {c.progress_pct}% সম্পন্ন
                     </span>
                   </div>
@@ -285,41 +285,41 @@ export default function CyclesManagement({ ponds, currentUser, onRefreshParent }
                 {/* Cycle Key Performance Numbers Grid */}
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
                   <div className="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                    <span className="text-slate-400 block">মোট মজুদ মাছ (Stock Pcs)</span>
+                    <span className="text-slate-500 block">মোট মজুদ মাছ (Stock Pcs)</span>
                     <span className="font-bold text-slate-900 text-sm mt-0.5 block">
                       {c.initial_fish_count?.toLocaleString()} পিস
                     </span>
-                    <span className="text-[10px] text-slate-400 block">
+                    <span className="text-[10px] text-slate-500 block">
                       শুরুর ওজন: {c.initial_stock_weight_kg} কেজি
                     </span>
                   </div>
 
                   <div className="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                    <span className="text-slate-400 block">খাওয়ানো খাবার (Feed Log)</span>
-                    <span className="font-bold text-cyan-300 text-sm mt-0.5 block">
+                    <span className="text-slate-500 block">খাওয়ানো খাবার (Feed Log)</span>
+                    <span className="font-bold text-cyan-700 text-sm mt-0.5 block">
                       {c.feed_bags_consumed} ব্যাগ ({c.feed_kg_consumed} কেজি)
                     </span>
-                    <span className="text-[10px] text-slate-400 block">
+                    <span className="text-[10px] text-slate-500 block">
                       ফিড ব্যয়: ৳ {c.feed_cost_bdt?.toLocaleString()}
                     </span>
                   </div>
 
                   <div className="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                    <span className="text-slate-400 block">টার্গেট উৎপাদন ও রাজস্ব</span>
+                    <span className="text-slate-500 block">টার্গেট উৎপাদন ও রাজস্ব</span>
                     <span className="font-bold text-slate-900 text-sm mt-0.5 block">
                       {c.target_harvest_biomass_kg?.toLocaleString()} কেজি (~{Math.round(c.target_harvest_biomass_kg / 40)} মণ)
                     </span>
-                    <span className="text-[10px] text-teal-300 block">
+                    <span className="text-[10px] text-teal-700 block">
                       বিক্রয়মূল্য: ৳ {c.projected_revenue_bdt?.toLocaleString()}
                     </span>
                   </div>
 
                   <div className="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                    <span className="text-slate-400 block">সম্ভাব্য নিট মুনাফা (Net Profit)</span>
+                    <span className="text-slate-500 block">সম্ভাব্য নিট মুনাফা (Net Profit)</span>
                     <span className="font-bold text-emerald-600 text-sm mt-0.5 block">
                       + ৳ {c.projected_net_profit_bdt?.toLocaleString()}
                     </span>
-                    <span className="text-[10px] text-slate-400 block">
+                    <span className="text-[10px] text-slate-500 block">
                       পোনা ব্যয়: ৳ {c.pona_cost_bdt?.toLocaleString()}
                     </span>
                   </div>
@@ -329,11 +329,11 @@ export default function CyclesManagement({ ponds, currentUser, onRefreshParent }
                 {c.investors && c.investors.length > 0 && (
                   <div className="p-3.5 rounded-2xl bg-teal-950/20 border border-teal-500/20 text-xs space-y-2">
                     <div className="flex justify-between items-center">
-                      <span className="font-bold text-teal-300 flex items-center gap-1.5">
+                      <span className="font-bold text-teal-700 flex items-center gap-1.5">
                         <Sparkles className="w-3.5 h-3.5 text-teal-600" />
                         এই সাইকেলে যুক্ত ইনভেস্টর ও মুনাফা বণ্টন (Investors in this Cycle):
                       </span>
-                      <span className="text-[11px] text-slate-400">
+                      <span className="text-[11px] text-slate-500">
                         মোট বিনিয়োগ: ৳ {c.total_external_investment_bdt?.toLocaleString()}
                       </span>
                     </div>
@@ -343,13 +343,13 @@ export default function CyclesManagement({ ponds, currentUser, onRefreshParent }
                         <div key={inv.id} className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 flex justify-between items-center text-[11px]">
                           <div>
                             <span className="font-bold text-slate-900 block">{inv.investor_name}</span>
-                            <span className="text-slate-400">বিনিয়োগ: ৳ {inv.amount_bdt?.toLocaleString()} ({inv.share_percentage}% প্রফিট শেয়ার)</span>
+                            <span className="text-slate-500">বিনিয়োগ: ৳ {inv.amount_bdt?.toLocaleString()} ({inv.share_percentage}% প্রফিট শেয়ার)</span>
                           </div>
                           <div className="text-right">
                             <span className="font-bold text-emerald-600 block">
                               + ৳ {inv.projected_profit_bdt?.toLocaleString()} লভ্যাংশ
                             </span>
-                            <span className="text-[10px] text-slate-400">
+                            <span className="text-[10px] text-slate-500">
                               ফেরত: ৳ {inv.total_expected_payout_bdt?.toLocaleString()}
                             </span>
                           </div>
@@ -392,13 +392,13 @@ export default function CyclesManagement({ ponds, currentUser, onRefreshParent }
                 completedCycles.map((c) => (
                   <tr key={c.id} className="hover:bg-slate-50/80 transition">
                     <td className="p-3.5 font-bold text-white">{c.cycle_name}</td>
-                    <td className="p-3.5 text-teal-300 font-semibold">{c.pond_name}</td>
+                    <td className="p-3.5 text-teal-700 font-semibold">{c.pond_name}</td>
                     <td className="p-3.5">{c.start_date} হতে {c.actual_end_date}</td>
                     <td className="p-3.5 font-bold">{c.days_elapsed} দিন</td>
                     <td className="p-3.5">{c.feed_bags_consumed} ব্যাগ</td>
                     <td className="p-3.5 font-bold text-white">{c.harvest_biomass_kg?.toLocaleString()} কেজি</td>
                     <td className="p-3.5 text-emerald-600 font-bold">৳ {c.projected_revenue_bdt?.toLocaleString()}</td>
-                    <td className="p-3.5 text-emerald-300 font-bold text-sm">৳ {c.projected_net_profit_bdt?.toLocaleString()}</td>
+                    <td className="p-3.5 text-emerald-700 font-bold text-sm">৳ {c.projected_net_profit_bdt?.toLocaleString()}</td>
                     <td className="p-3.5">
                       <span className="px-2 py-0.5 rounded-lg bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 text-[10px] font-bold">
                         হার্ভেস্ট সমাপ্ত
@@ -422,14 +422,14 @@ export default function CyclesManagement({ ponds, currentUser, onRefreshParent }
               <RotateCcw className="w-5 h-5 text-teal-600" />
               নতুন ৬ মাসের সাইকেল শুরু করুন (Start New Aquaculture Cycle)
             </h3>
-            <p className="text-[11px] text-slate-400 mt-1">
+            <p className="text-[11px] text-slate-500 mt-1">
               মাছ তোলার পর পুকুর প্রস্তুত করে নতুন সাইকেল ও নতুন মাছের পোনা ছাড়ার স্টার্ট পয়েন্ট নির্ধারণ করুন
             </p>
 
             <form onSubmit={handleStartCycleSubmit} className="space-y-4 mt-4">
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-slate-400 block mb-1">পুকুর নির্বাচন</label>
+                  <label className="text-slate-500 block mb-1">পুকুর নির্বাচন</label>
                   <select
                     value={startForm.pond_id}
                     onChange={(e) => {
@@ -448,7 +448,7 @@ export default function CyclesManagement({ ponds, currentUser, onRefreshParent }
                   </select>
                 </div>
                 <div>
-                  <label className="text-slate-400 block mb-1">সাইকেলের নাম</label>
+                  <label className="text-slate-500 block mb-1">সাইকেলের নাম</label>
                   <input
                     type="text"
                     value={startForm.cycle_name}
@@ -460,7 +460,7 @@ export default function CyclesManagement({ ponds, currentUser, onRefreshParent }
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-slate-400 block mb-1">সাইকেল শুরুর তারিখ (Start Date)</label>
+                  <label className="text-slate-500 block mb-1">সাইকেল শুরুর তারিখ (Start Date)</label>
                   <input
                     type="date"
                     value={startForm.start_date}
@@ -469,7 +469,7 @@ export default function CyclesManagement({ ponds, currentUser, onRefreshParent }
                   />
                 </div>
                 <div>
-                  <label className="text-slate-400 block mb-1">সম্ভাব্য সমাপনী তারিখ (~৬ মাস পর)</label>
+                  <label className="text-slate-500 block mb-1">সম্ভাব্য সমাপনী তারিখ (~৬ মাস পর)</label>
                   <input
                     type="date"
                     value={startForm.expected_end_date}
@@ -482,7 +482,7 @@ export default function CyclesManagement({ ponds, currentUser, onRefreshParent }
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-slate-400 block mb-1">প্রারম্ভিক পোনা সংখ্যা (Pcs)</label>
+                  <label className="text-slate-500 block mb-1">প্রারম্ভিক পোনা সংখ্যা (Pcs)</label>
                   <input
                     type="number"
                     value={startForm.initial_fish_count}
@@ -491,7 +491,7 @@ export default function CyclesManagement({ ponds, currentUser, onRefreshParent }
                   />
                 </div>
                 <div>
-                  <label className="text-slate-400 block mb-1">লক্ষ্যমাত্রা উৎপাদন (Kg)</label>
+                  <label className="text-slate-500 block mb-1">লক্ষ্যমাত্রা উৎপাদন (Kg)</label>
                   <input
                     type="number"
                     value={startForm.target_harvest_biomass_kg}
@@ -502,7 +502,7 @@ export default function CyclesManagement({ ponds, currentUser, onRefreshParent }
               </div>
 
               <div>
-                <label className="text-slate-400 block mb-1">মন্তব্য বা বিশেষ নির্দেশনা</label>
+                <label className="text-slate-500 block mb-1">মন্তব্য বা বিশেষ নির্দেশনা</label>
                 <textarea
                   rows="2"
                   value={startForm.notes}
@@ -541,13 +541,13 @@ export default function CyclesManagement({ ponds, currentUser, onRefreshParent }
               <Check className="w-5 h-5 text-emerald-600" />
               মাছ বিক্রি ও সাইকেল সমাপ্তি (Complete Cycle & Harvest)
             </h3>
-            <p className="text-[11px] text-slate-400 mt-1">
+            <p className="text-[11px] text-slate-500 mt-1">
               {selectedCycle.cycle_name} • মাছ তোলার পর চূড়ান্ত ওজন ও বিক্রয়মূল্য ইনপুট দিলে সাইকেল ক্লোজ হয়ে চূড়ান্ত প্রফিট হিসাব হবে
             </p>
 
             <form onSubmit={handleEndCycleSubmit} className="space-y-4 mt-4">
               <div>
-                <label className="text-slate-400 block mb-1">মাছ তোলার ও সাইকেল সমাপ্তির তারিখ</label>
+                <label className="text-slate-500 block mb-1">মাছ তোলার ও সাইকেল সমাপ্তির তারিখ</label>
                 <input
                   type="date"
                   value={endForm.actual_end_date}
@@ -558,7 +558,7 @@ export default function CyclesManagement({ ponds, currentUser, onRefreshParent }
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-slate-400 block mb-1">মোট উত্তোলিত মাছ (কেজি)</label>
+                  <label className="text-slate-500 block mb-1">মোট উত্তোলিত মাছ (কেজি)</label>
                   <input
                     type="number"
                     value={endForm.final_harvest_weight_kg}
@@ -570,7 +570,7 @@ export default function CyclesManagement({ ponds, currentUser, onRefreshParent }
                   </span>
                 </div>
                 <div>
-                  <label className="text-slate-400 block mb-1">মোট বিক্রয়মূল্য (টাকা)</label>
+                  <label className="text-slate-500 block mb-1">মোট বিক্রয়মূল্য (টাকা)</label>
                   <input
                     type="number"
                     value={endForm.total_revenue_bdt}
@@ -584,7 +584,7 @@ export default function CyclesManagement({ ponds, currentUser, onRefreshParent }
               </div>
 
               <div>
-                <label className="text-slate-400 block mb-1">মন্তব্য</label>
+                <label className="text-slate-500 block mb-1">মন্তব্য</label>
                 <input
                   type="text"
                   value={endForm.notes}
@@ -593,7 +593,7 @@ export default function CyclesManagement({ ponds, currentUser, onRefreshParent }
                 />
               </div>
 
-              <div className="p-3.5 rounded-xl bg-emerald-950/30 border border-emerald-500/30 text-emerald-300">
+              <div className="p-3.5 rounded-xl bg-emerald-950/30 border border-emerald-500/30 text-emerald-700">
                 <span className="block font-bold">সাইকেল সমাপ্তির পর:</span>
                 <span className="text-[11px] block mt-0.5">
                   পুকুরটি "প্রস্তুতিাধীন" (preparing) অবস্থায় যাবে এবং সাথে সাথে নতুন পোনা ফেলার জন্য ফ্রেশ সাইকেল ২ তৈরি করতে পারবেন। যুক্ত ইনভেস্টরদের প্রফিট বণ্টন প্রস্তুত হবে।

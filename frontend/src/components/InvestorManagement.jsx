@@ -161,7 +161,7 @@ export default function InvestorManagement({ currentUser, onRefreshParent }) {
             <Users className="w-5 h-5 text-teal-400" />
             ইনভেস্টর ব্যবস্থাপনা ও মুনাফা বণ্টন ক্যালকুলেটর (Investor & Profit Share)
           </h2>
-          <p className="text-xs text-slate-400 mt-0.5">
+          <p className="text-xs text-slate-500 mt-0.5">
             ইনভেস্টরদের বিনিয়োগ অনুযায়ী প্রাপ্য লভ্যাংশের অংশ, ৬ মাসের সাইকেল মুনাফা হিসাব ও লভ্যাংশ প্রদান
           </p>
         </div>
@@ -177,7 +177,7 @@ export default function InvestorManagement({ currentUser, onRefreshParent }) {
               </button>
               <button
                 onClick={() => setShowInvestorModal(true)}
-                className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-700 text-teal-300 border border-slate-200 text-xs font-medium transition"
+                className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-teal-700 border border-slate-200 text-xs font-medium transition"
               >
                 <Plus className="w-4 h-4" /> নতুন ইনভেস্টর
               </button>
@@ -196,41 +196,41 @@ export default function InvestorManagement({ currentUser, onRefreshParent }) {
       {/* OVERVIEW STATS BANNER */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
         <div className="p-4 rounded-2xl bg-white border border-slate-200">
-          <span className="text-slate-400 block font-medium">মোট পার্টনার ইনভেস্টর</span>
+          <span className="text-slate-500 block font-medium">মোট পার্টনার ইনভেস্টর</span>
           <div className="text-xl font-bold text-slate-900 mt-1">
             {investors.length} জন
           </div>
-          <span className="text-[11px] text-slate-400 mt-0.5 block">
+          <span className="text-[11px] text-slate-500 mt-0.5 block">
             সক্রিয় বিনিয়োগ চুক্তি: {investments.length} টি
           </span>
         </div>
 
         <div className="p-4 rounded-2xl bg-white border border-slate-200">
-          <span className="text-slate-400 block font-medium">মোট সংগৃহীত মূলধন</span>
-          <div className="text-xl font-bold text-cyan-300 mt-1">
+          <span className="text-slate-500 block font-medium">মোট সংগৃহীত মূলধন</span>
+          <div className="text-xl font-bold text-cyan-700 mt-1">
             ৳ {totalFundsInvested.toLocaleString()}
           </div>
-          <span className="text-[11px] text-slate-400 mt-0.5 block">
+          <span className="text-[11px] text-slate-500 mt-0.5 block">
             ৬ মাসের সাইকেলে নিয়োজিত তহবিল
           </span>
         </div>
 
         <div className="p-4 rounded-2xl bg-white border border-slate-200">
-          <span className="text-slate-400 block font-medium">ইনভেস্টরদের সম্ভাব্য লভ্যাংশ</span>
+          <span className="text-slate-500 block font-medium">ইনভেস্টরদের সম্ভাব্য লভ্যাংশ</span>
           <div className="text-xl font-bold text-emerald-400 mt-1">
             ৳ {totalProjectedProfit.toLocaleString()}
           </div>
-          <span className="text-[11px] text-slate-400 mt-0.5 block">
+          <span className="text-[11px] text-slate-500 mt-0.5 block">
             প্রত্যাশিত নিট মুনাফার বণ্টনযোগ্য অংশ
           </span>
         </div>
 
         <div className="p-4 rounded-2xl bg-gradient-to-br from-teal-950/40 to-slate-850 border border-teal-500/40">
-          <span className="text-teal-300 block font-medium">পরিশোধিত লভ্যাংশ (Paid Out)</span>
-          <div className="text-xl font-black text-teal-300 mt-1">
+          <span className="text-teal-700 block font-medium">পরিশোধিত লভ্যাংশ (Paid Out)</span>
+          <div className="text-xl font-black text-teal-700 mt-1">
             ৳ {totalPaidProfits.toLocaleString()}
           </div>
-          <span className="text-[10px] text-slate-400 mt-0.5 block">
+          <span className="text-[10px] text-slate-500 mt-0.5 block">
             অবশিষ্ট বণ্টনযোগ্য: ৳ {(totalProjectedProfit - totalPaidProfits).toLocaleString()}
           </span>
         </div>
@@ -242,8 +242,8 @@ export default function InvestorManagement({ currentUser, onRefreshParent }) {
           onClick={() => setActiveSubTab('simulator')}
           className={`px-3.5 py-1.5 rounded-xl font-bold transition flex items-center gap-1.5 ${
             activeSubTab === 'simulator' 
-              ? 'bg-teal-500/20 text-teal-300 border border-teal-500/40' 
-              : 'text-slate-400 hover:text-slate-200'
+              ? 'bg-teal-50 text-teal-800 border border-teal-200/80 shadow-xs' 
+              : 'text-slate-600 hover:text-slate-900'
           }`}
         >
           <Sliders className="w-4 h-4" /> লাইভ ইনভেস্টর মুনাফা ক্যালকুলেটর (Live Simulator)
@@ -252,8 +252,8 @@ export default function InvestorManagement({ currentUser, onRefreshParent }) {
           onClick={() => setActiveSubTab('investments')}
           className={`px-3.5 py-1.5 rounded-xl font-bold transition flex items-center gap-1.5 ${
             activeSubTab === 'investments' 
-              ? 'bg-teal-500/20 text-teal-300 border border-teal-500/40' 
-              : 'text-slate-400 hover:text-slate-200'
+              ? 'bg-teal-50 text-teal-800 border border-teal-200/80 shadow-xs' 
+              : 'text-slate-600 hover:text-slate-900'
           }`}
         >
           <DollarSign className="w-4 h-4" /> বিনিয়োগ ও লভ্যাংশ চুক্তি ({investments.length})
@@ -262,8 +262,8 @@ export default function InvestorManagement({ currentUser, onRefreshParent }) {
           onClick={() => setActiveSubTab('investors')}
           className={`px-3.5 py-1.5 rounded-xl font-bold transition flex items-center gap-1.5 ${
             activeSubTab === 'investors' 
-              ? 'bg-teal-500/20 text-teal-300 border border-teal-500/40' 
-              : 'text-slate-400 hover:text-slate-200'
+              ? 'bg-teal-50 text-teal-800 border border-teal-200/80 shadow-xs' 
+              : 'text-slate-600 hover:text-slate-900'
           }`}
         >
           <Users className="w-4 h-4" /> ইনভেস্টরদের প্রোফাইল ও ডিরেক্টরি ({investors.length})
@@ -284,12 +284,12 @@ export default function InvestorManagement({ currentUser, onRefreshParent }) {
                 <h3 className="font-bold text-slate-900 text-base">
                   ইনভেস্টর মুনাফা ও রিটার্ন সিমুলেটর (Investor Profit Calculator)
                 </h3>
-                <p className="text-xs text-slate-400">
+                <p className="text-xs text-slate-500">
                   ইনভেস্টমেন্টের পরিমাণ ও চুক্তি অনুযায়ী শতকরা হার পরিবর্তন করে নিমিষেই লাভ, মোট প্রাপ্তি ও ROI হিসাব করুন
                 </p>
               </div>
             </div>
-            <span className="px-3 py-1 rounded-full bg-teal-500/10 border border-teal-500/30 text-teal-300 text-xs font-semibold">
+            <span className="px-3 py-1 rounded-full bg-teal-50 border border-teal-200 text-teal-800 text-xs font-semibold">
               ৬ মাসের কালচার সাইকেল মডেল
             </span>
           </div>
@@ -322,7 +322,7 @@ export default function InvestorManagement({ currentUser, onRefreshParent }) {
             <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-2">
               <div className="flex justify-between items-center">
                 <span className="text-slate-300 font-medium">প্রফিট শেয়ার অনুপাত:</span>
-                <span className="font-bold text-teal-300 text-sm">{simParams.sharePct}% শেয়ার</span>
+                <span className="font-bold text-teal-700 text-sm">{simParams.sharePct}% শেয়ার</span>
               </div>
               <input
                 type="range"
@@ -374,7 +374,7 @@ export default function InvestorManagement({ currentUser, onRefreshParent }) {
                 <option value={1}>পুকুর ১ (পাঙ্গাশ ও কার্প ~১৯,০০০ কেজি)</option>
                 <option value={0}>সমগ্র খামার (৪টি পুকুর ~৭৫,০০০ কেজি)</option>
               </select>
-              <span className="text-[10px] text-slate-400 block mt-1">
+              <span className="text-[10px] text-slate-500 block mt-1">
                 ৬ মাসের সাইকেল উৎপাদন হিসাব
               </span>
             </div>
@@ -390,44 +390,44 @@ export default function InvestorManagement({ currentUser, onRefreshParent }) {
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
                 {/* 1. Investor Profit Payout */}
                 <div className="p-4 rounded-2xl bg-gradient-to-br from-emerald-950/60 to-slate-900 border border-emerald-500/50">
-                  <span className="text-emerald-300 block font-medium">ইনভেস্টরের প্রাপ্য মুনাফা (Profit)</span>
+                  <span className="text-emerald-700 block font-medium">ইনভেস্টরের প্রাপ্য মুনাফা (Profit)</span>
                   <div className="text-2xl font-black text-emerald-400 mt-1">
                     + ৳ {simResult.investor_profit_payout_bdt?.toLocaleString()}
                   </div>
-                  <span className="text-[11px] text-emerald-300/80 mt-1 block font-semibold">
+                  <span className="text-[11px] text-emerald-700/80 mt-1 block font-semibold">
                     মোট সাইকেল লাভের {simResult.share_percentage}% অংশ
                   </span>
                 </div>
 
                 {/* 2. Total Payout (Capital + Profit) */}
                 <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200">
-                  <span className="text-slate-400 block font-medium">মোট প্রাপ্তি (মূলধন + মুনাফা)</span>
+                  <span className="text-slate-500 block font-medium">মোট প্রাপ্তি (মূলধন + মুনাফা)</span>
                   <div className="text-2xl font-bold text-slate-900 mt-1">
                     ৳ {simResult.investor_total_payout_bdt?.toLocaleString()}
                   </div>
-                  <span className="text-[11px] text-teal-300 mt-1 block">
+                  <span className="text-[11px] text-teal-700 mt-1 block">
                     মূলধন ৳ {simResult.investment_amount?.toLocaleString()} ফেরত সহ
                   </span>
                 </div>
 
                 {/* 3. Investor ROI */}
                 <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200">
-                  <span className="text-slate-400 block font-medium">বিনিয়োগের রিটার্ন (ROI)</span>
-                  <div className="text-2xl font-bold text-cyan-300 mt-1">
+                  <span className="text-slate-500 block font-medium">বিনিয়োগের রিটার্ন (ROI)</span>
+                  <div className="text-2xl font-bold text-cyan-700 mt-1">
                     {simResult.investor_roi_pct}%
                   </div>
-                  <span className="text-[11px] text-slate-400 mt-1 block">
+                  <span className="text-[11px] text-slate-500 mt-1 block">
                     ৬ মাসের মোট লভ্যাংশ হার
                   </span>
                 </div>
 
                 {/* 4. Monthly Equivalent */}
                 <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200">
-                  <span className="text-slate-400 block font-medium">মাসিক সমতুল্য আয়</span>
-                  <div className="text-2xl font-bold text-amber-300 mt-1">
-                    ~ ৳ {simResult.monthly_profit_equivalent?.toLocaleString()} <span className="text-xs font-normal text-slate-400">/মাস</span>
+                  <span className="text-slate-500 block font-medium">মাসিক সমতুল্য আয়</span>
+                  <div className="text-2xl font-bold text-amber-700 mt-1">
+                    ~ ৳ {simResult.monthly_profit_equivalent?.toLocaleString()} <span className="text-xs font-normal text-slate-500">/মাস</span>
                   </div>
-                  <span className="text-[11px] text-slate-400 mt-1 block">
+                  <span className="text-[11px] text-slate-500 mt-1 block">
                     (৬ মাসে মোট লভ্যাংশের মাসিক গড়)
                   </span>
                 </div>
@@ -449,7 +449,7 @@ export default function InvestorManagement({ currentUser, onRefreshParent }) {
                 </div>
                 <div>
                   <span className="text-slate-500 block">খামারের সর্বমোট নিট মুনাফা:</span>
-                  <strong className="text-teal-300 font-bold">৳ {simResult.projected_cycle_net_profit_bdt?.toLocaleString()}</strong>
+                  <strong className="text-teal-700 font-bold">৳ {simResult.projected_cycle_net_profit_bdt?.toLocaleString()}</strong>
                 </div>
               </div>
             </div>
@@ -466,7 +466,7 @@ export default function InvestorManagement({ currentUser, onRefreshParent }) {
             <h3 className="font-bold text-slate-900 text-sm">
               চলমান বিনিয়োগ ও লভ্যাংশ বণ্টন চুক্তি (Active Investment Agreements)
             </h3>
-            <span className="text-slate-400">
+            <span className="text-slate-500">
               মোট বিনিয়োগ: <strong className="text-slate-900">৳ {totalFundsInvested.toLocaleString()}</strong>
             </span>
           </div>
@@ -498,13 +498,13 @@ export default function InvestorManagement({ currentUser, onRefreshParent }) {
                     <tr key={inv.id} className="hover:bg-slate-50/80 transition">
                       <td className="p-3.5 font-bold text-slate-900">
                         {inv.investor_name}
-                        <span className="block text-[10px] text-slate-400 font-normal">{inv.investor_phone}</span>
+                        <span className="block text-[10px] text-slate-500 font-normal">{inv.investor_phone}</span>
                       </td>
-                      <td className="p-3.5 text-teal-300 font-semibold">{inv.cycle_name}</td>
+                      <td className="p-3.5 text-teal-700 font-semibold">{inv.cycle_name}</td>
                       <td className="p-3.5 font-bold text-slate-900 text-sm">৳ {inv.amount_bdt?.toLocaleString()}</td>
                       <td className="p-3.5 text-slate-300">{inv.investment_date}</td>
                       <td className="p-3.5">
-                        <span className="px-2 py-0.5 rounded-lg bg-teal-500/10 text-teal-300 border border-teal-500/20 font-bold">
+                        <span className="px-2 py-0.5 rounded-lg bg-teal-50 text-teal-800 border border-teal-200 font-bold">
                           {inv.share_percentage}% নিট প্রফিট
                         </span>
                       </td>
@@ -517,8 +517,8 @@ export default function InvestorManagement({ currentUser, onRefreshParent }) {
                       <td className="p-3.5">
                         <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
                           inv.payout_status === 'completed'
-                            ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
-                            : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+                            ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
+                            : 'bg-amber-50 text-amber-800 border border-amber-200'
                         }`}>
                           {inv.payout_status === 'completed' ? 'পরিশোধিত' : 'চলমান (Active)'}
                         </span>
@@ -572,7 +572,7 @@ export default function InvestorManagement({ currentUser, onRefreshParent }) {
                   </div>
                   <div>
                     <h4 className="font-bold text-slate-900 text-sm">{inv.name}</h4>
-                    <p className="text-slate-400 text-[11px]">{inv.phone} • {inv.address || 'চট্টগ্রাম'}</p>
+                    <p className="text-slate-500 text-[11px]">{inv.phone} • {inv.address || 'চট্টগ্রাম'}</p>
                   </div>
                 </div>
                 <span className="px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-200 text-[10px]">
@@ -591,12 +591,12 @@ export default function InvestorManagement({ currentUser, onRefreshParent }) {
                 </div>
                 <div>
                   <span className="text-slate-500 block text-[10px]">মোট ফেরত</span>
-                  <span className="font-bold text-teal-300 mt-0.5 block">৳ {inv.total_expected_return_bdt?.toLocaleString()}</span>
+                  <span className="font-bold text-teal-700 mt-0.5 block">৳ {inv.total_expected_return_bdt?.toLocaleString()}</span>
                 </div>
               </div>
 
               {inv.notes && (
-                <p className="text-[11px] text-slate-400 italic">
+                <p className="text-[11px] text-slate-500 italic">
                   নোট: {inv.notes}
                 </p>
               )}
@@ -620,7 +620,7 @@ export default function InvestorManagement({ currentUser, onRefreshParent }) {
 
             <form onSubmit={handleCreateInvestorSubmit} className="space-y-3 mt-4">
               <div>
-                <label className="text-slate-400 block mb-1">ইনভেস্টরের পূর্ণ নাম *</label>
+                <label className="text-slate-500 block mb-1">ইনভেস্টরের পূর্ণ নাম *</label>
                 <input
                   type="text"
                   required
@@ -633,7 +633,7 @@ export default function InvestorManagement({ currentUser, onRefreshParent }) {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-slate-400 block mb-1">মোবাইল নম্বর *</label>
+                  <label className="text-slate-500 block mb-1">মোবাইল নম্বর *</label>
                   <input
                     type="text"
                     required
@@ -644,7 +644,7 @@ export default function InvestorManagement({ currentUser, onRefreshParent }) {
                   />
                 </div>
                 <div>
-                  <label className="text-slate-400 block mb-1">জাতীয় পরিচয়পত্র (NID)</label>
+                  <label className="text-slate-500 block mb-1">জাতীয় পরিচয়পত্র (NID)</label>
                   <input
                     type="text"
                     value={newInvestor.nid}
@@ -655,7 +655,7 @@ export default function InvestorManagement({ currentUser, onRefreshParent }) {
               </div>
 
               <div>
-                <label className="text-slate-400 block mb-1">ঠিকানা</label>
+                <label className="text-slate-500 block mb-1">ঠিকানা</label>
                 <input
                   type="text"
                   placeholder="যেমন: পতেঙ্গা, চট্টগ্রাম"
@@ -666,7 +666,7 @@ export default function InvestorManagement({ currentUser, onRefreshParent }) {
               </div>
 
               <div>
-                <label className="text-slate-400 block mb-1">মন্তব্য বা পরিচিতি</label>
+                <label className="text-slate-500 block mb-1">মন্তব্য বা পরিচিতি</label>
                 <textarea
                   rows="2"
                   value={newInvestor.notes}
@@ -707,7 +707,7 @@ export default function InvestorManagement({ currentUser, onRefreshParent }) {
             <form onSubmit={handleCreateInvestmentSubmit} className="space-y-3 mt-4">
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-slate-400 block mb-1">ইনভেস্টর নির্বাচন *</label>
+                  <label className="text-slate-500 block mb-1">ইনভেস্টর নির্বাচন *</label>
                   <select
                     value={newInvestment.investor_id}
                     onChange={(e) => setNewInvestment({ ...newInvestment, investor_id: parseInt(e.target.value) })}
@@ -719,7 +719,7 @@ export default function InvestorManagement({ currentUser, onRefreshParent }) {
                   </select>
                 </div>
                 <div>
-                  <label className="text-slate-400 block mb-1">সাইকেল নির্বাচন</label>
+                  <label className="text-slate-500 block mb-1">সাইকেল নির্বাচন</label>
                   <select
                     value={newInvestment.cycle_id}
                     onChange={(e) => setNewInvestment({ ...newInvestment, cycle_id: parseInt(e.target.value) })}
@@ -735,7 +735,7 @@ export default function InvestorManagement({ currentUser, onRefreshParent }) {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-slate-400 block mb-1">বিনিয়োগের পরিমাণ (টাকা) *</label>
+                  <label className="text-slate-500 block mb-1">বিনিয়োগের পরিমাণ (টাকা) *</label>
                   <input
                     type="number"
                     required
@@ -745,14 +745,14 @@ export default function InvestorManagement({ currentUser, onRefreshParent }) {
                   />
                 </div>
                 <div>
-                  <label className="text-slate-400 block mb-1">প্রফিট শেয়ার অনুপাত (%) *</label>
+                  <label className="text-slate-500 block mb-1">প্রফিট শেয়ার অনুপাত (%) *</label>
                   <input
                     type="number"
                     step="0.5"
                     required
                     value={newInvestment.share_percentage}
                     onChange={(e) => setNewInvestment({ ...newInvestment, share_percentage: parseFloat(e.target.value) || 0 })}
-                    className="w-full bg-slate-100 border border-slate-200 rounded-xl px-3 py-2 text-teal-300 font-bold text-sm"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-teal-800 font-bold text-sm"
                   />
                   <span className="text-[10px] text-slate-500 mt-0.5 block">
                     নিট মুনাফার শতকরা অংশ
@@ -761,7 +761,7 @@ export default function InvestorManagement({ currentUser, onRefreshParent }) {
               </div>
 
               <div>
-                <label className="text-slate-400 block mb-1">বিনিয়োগের তারিখ</label>
+                <label className="text-slate-500 block mb-1">বিনিয়োগের তারিখ</label>
                 <input
                   type="date"
                   value={newInvestment.investment_date}
@@ -771,7 +771,7 @@ export default function InvestorManagement({ currentUser, onRefreshParent }) {
               </div>
 
               <div>
-                <label className="text-slate-400 block mb-1">চুক্তির শর্তাবলী</label>
+                <label className="text-slate-500 block mb-1">চুক্তির শর্তাবলী</label>
                 <textarea
                   rows="2"
                   value={newInvestment.agreement_terms}
@@ -808,14 +808,14 @@ export default function InvestorManagement({ currentUser, onRefreshParent }) {
               <DollarSign className="w-5 h-5 text-emerald-400" />
               ইনভেস্টরকে লভ্যাংশ ও মূলধন পরিশোধ (Dividend Payout)
             </h3>
-            <p className="text-[11px] text-slate-400 mt-1">
+            <p className="text-[11px] text-slate-500 mt-1">
               {selectedInvestment.investor_name} • {selectedInvestment.cycle_name}
             </p>
 
             <form onSubmit={handlePayoutSubmit} className="space-y-3 mt-4">
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-slate-400 block mb-1">পরিশোধিত লভ্যাংশ (টাকা)</label>
+                  <label className="text-slate-500 block mb-1">পরিশোধিত লভ্যাংশ (টাকা)</label>
                   <input
                     type="number"
                     value={payoutForm.paid_profit_bdt}
@@ -824,7 +824,7 @@ export default function InvestorManagement({ currentUser, onRefreshParent }) {
                   />
                 </div>
                 <div>
-                  <label className="text-slate-400 block mb-1">ফেরতকৃত মূলধন (টাকা)</label>
+                  <label className="text-slate-500 block mb-1">ফেরতকৃত মূলধন (টাকা)</label>
                   <input
                     type="number"
                     value={payoutForm.returned_capital_bdt}
@@ -836,7 +836,7 @@ export default function InvestorManagement({ currentUser, onRefreshParent }) {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-slate-400 block mb-1">পরিশোধের তারিখ</label>
+                  <label className="text-slate-500 block mb-1">পরিশোধের তারিখ</label>
                   <input
                     type="date"
                     value={payoutForm.payout_date}
@@ -845,7 +845,7 @@ export default function InvestorManagement({ currentUser, onRefreshParent }) {
                   />
                 </div>
                 <div>
-                  <label className="text-slate-400 block mb-1">ভাউচার / চেক নং</label>
+                  <label className="text-slate-500 block mb-1">ভাউচার / চেক নং</label>
                   <input
                     type="text"
                     value={payoutForm.voucher_no}

@@ -6,6 +6,13 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['Manrope', 'Hind Siliguri', 'system-ui', '-apple-system', 'sans-serif'],
+        mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
+      },
+      transitionTimingFunction: {
+        'decel': 'cubic-bezier(0.22, 1, 0.36, 1)',
+      },
       colors: {
         aqua: {
           50: '#f0fdfa',

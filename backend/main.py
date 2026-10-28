@@ -473,6 +473,15 @@ def delete_stocking_event(event_id: int, db: Session = Depends(get_db)):
     db.commit()
     return {"status": "success", "message": "Stocking record deleted successfully"}
 
+@app.post("/api/stocking/bulk-delete")
+def bulk_delete_stocking(payload: dict, db: Session = Depends(get_db)):
+    ids = payload.get("ids", [])
+    if not ids:
+        raise HTTPException(status_code=400, detail="কোন পোনা স্টক রেকর্ড নির্বাচন করা হয়নি (No IDs provided)")
+    deleted_count = db.query(models.StockingEvent).filter(models.StockingEvent.id.in_(ids)).delete(synchronize_session=False)
+    db.commit()
+    return {"status": "success", "deleted_count": deleted_count, "message": f"{deleted_count} টি পোনা ছাড়ার রেকর্ড সফলভাবে মুছে ফেলা হয়েছে"}
+
 
 # ================= FEED & FOOD STOCK MANAGEMENT =================
 
@@ -670,6 +679,15 @@ def delete_feed_batch(batch_id: int, db: Session = Depends(get_db)):
     db.commit()
     return {"status": "success", "message": "Feed batch deleted successfully"}
 
+@app.post("/api/feed/inventory/bulk-delete")
+def bulk_delete_feed_batches(payload: dict, db: Session = Depends(get_db)):
+    ids = payload.get("ids", [])
+    if not ids:
+        raise HTTPException(status_code=400, detail="কোন ফিড চালান নির্বাচন করা হয়নি (No IDs provided)")
+    deleted_count = db.query(models.FeedInventory).filter(models.FeedInventory.id.in_(ids)).delete(synchronize_session=False)
+    db.commit()
+    return {"status": "success", "deleted_count": deleted_count, "message": f"{deleted_count} টি ফিড চালান সফলভাবে মুছে ফেলা হয়েছে"}
+
 @app.get("/api/feed/daily")
 def get_daily_feedings(pond_id: Optional[int] = None, limit: int = 100, db: Session = Depends(get_db)):
     query = db.query(models.DailyFeeding)
@@ -788,6 +806,55 @@ def delete_daily_feeding(feeding_id: int, db: Session = Depends(get_db)):
     db.delete(feeding)
     db.commit()
     return {"status": "success", "message": "Feeding record deleted successfully"}
+
+@app.post("/api/feed/daily/bulk")
+def bulk_create_daily_feedings(payload: dict, db: Session = Depends(get_db)):
+    entries = payload.get("entries", [])
+    if not entries:
+        raise HTTPException(status_code=400, detail="কোন খাবারের এন্ট্রি পাওয়া যায়নি (No entries provided)")
+    created_list = []
+    for item in entries:
+        try:
+            pond_id = int(item.get("pond_id", 1))
+        except (TypeError, ValueError):
+            pond_id = 1
+        try:
+            bags = float(item.get("commercial_feed_bags") or 0.0)
+        except (TypeError, ValueError):
+            bags = 0.0
+        try:
+            kg = float(item.get("commercial_feed_kg") or (bags * 25.0))
+        except (TypeError, ValueError):
+            kg = bags * 25.0
+        try:
+            vaat = float(item.get("vaat_kg") or 0.0)
+        except (TypeError, ValueError):
+            vaat = 0.0
+        feed_date = str(item.get("date") or "").strip() or get_bd_date_str()
+        f = models.DailyFeeding(
+            date=feed_date,
+            pond_id=pond_id,
+            commercial_feed_bags=bags,
+            commercial_feed_kg=kg,
+            vaat_kg=vaat,
+            feeding_time=item.get("feeding_time") or "Morning",
+            weather_condition=item.get("weather_condition") or "Normal",
+            logged_by=item.get("logged_by") or "Bulk Entry",
+            notes=item.get("notes") or ""
+        )
+        db.add(f)
+        created_list.append(f)
+    db.commit()
+    return {"status": "success", "count": len(created_list), "message": f"{len(created_list)} টি দৈনিক খাবারের রেকর্ড সফলভাবে সংরক্ষিত হয়েছে"}
+
+@app.post("/api/feed/daily/bulk-delete")
+def bulk_delete_daily_feedings(payload: dict, db: Session = Depends(get_db)):
+    ids = payload.get("ids", [])
+    if not ids:
+        raise HTTPException(status_code=400, detail="কোন খাবার রেকর্ড নির্বাচন করা হয়নি (No IDs provided)")
+    deleted_count = db.query(models.DailyFeeding).filter(models.DailyFeeding.id.in_(ids)).delete(synchronize_session=False)
+    db.commit()
+    return {"status": "success", "deleted_count": deleted_count, "message": f"{deleted_count} টি খাবার রেকর্ড সফলভাবে মুছে ফেলা হয়েছে"}
 
 # Vaat (Rice) tracking
 @app.get("/api/feed/vaat")
@@ -952,6 +1019,64 @@ def delete_growth_sampling(sampling_id: int, db: Session = Depends(get_db)):
     db.commit()
     return {"status": "success", "message": "Growth sampling record deleted successfully"}
 
+@app.post("/api/growth/bulk")
+def bulk_create_growth_samplings(payload: dict, db: Session = Depends(get_db)):
+    entries = payload.get("entries", [])
+    if not entries:
+        raise HTTPException(status_code=400, detail="কোন স্যাম্পলিং এন্ট্রি পাওয়া যায়নি (No entries provided)")
+    created_list = []
+    for item in entries:
+        try:
+            pond_id = int(item.get("pond_id", 1))
+        except (TypeError, ValueError):
+            pond_id = 1
+        try:
+            sample_count = int(item.get("sample_count_pcs") or 50)
+        except (TypeError, ValueError):
+            sample_count = 50
+        try:
+            sample_weight = float(item.get("total_sample_weight_kg") or 5.0)
+        except (TypeError, ValueError):
+            sample_weight = 5.0
+        pcs_per_kg = round(sample_count / max(0.01, sample_weight), 2)
+        avg_weight = round((sample_weight * 1000.0) / max(1, sample_count), 2)
+        try:
+            fcr = float(item.get("calculated_fcr") or 0.0)
+        except (TypeError, ValueError):
+            fcr = 0.0
+        try:
+            biomass = float(item.get("estimated_biomass_kg") or 0.0)
+        except (TypeError, ValueError):
+            biomass = 0.0
+        next_date = item.get("next_check_date")
+        s = models.GrowthSampling(
+            pond_id=pond_id,
+            date=str(item.get("date") or "").strip() or get_bd_date_str(),
+            fish_type=item.get("fish_type") or "Pangash",
+            sample_count_pcs=sample_count,
+            total_sample_weight_kg=sample_weight,
+            calculated_pcs_per_kg=pcs_per_kg,
+            avg_weight_grams=avg_weight,
+            estimated_survival_pct=float(item.get("estimated_survival_pct") or 95.0),
+            estimated_biomass_kg=biomass,
+            calculated_fcr=fcr,
+            next_check_date=next_date,
+            remarks=item.get("remarks") or "Bulk Sampling Entry"
+        )
+        db.add(s)
+        created_list.append(s)
+    db.commit()
+    return {"status": "success", "count": len(created_list), "message": f"{len(created_list)} টি স্যাম্পলিং রেকর্ড সংরক্ষিত হয়েছে"}
+
+@app.post("/api/growth/bulk-delete")
+def bulk_delete_growth_samplings(payload: dict, db: Session = Depends(get_db)):
+    ids = payload.get("ids", [])
+    if not ids:
+        raise HTTPException(status_code=400, detail="কোন স্যাম্পলিং রেকর্ড নির্বাচন করা হয়নি (No IDs provided)")
+    deleted_count = db.query(models.GrowthSampling).filter(models.GrowthSampling.id.in_(ids)).delete(synchronize_session=False)
+    db.commit()
+    return {"status": "success", "deleted_count": deleted_count, "message": f"{deleted_count} টি স্যাম্পলিং রেকর্ড সফলভাবে মুছে ফেলা হয়েছে"}
+
 
 # ================= EXPENSES & PROFIT CALCULATIONS =================
 
@@ -1022,6 +1147,48 @@ def delete_expense(expense_id: int, db: Session = Depends(get_db)):
     db.commit()
     return {"status": "success", "message": "Expense record deleted successfully"}
 
+@app.post("/api/expenses/bulk")
+def bulk_create_expenses(payload: dict, db: Session = Depends(get_db)):
+    entries = payload.get("entries", [])
+    if not entries:
+        raise HTTPException(status_code=400, detail="কোন খরচের এন্ট্রি পাওয়া যায়নি (No entries provided)")
+    created_list = []
+    for item in entries:
+        try:
+            amt = float(item.get("amount_bdt", 0.0))
+        except (TypeError, ValueError):
+            amt = 0.0
+        pond_id = item.get("pond_id")
+        if pond_id is not None and str(pond_id).strip() != "" and str(pond_id).lower() != "all" and str(pond_id).lower() != "null":
+            try:
+                pond_id = int(pond_id)
+            except (TypeError, ValueError):
+                pond_id = None
+        else:
+            pond_id = None
+        exp = models.Expense(
+            date=str(item.get("date") or "").strip() or get_bd_date_str(),
+            pond_id=pond_id,
+            category=item.get("category") or "Misc",
+            amount_bdt=amt,
+            description=item.get("description") or "Bulk Expense",
+            voucher_no=item.get("voucher_no") or "",
+            recorded_by=item.get("recorded_by") or "Manager"
+        )
+        db.add(exp)
+        created_list.append(exp)
+    db.commit()
+    return {"status": "success", "count": len(created_list), "message": f"{len(created_list)} টি খরচের রেকর্ড সফলভাবে সংরক্ষিত হয়েছে"}
+
+@app.post("/api/expenses/bulk-delete")
+def bulk_delete_expenses(payload: dict, db: Session = Depends(get_db)):
+    ids = payload.get("ids", [])
+    if not ids:
+        raise HTTPException(status_code=400, detail="কোন খরচের রেকর্ড নির্বাচন করা হয়নি (No IDs provided)")
+    deleted_count = db.query(models.Expense).filter(models.Expense.id.in_(ids)).delete(synchronize_session=False)
+    db.commit()
+    return {"status": "success", "deleted_count": deleted_count, "message": f"{deleted_count} টি খরচের রেকর্ড সফলভাবে মুছে ফেলা হয়েছে"}
+
 @app.get("/api/harvest")
 def get_harvest_sales(db: Session = Depends(get_db)):
     harvests = db.query(models.HarvestSale).order_by(desc(models.HarvestSale.date)).all()
@@ -1090,6 +1257,15 @@ def delete_harvest_sale(harvest_id: int, db: Session = Depends(get_db)):
     db.delete(harvest)
     db.commit()
     return {"status": "success", "message": "Harvest record deleted successfully"}
+
+@app.post("/api/harvest/bulk-delete")
+def bulk_delete_harvest_sales(payload: dict, db: Session = Depends(get_db)):
+    ids = payload.get("ids", [])
+    if not ids:
+        raise HTTPException(status_code=400, detail="কোন বিক্রির রেকর্ড নির্বাচন করা হয়নি (No IDs provided)")
+    deleted_count = db.query(models.HarvestSale).filter(models.HarvestSale.id.in_(ids)).delete(synchronize_session=False)
+    db.commit()
+    return {"status": "success", "deleted_count": deleted_count, "message": f"{deleted_count} টি মাছ বিক্রির রেকর্ড সফলভাবে মুছে ফেলা হয়েছে"}
 
 
 

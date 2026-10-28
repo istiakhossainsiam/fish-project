@@ -54,21 +54,21 @@ export default function LoginPage({ onLoginSuccess }) {
       <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-cyan-100/60 rounded-full blur-3xl pointer-events-none" />
 
       {/* Main Login Card (Clean White UI) */}
-      <div className="w-full max-w-md bg-white border border-slate-200/80 rounded-3xl p-6 sm:p-8 shadow-xl shadow-slate-200/60 relative z-10 space-y-6">
+      <div className="card-surface w-full max-w-md rounded-3xl p-6 sm:p-8 shadow-xl shadow-slate-200/50 relative z-10 space-y-6">
         
         {/* Farm Logo & Title */}
         <div className="text-center space-y-2">
-          <div className="inline-flex p-3 rounded-2xl bg-teal-600 shadow-lg shadow-teal-600/20 text-white">
+          <div className="inline-flex p-3 rounded-2xl bg-teal-600 shadow-md shadow-teal-600/20 text-white">
             <Waves className="w-8 h-8" />
           </div>
           <div>
-            <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+            <h1 className="text-xl sm:text-2xl font-black bg-gradient-to-r from-slate-900 via-slate-800 to-slate-600 bg-clip-text text-transparent tracking-tight">
               শাহ আমানত ফিশারি ও এগ্রো
             </h1>
-            <p className="text-xs text-slate-500 mt-1">
+            <p className="text-xs text-slate-500 mt-1 font-medium">
               Shah Amanat Fishery & Agro Project • চট্টগ্রাম বিমানবন্দর
             </p>
-            <div className="inline-block mt-2 px-3 py-1 rounded-full bg-teal-50 border border-teal-200/60 text-teal-800 text-[11px] font-semibold">
+            <div className="inline-block mt-2 px-3 py-1 rounded-full bg-teal-50 border border-teal-200/80 text-teal-800 text-[11px] font-semibold">
               ৪টি পুকুর • ক্লাউড ম্যানেজমেন্ট সিস্টেম
             </div>
           </div>
@@ -151,7 +151,7 @@ export default function LoginPage({ onLoginSuccess }) {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3.5 px-4 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-bold text-sm shadow-md shadow-teal-600/20 transition disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
+            className="w-full py-3.5 px-4 rounded-xl bg-teal-600 hover:bg-teal-700 active:scale-[0.98] text-white font-bold text-sm shadow-md shadow-teal-600/20 transition-all disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
           >
             {loading ? (
               <>

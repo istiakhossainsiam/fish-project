@@ -75,6 +75,19 @@ export async function deleteStocking(id) {
   return res.json();
 }
 
+export async function bulkDeleteStocking(ids) {
+  const res = await fetch(`${API_BASE}/stocking/bulk-delete`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ ids })
+  });
+  if (!res.ok) {
+    const errBody = await res.json().catch(() => ({}));
+    throw new Error(errBody.detail || "Failed to bulk delete stocking records");
+  }
+  return res.json();
+}
+
 // ================= FEED INVENTORY =================
 export async function fetchFeedInventory() {
   const res = await fetch(`${API_BASE}/feed/inventory`);
@@ -107,6 +120,19 @@ export async function deleteFeedBatch(id) {
     method: "DELETE"
   });
   if (!res.ok) throw new Error("Failed to delete feed batch");
+  return res.json();
+}
+
+export async function bulkDeleteFeedBatches(ids) {
+  const res = await fetch(`${API_BASE}/feed/inventory/bulk-delete`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ ids })
+  });
+  if (!res.ok) {
+    const errBody = await res.json().catch(() => ({}));
+    throw new Error(errBody.detail || "Failed to bulk delete feed batches");
+  }
   return res.json();
 }
 
@@ -196,6 +222,32 @@ export async function deleteDailyFeeding(id) {
   return res.json();
 }
 
+export async function bulkAddDailyFeedings(entries) {
+  const res = await fetch(`${API_BASE}/feed/daily/bulk`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ entries })
+  });
+  if (!res.ok) {
+    const errBody = await res.json().catch(() => ({}));
+    throw new Error(errBody.detail || "Failed to bulk add feeding records");
+  }
+  return res.json();
+}
+
+export async function bulkDeleteDailyFeedings(ids) {
+  const res = await fetch(`${API_BASE}/feed/daily/bulk-delete`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ ids })
+  });
+  if (!res.ok) {
+    const errBody = await res.json().catch(() => ({}));
+    throw new Error(errBody.detail || "Failed to bulk delete feeding records");
+  }
+  return res.json();
+}
+
 // ================= VAAT TRACKING =================
 export async function fetchVaat() {
   const res = await fetch(`${API_BASE}/feed/vaat`);
@@ -249,6 +301,32 @@ export async function deleteGrowth(id) {
   return res.json();
 }
 
+export async function bulkAddGrowth(entries) {
+  const res = await fetch(`${API_BASE}/growth/bulk`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ entries })
+  });
+  if (!res.ok) {
+    const errBody = await res.json().catch(() => ({}));
+    throw new Error(errBody.detail || "Failed to bulk add growth samplings");
+  }
+  return res.json();
+}
+
+export async function bulkDeleteGrowth(ids) {
+  const res = await fetch(`${API_BASE}/growth/bulk-delete`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ ids })
+  });
+  if (!res.ok) {
+    const errBody = await res.json().catch(() => ({}));
+    throw new Error(errBody.detail || "Failed to bulk delete growth samplings");
+  }
+  return res.json();
+}
+
 // ================= EXPENSES =================
 export async function fetchExpenses(pondId = null, category = null) {
   let url = `${API_BASE}/expenses`;
@@ -290,6 +368,32 @@ export async function deleteExpense(id) {
   return res.json();
 }
 
+export async function bulkAddExpenses(entries) {
+  const res = await fetch(`${API_BASE}/expenses/bulk`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ entries })
+  });
+  if (!res.ok) {
+    const errBody = await res.json().catch(() => ({}));
+    throw new Error(errBody.detail || "Failed to bulk add expenses");
+  }
+  return res.json();
+}
+
+export async function bulkDeleteExpenses(ids) {
+  const res = await fetch(`${API_BASE}/expenses/bulk-delete`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ ids })
+  });
+  if (!res.ok) {
+    const errBody = await res.json().catch(() => ({}));
+    throw new Error(errBody.detail || "Failed to bulk delete expenses");
+  }
+  return res.json();
+}
+
 // ================= HARVEST =================
 export async function fetchHarvest() {
   const res = await fetch(`${API_BASE}/harvest`);
@@ -322,6 +426,19 @@ export async function deleteHarvest(id) {
     method: "DELETE"
   });
   if (!res.ok) throw new Error("Failed to delete harvest sale");
+  return res.json();
+}
+
+export async function bulkDeleteHarvest(ids) {
+  const res = await fetch(`${API_BASE}/harvest/bulk-delete`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ ids })
+  });
+  if (!res.ok) {
+    const errBody = await res.json().catch(() => ({}));
+    throw new Error(errBody.detail || "Failed to bulk delete harvest records");
+  }
   return res.json();
 }
 

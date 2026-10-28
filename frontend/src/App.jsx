@@ -259,15 +259,15 @@ export default function App() {
         )}
       </main>
 
-      {/* MOBILE BOTTOM NAVIGATION BAR (Ultra Mobile Friendly) */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-slate-900/95 backdrop-blur-lg border-t border-slate-800 px-2 py-1.5 flex justify-around items-center">
+      {/* MOBILE BOTTOM NAVIGATION BAR (Ultra Mobile Friendly & Crisp White Theme) */}
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-lg border-t border-slate-200/90 px-2 py-1.5 flex justify-around items-center shadow-lg">
         {[
           { id: 'dashboard', label: 'ড্যাশবোর্ড', icon: LayoutDashboard },
-          { id: 'cycles', label: '৬ মাস সাইকেল', icon: RotateCcw },
+          { id: 'cycles', label: 'সাইকেল', icon: RotateCcw },
           { id: 'investors', label: 'ইনভেস্টর', icon: Users },
           { id: 'feed', label: 'খাবার', icon: Package },
           { id: 'worker', label: 'কর্মী মোড', icon: HardHat, highlight: true },
-          { id: 'financials', label: 'লাভ', icon: DollarSign },
+          { id: 'financials', label: 'লাভ-ক্ষতি', icon: DollarSign },
         ].map((item) => {
           const Icon = item.icon;
           const isActive = activeTab === item.id;
@@ -275,16 +275,20 @@ export default function App() {
             <button
               key={item.id}
               onClick={() => setActiveTab(item.id)}
-              className={`flex flex-col items-center justify-center p-1.5 rounded-xl transition ${
+              className={`flex flex-col items-center justify-center p-1.5 rounded-xl transition cursor-pointer ${
                 item.highlight
-                  ? (isActive ? 'text-amber-400' : 'text-amber-500/80')
-                  : (isActive ? 'text-teal-400' : 'text-slate-400')
+                  ? (isActive ? 'text-amber-800 font-bold' : 'text-amber-600')
+                  : (isActive ? 'text-teal-800 font-bold' : 'text-slate-500 hover:text-slate-900')
               }`}
             >
-              <div className={`p-1 rounded-lg ${isActive ? 'bg-teal-500/10' : ''}`}>
-                <Icon className={`w-5 h-5 ${item.highlight && !isActive ? 'text-amber-400' : ''}`} />
+              <div className={`p-1 rounded-lg transition ${
+                isActive 
+                  ? (item.highlight ? 'bg-amber-100 text-amber-800 shadow-sm' : 'bg-teal-100 text-teal-800 shadow-sm') 
+                  : ''
+              }`}>
+                <Icon className="w-5 h-5" />
               </div>
-              <span className="text-[10px] font-medium tracking-tight mt-0.5">
+              <span className="text-[10px] tracking-tight mt-0.5">
                 {item.label}
               </span>
             </button>

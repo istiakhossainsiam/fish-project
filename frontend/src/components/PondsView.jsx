@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Waves, Plus, Scale, Package, Calendar, Info, Check, Filter, Edit3, Trash2, Utensils, CloudSun, CalendarDays } from 'lucide-react';
-import { deleteStocking, deleteDailyFeeding } from '../api';
+import { deleteStocking, deleteDailyFeeding, bulkDeleteStocking } from '../api';
 
 const monthNamesBengali = {
   '01': 'জানুয়ারি', '02': 'ফেব্রুয়ারি', '03': 'মার্চ', '04': 'এপ্রিল',
@@ -20,6 +20,9 @@ const formatMonthLabel = (yearMonth) => {
 export default function PondsView({ ponds, dailyFeedings = [], currentUser, onOpenModal, onRefresh }) {
   const [selectedPondId, setSelectedPondId] = useState(null);
   const [selectedFeedingMonth, setSelectedFeedingMonth] = useState('all');
+
+  const [selectedStockingIds, setSelectedStockingIds] = useState([]);
+  const [isBulkDeleting, setIsBulkDeleting] = useState(false);
 
   const activePond = selectedPondId 
     ? ponds.find(p => p.id === selectedPondId) 
@@ -59,6 +62,39 @@ export default function PondsView({ ponds, dailyFeedings = [], currentUser, onOp
         if (onRefresh) onRefresh();
       } catch (err) {
         alert("Delete failed: " + err.message);
+      }
+    }
+  };
+
+  const handleToggleStocking = (id) => {
+    setSelectedStockingIds(prev =>
+      prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
+    );
+  };
+
+  const handleSelectAllStocking = () => {
+    const list = activePond?.stockings || [];
+    if (list.length === 0) return;
+    const allSelected = list.every(st => selectedStockingIds.includes(st.id));
+    if (allSelected) {
+      setSelectedStockingIds([]);
+    } else {
+      setSelectedStockingIds(list.map(st => st.id));
+    }
+  };
+
+  const handleBulkDeleteStocking = async () => {
+    if (selectedStockingIds.length === 0) return;
+    if (window.confirm(`⚠️ আপনি কি নিশ্চিতভাবে নির্বাচিত ${selectedStockingIds.length} টি পোনা ছাড়ার রেকর্ড মুছে ফেলতে চান?`)) {
+      try {
+        setIsBulkDeleting(true);
+        await bulkDeleteStocking(selectedStockingIds);
+        setSelectedStockingIds([]);
+        if (onRefresh) onRefresh();
+      } catch (err) {
+        alert("বাল্ক ডিলিট ব্যর্থ: " + err.message);
+      } finally {
+        setIsBulkDeleting(false);
       }
     }
   };
@@ -200,11 +236,52 @@ export default function PondsView({ ponds, dailyFeedings = [], currentUser, onOp
               </div>
             </div>
             
+            {/* Bulk Selection Action Bar for Stocking */}
+            {selectedStockingIds.length > 0 && (
+              <div className="mb-3 p-3 bg-rose-50 border border-rose-200 rounded-xl flex items-center justify-between gap-3 text-xs animate-in fade-in">
+                <div className="flex items-center gap-2 text-rose-800 font-bold">
+                  <span className="w-5 h-5 rounded-lg bg-rose-600 text-white flex items-center justify-center text-xs">
+                    {selectedStockingIds.length}
+                  </span>
+                  <span>টি পোনা ছাড়ার রেকর্ড নির্বাচিত হয়েছে</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setSelectedStockingIds([])}
+                    className="px-2.5 py-1 rounded-lg bg-white border border-slate-300 text-slate-700 hover:bg-slate-100 font-semibold cursor-pointer"
+                  >
+                    বাতিল
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleBulkDeleteStocking}
+                    disabled={isBulkDeleting}
+                    className="px-3 py-1 rounded-lg bg-rose-600 hover:bg-rose-700 text-white font-bold flex items-center gap-1 shadow-sm cursor-pointer disabled:opacity-50"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                    {isBulkDeleting ? 'মুছছে...' : `নির্বাচিত ${selectedStockingIds.length} টি ডিলিট`}
+                  </button>
+                </div>
+              </div>
+            )}
+
             {activePond.stockings && activePond.stockings.length > 0 ? (
               <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm">
                 <table className="w-full text-left text-xs text-slate-700">
                   <thead className="bg-slate-50 text-slate-600 font-semibold uppercase text-[11px] border-b border-slate-200">
                     <tr>
+                      {isAdmin && (
+                        <th className="p-3 w-10 text-center">
+                          <input
+                            type="checkbox"
+                            checked={activePond.stockings.length > 0 && activePond.stockings.every(st => selectedStockingIds.includes(st.id))}
+                            onChange={handleSelectAllStocking}
+                            className="w-4 h-4 rounded text-teal-600 focus:ring-teal-500 cursor-pointer"
+                            title="সব নির্বাচন করুন"
+                          />
+                        </th>
+                      )}
                       <th className="p-3">তারিখ</th>
                       <th className="p-3">মাছের জাত</th>
                       <th className="p-3">মোট সংখ্যা (Pcs)</th>
@@ -216,8 +293,20 @@ export default function PondsView({ ponds, dailyFeedings = [], currentUser, onOp
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100">
-                    {activePond.stockings.map((st) => (
-                      <tr key={st.id} className="hover:bg-slate-50/80 transition">
+                    {activePond.stockings.map((st) => {
+                      const isSelected = selectedStockingIds.includes(st.id);
+                      return (
+                      <tr key={st.id} className={`transition ${isSelected ? 'bg-teal-50/80 border-l-4 border-l-teal-600' : 'hover:bg-slate-50/80'}`}>
+                        {isAdmin && (
+                          <td className="p-3 text-center">
+                            <input
+                              type="checkbox"
+                              checked={isSelected}
+                              onChange={() => handleToggleStocking(st.id)}
+                              className="w-4 h-4 rounded text-teal-600 focus:ring-teal-500 cursor-pointer"
+                            />
+                          </td>
+                        )}
                         <td className="p-3 font-semibold text-slate-900">{st.date}</td>
                         <td className="p-3 text-teal-700 font-semibold">{st.fish_type}</td>
                         <td className="p-3 font-black text-slate-900 text-sm">
@@ -256,7 +345,8 @@ export default function PondsView({ ponds, dailyFeedings = [], currentUser, onOp
                           </td>
                         )}
                       </tr>
-                    ))}
+                    );
+                  })}
                   </tbody>
                 </table>
               </div>

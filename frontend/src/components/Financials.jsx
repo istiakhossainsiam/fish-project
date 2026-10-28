@@ -1,12 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { DollarSign, Plus, TrendingUp, TrendingDown, PieChart, ShieldAlert, Sliders, CheckCircle2, Edit3, Trash2 } from 'lucide-react';
-import { fetchProfitAnalysis, deleteExpense, deleteHarvest } from '../api';
+import { fetchProfitAnalysis, deleteExpense, deleteHarvest, bulkDeleteExpenses, bulkDeleteHarvest } from '../api';
 
 export default function Financials({ expensesData, harvestData, currentUser, onOpenModal, onRefresh }) {
   const [targetWeight, setTargetWeight] = useState(1.2);
   const [sellingPrice, setSellingPrice] = useState(155.0);
   const [analysis, setAnalysis] = useState(null);
   const [filterCategory, setFilterCategory] = useState('all');
+
+  // Bulk Selection States
+  const [selectedExpenseIds, setSelectedExpenseIds] = useState([]);
+  const [selectedHarvestIds, setSelectedHarvestIds] = useState([]);
+  const [isBulkDeleting, setIsBulkDeleting] = useState(false);
 
   const isSuperadmin = currentUser?.role === 'superadmin';
   const isManager = currentUser?.role === 'manager';
@@ -36,6 +41,40 @@ export default function Financials({ expensesData, harvestData, currentUser, onO
     }
   };
 
+  const handleToggleExpense = (id) => {
+    setSelectedExpenseIds(prev =>
+      prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
+    );
+  };
+
+  const handleSelectAllExpenses = () => {
+    if (!filteredExpenses || filteredExpenses.length === 0) return;
+    const allSelected = filteredExpenses.every(e => selectedExpenseIds.includes(e.id));
+    if (allSelected) {
+      const expIds = filteredExpenses.map(e => e.id);
+      setSelectedExpenseIds(prev => prev.filter(id => !expIds.includes(id)));
+    } else {
+      const newIds = new Set([...selectedExpenseIds, ...filteredExpenses.map(e => e.id)]);
+      setSelectedExpenseIds(Array.from(newIds));
+    }
+  };
+
+  const handleBulkDeleteExpenses = async () => {
+    if (selectedExpenseIds.length === 0) return;
+    if (window.confirm(`⚠️ আপনি কি নিশ্চিতভাবে নির্বাচিত ${selectedExpenseIds.length} টি খরচের রেকর্ড মুছে ফেলতে চান? এটি স্থায়ীভাবে ডাটাবেজ থেকে মুছে যাবে।`)) {
+      try {
+        setIsBulkDeleting(true);
+        await bulkDeleteExpenses(selectedExpenseIds);
+        setSelectedExpenseIds([]);
+        if (onRefresh) onRefresh();
+      } catch (err) {
+        alert("বাল্ক ডিলিট ব্যর্থ: " + err.message);
+      } finally {
+        setIsBulkDeleting(false);
+      }
+    }
+  };
+
   const handleDeleteHarvest = async (id) => {
     if (window.confirm("আপনি কি নিশ্চিতভাবে এই মাছ বিক্রির রেকর্ডটি মুছে ফেলতে চান?")) {
       try {
@@ -43,6 +82,38 @@ export default function Financials({ expensesData, harvestData, currentUser, onO
         if (onRefresh) onRefresh();
       } catch (err) {
         alert("Delete failed: " + err.message);
+      }
+    }
+  };
+
+  const handleToggleHarvest = (id) => {
+    setSelectedHarvestIds(prev =>
+      prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
+    );
+  };
+
+  const handleSelectAllHarvest = () => {
+    if (!harvests || harvests.length === 0) return;
+    const allSelected = harvests.every(h => selectedHarvestIds.includes(h.id));
+    if (allSelected) {
+      setSelectedHarvestIds([]);
+    } else {
+      setSelectedHarvestIds(harvests.map(h => h.id));
+    }
+  };
+
+  const handleBulkDeleteHarvest = async () => {
+    if (selectedHarvestIds.length === 0) return;
+    if (window.confirm(`⚠️ আপনি কি নিশ্চিতভাবে নির্বাচিত ${selectedHarvestIds.length} টি মাছ বিক্রির রেকর্ড মুছে ফেলতে চান?`)) {
+      try {
+        setIsBulkDeleting(true);
+        await bulkDeleteHarvest(selectedHarvestIds);
+        setSelectedHarvestIds([]);
+        if (onRefresh) onRefresh();
+      } catch (err) {
+        alert("বাল্ক ডিলিট ব্যর্থ: " + err.message);
+      } finally {
+        setIsBulkDeleting(false);
       }
     }
   };
@@ -60,12 +131,18 @@ export default function Financials({ expensesData, harvestData, currentUser, onO
             সুপারএডমিন ও ম্যানেজারের জন্য মোট বিনিয়োগ, ফিড/পোনা/লেবার ব্যয় এবং মাছ বিক্রির মুনাফা বিশ্লেষণ
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
+          <button
+            onClick={() => onOpenModal('bulk_expense')}
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold shadow-sm transition cursor-pointer"
+          >
+            <Plus className="w-4 h-4" /> + বাল্ক খরচ এন্ট্রি
+          </button>
           <button
             onClick={() => onOpenModal('expense')}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-700 text-amber-300 border border-slate-200 text-xs font-medium transition"
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 text-xs font-medium transition cursor-pointer"
           >
-            <Plus className="w-4 h-4" /> নতুন খরচ এন্ট্রি
+            <Plus className="w-4 h-4 text-amber-600" /> নতুন খরচ এন্ট্রি
           </button>
           <button
             onClick={() => onOpenModal('harvest')}
@@ -223,10 +300,51 @@ export default function Financials({ expensesData, harvestData, currentUser, onO
           </select>
         </div>
 
+        {/* Bulk Selection Action Bar for Expenses */}
+        {selectedExpenseIds.length > 0 && (
+          <div className="mb-3 p-3 bg-rose-50 border border-rose-200 rounded-2xl flex items-center justify-between gap-3 text-xs animate-in fade-in">
+            <div className="flex items-center gap-2 text-rose-800 font-bold">
+              <span className="w-6 h-6 rounded-lg bg-rose-600 text-white flex items-center justify-center text-xs">
+                {selectedExpenseIds.length}
+              </span>
+              <span>টি খরচের রেকর্ড নির্বাচিত হয়েছে</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setSelectedExpenseIds([])}
+                className="px-3 py-1.5 rounded-xl bg-white border border-slate-300 text-slate-700 hover:bg-slate-100 font-semibold cursor-pointer"
+              >
+                নির্বাচন বাতিল
+              </button>
+              <button
+                type="button"
+                onClick={handleBulkDeleteExpenses}
+                disabled={isBulkDeleting}
+                className="px-3.5 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold flex items-center gap-1.5 shadow-sm cursor-pointer disabled:opacity-50"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+                {isBulkDeleting ? 'মুছে ফেলা হচ্ছে...' : `নির্বাচিত ${selectedExpenseIds.length} টি খরচ ডিলিট`}
+              </button>
+            </div>
+          </div>
+        )}
+
         <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
-          <table className="w-full text-left text-xs text-slate-300">
+          <table className="w-full text-left text-xs text-slate-700">
             <thead className="bg-slate-50 text-slate-600 font-semibold uppercase text-[11px] border-b border-slate-200">
               <tr>
+                {isAdmin && (
+                  <th className="p-3.5 w-10 text-center">
+                    <input
+                      type="checkbox"
+                      checked={filteredExpenses.length > 0 && filteredExpenses.every(e => selectedExpenseIds.includes(e.id))}
+                      onChange={handleSelectAllExpenses}
+                      className="w-4 h-4 rounded text-amber-600 focus:ring-amber-500 cursor-pointer"
+                      title="সব খরচ নির্বাচন করুন"
+                    />
+                  </th>
+                )}
                 <th className="p-3.5">তারিখ</th>
                 <th className="p-3.5">খাত (Category)</th>
                 <th className="p-3.5">বিবরণ (Description)</th>
@@ -237,8 +355,20 @@ export default function Financials({ expensesData, harvestData, currentUser, onO
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
-              {filteredExpenses.map((e) => (
-                <tr key={e.id} className="hover:bg-slate-50/80 transition">
+              {filteredExpenses.map((e) => {
+                const isSelected = selectedExpenseIds.includes(e.id);
+                return (
+                <tr key={e.id} className={`transition ${isSelected ? 'bg-amber-50/80 border-l-4 border-l-amber-600' : 'hover:bg-slate-50/80'}`}>
+                  {isAdmin && (
+                    <td className="p-3.5 text-center">
+                      <input
+                        type="checkbox"
+                        checked={isSelected}
+                        onChange={() => handleToggleExpense(e.id)}
+                        className="w-4 h-4 rounded text-amber-600 focus:ring-amber-500 cursor-pointer"
+                      />
+                    </td>
+                  )}
                   <td className="p-3.5 font-medium text-slate-900">{e.date}</td>
                   <td className="p-3.5">
                     <span className="px-2 py-0.5 rounded-lg bg-amber-500/10 text-amber-300 border border-amber-500/20 font-medium">
@@ -268,7 +398,8 @@ export default function Financials({ expensesData, harvestData, currentUser, onO
                     </td>
                   )}
                 </tr>
-              ))}
+              );
+            })}
             </tbody>
           </table>
         </div>
@@ -278,15 +409,56 @@ export default function Financials({ expensesData, harvestData, currentUser, onO
       <div>
         <div className="flex justify-between items-center mb-3">
           <h3 className="text-sm font-semibold text-slate-900">মাছ বিক্রি ও আয়ের রেকর্ড (Fish Harvest & Sales)</h3>
-          <span className="text-xs text-slate-400">
+          <span className="text-xs text-slate-500 font-semibold">
             মোট বিক্রয়: ৳ {harvestData?.total_revenue_bdt?.toLocaleString() || 0}
           </span>
         </div>
 
+        {/* Bulk Selection Action Bar for Harvest */}
+        {selectedHarvestIds.length > 0 && (
+          <div className="mb-3 p-3 bg-rose-50 border border-rose-200 rounded-2xl flex items-center justify-between gap-3 text-xs animate-in fade-in">
+            <div className="flex items-center gap-2 text-rose-800 font-bold">
+              <span className="w-6 h-6 rounded-lg bg-rose-600 text-white flex items-center justify-center text-xs">
+                {selectedHarvestIds.length}
+              </span>
+              <span>টি মাছ বিক্রির রেকর্ড নির্বাচিত হয়েছে</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setSelectedHarvestIds([])}
+                className="px-3 py-1.5 rounded-xl bg-white border border-slate-300 text-slate-700 hover:bg-slate-100 font-semibold cursor-pointer"
+              >
+                নির্বাচন বাতিল
+              </button>
+              <button
+                type="button"
+                onClick={handleBulkDeleteHarvest}
+                disabled={isBulkDeleting}
+                className="px-3.5 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold flex items-center gap-1.5 shadow-sm cursor-pointer disabled:opacity-50"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+                {isBulkDeleting ? 'মুছে ফেলা হচ্ছে...' : `নির্বাচিত ${selectedHarvestIds.length} টি ডিলিট`}
+              </button>
+            </div>
+          </div>
+        )}
+
         <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
-          <table className="w-full text-left text-xs text-slate-300">
+          <table className="w-full text-left text-xs text-slate-700">
             <thead className="bg-slate-50 text-slate-600 font-semibold uppercase text-[11px] border-b border-slate-200">
               <tr>
+                {isAdmin && (
+                  <th className="p-3.5 w-10 text-center">
+                    <input
+                      type="checkbox"
+                      checked={harvests.length > 0 && harvests.every(h => selectedHarvestIds.includes(h.id))}
+                      onChange={handleSelectAllHarvest}
+                      className="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500 cursor-pointer"
+                      title="সব নির্বাচন করুন"
+                    />
+                  </th>
+                )}
                 <th className="p-3.5">তারিখ</th>
                 <th className="p-3.5">পুকুর নং</th>
                 <th className="p-3.5">মাছের জাত</th>
@@ -300,13 +472,25 @@ export default function Financials({ expensesData, harvestData, currentUser, onO
             <tbody className="divide-y divide-slate-100">
               {harvests.length === 0 ? (
                 <tr>
-                  <td colSpan={isAdmin ? 8 : 7} className="p-4 text-center text-slate-500">
+                  <td colSpan={isAdmin ? 9 : 8} className="p-4 text-center text-slate-500">
                     এখনো কোনো মাছ বিক্রির রেকর্ড নেই। বিক্রি হলে "মাছ বিক্রি / হার্ভেস্ট" বাটনে ক্লিক করে যুক্ত করুন।
                   </td>
                 </tr>
               ) : (
-                harvests.map((h) => (
-                  <tr key={h.id} className="hover:bg-slate-50/80 transition">
+                harvests.map((h) => {
+                  const isSelected = selectedHarvestIds.includes(h.id);
+                  return (
+                  <tr key={h.id} className={`transition ${isSelected ? 'bg-emerald-50/80 border-l-4 border-l-emerald-600' : 'hover:bg-slate-50/80'}`}>
+                    {isAdmin && (
+                      <td className="p-3.5 text-center">
+                        <input
+                          type="checkbox"
+                          checked={isSelected}
+                          onChange={() => handleToggleHarvest(h.id)}
+                          className="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500 cursor-pointer"
+                        />
+                      </td>
+                    )}
                     <td className="p-3.5 font-medium text-slate-900">{h.date}</td>
                     <td className="p-3.5 text-teal-300 font-semibold">{h.pond_name || `পুকুর ${h.pond_id}`}</td>
                     <td className="p-3.5 font-medium text-slate-200">{h.fish_type}</td>
@@ -333,7 +517,8 @@ export default function Financials({ expensesData, harvestData, currentUser, onO
                       </td>
                     )}
                   </tr>
-                ))
+                );
+              })
               )}
             </tbody>
           </table>
