@@ -233,14 +233,21 @@ button.bg-teal-600, button.bg-teal-700, button.bg-emerald-600, button.bg-amber-6
 }
 
 /* ========================================================================= */
-/* PRINT ENGINE: CHARTERED AUDIT REPORT OPTIMIZATION FOR A4 PAPER           */
+/* PRINT ENGINE: CHARTERED AUDIT REPORT OPTIMIZATION FOR A4 LANDSCAPE        */
 /* ========================================================================= */
 @page {
-  size: A4 portrait;
-  margin: 8mm 8mm 10mm 8mm;
+  size: A4 landscape;
+  margin: 10mm 10mm 10mm 10mm;
 }
 
 @media print {
+  /* Complete removal of screen controls and UI clutter */
+  header, nav, .no-print, button, select, input, textarea,
+  .print-hidden, [role="navigation"], .floating-nav, #mobile-bottom-dock,
+  .fixed, .sticky {
+    display: none !important;
+  }
+
   html, body {
     width: 100% !important;
     min-width: 100% !important;
@@ -250,8 +257,8 @@ button.bg-teal-600, button.bg-teal-700, button.bg-emerald-600, button.bg-amber-6
     background: #ffffff !important;
     background-color: #ffffff !important;
     color: #0f172a !important;
-    font-size: 9pt !important;
-    line-height: 1.25 !important;
+    font-size: 8pt !important;
+    line-height: 1.2 !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
@@ -263,17 +270,14 @@ button.bg-teal-600, button.bg-teal-700, button.bg-emerald-600, button.bg-amber-6
     margin: 0 !important;
     padding: 0 !important;
     display: block !important;
-  }
-
-  header, nav, .no-print, button, select, input, textarea,
-  .print-hidden, [role="navigation"] {
-    display: none !important;
+    background: #ffffff !important;
   }
 
   .print-only {
     display: block !important;
   }
 
+  /* Printable Report Container Boundary */
   .printable-report {
     width: 100% !important;
     max-width: 100% !important;
@@ -284,42 +288,70 @@ button.bg-teal-600, button.bg-teal-700, button.bg-emerald-600, button.bg-amber-6
     background: #ffffff !important;
   }
 
-  .overflow-x-auto {
+  .overflow-x-auto, .overflow-y-auto, .overflow-hidden {
     overflow: visible !important;
     display: block !important;
     width: 100% !important;
   }
 
-  table {
+  /* Master Document Structure: Repeats Official Letterhead on Every Page */
+  .print-master-table {
+    width: 100% !important;
+    border: none !important;
+    border-collapse: collapse !important;
+    page-break-inside: auto !important;
+  }
+
+  .print-master-header {
+    display: table-header-group !important;
+  }
+
+  .print-master-footer {
+    display: table-footer-group !important;
+  }
+
+  .print-letterhead {
+    display: block !important;
+    width: 100% !important;
+    background: #ffffff !important;
+  }
+
+  /* Nested Data Tables: Locked Column Headers on Every Page */
+  table:not(.print-master-table) {
     width: 100% !important;
     border-collapse: collapse !important;
-    font-size: 8.5pt !important;
-    line-height: 1.2 !important;
+    font-size: 7.5pt !important;
+    line-height: 1.15 !important;
     table-layout: auto !important;
-    margin-top: 4px !important;
-    margin-bottom: 6px !important;
+    margin-top: 3px !important;
+    margin-bottom: 5px !important;
+    page-break-inside: auto !important;
+  }
+
+  thead {
+    display: table-header-group !important;
+  }
+
+  tfoot {
+    display: table-footer-group !important;
   }
 
   th {
     background-color: #f1f5f9 !important;
     color: #0f172a !important;
     border: 1px solid #475569 !important;
-    padding: 3.5px 5px !important;
+    padding: 2.5px 4.5px !important;
     font-weight: 700 !important;
     text-align: left !important;
-    font-size: 8pt !important;
-    letter-spacing: 0.02em !important;
+    font-size: 7.5pt !important;
+    letter-spacing: 0.01em !important;
   }
 
   td {
     border: 1px solid #94a3b8 !important;
-    padding: 3px 5px !important;
+    padding: 2px 4.5px !important;
     color: #0f172a !important;
-    font-size: 8pt !important;
-  }
-
-  thead {
-    display: table-header-group !important;
+    font-size: 7.5pt !important;
   }
 
   tr {
@@ -327,14 +359,15 @@ button.bg-teal-600, button.bg-teal-700, button.bg-emerald-600, button.bg-amber-6
     page-break-inside: avoid !important;
   }
 
+  /* Prevent broken sections and signatures */
   .print-avoid-break, .signature-block, .audit-card {
     break-inside: avoid !important;
     page-break-inside: avoid !important;
   }
 
   .signature-block {
-    margin-top: 18px !important;
-    padding-top: 10px !important;
+    margin-top: 14px !important;
+    padding-top: 8px !important;
     break-inside: avoid !important;
     page-break-inside: avoid !important;
   }
@@ -342,7 +375,7 @@ button.bg-teal-600, button.bg-teal-700, button.bg-emerald-600, button.bg-amber-6
   .print-metric-box {
     border: 1px solid #94a3b8 !important;
     background-color: #f8fafc !important;
-    padding: 4px 6px !important;
+    padding: 3px 5px !important;
     border-radius: 4px !important;
   }
 }
